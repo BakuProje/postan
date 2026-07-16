@@ -1,86 +1,534 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Postan - Sistem Kasir</title>
+    <title>Postan - Sistem Kasir Modern</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+        @keyframes float-delayed {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(12px) rotate(-2deg); }
+        }
+        .animate-float {
+            animation: float 7s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: float-delayed 9s ease-in-out infinite;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900">
-    <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur">
-        <nav class="mx-auto flex h-20 max-w-7xl items-center px-4 sm:px-6 lg:px-8" aria-label="Navigasi utama">
-            <a href="{{ route('beranda.index') }}#home" class="flex items-center gap-3 text-xl font-bold tracking-tight">
-                <span class="grid size-10 place-items-center rounded-xl bg-indigo-600 text-base font-black text-white shadow-lg shadow-indigo-200">P</span>
-                POSTAN
+<body class="bg-neutral-50/50 font-sans text-neutral-800 antialiased selection:bg-sky-500 selection:text-white">
+    <!-- Header -->
+    <header id="main-header" class="sticky top-0 z-50 transition-all duration-300 border-b border-transparent bg-transparent h-20">
+        <nav class="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Navigasi utama">
+            <a href="{{ route('beranda.index') }}#home" class="flex items-center gap-2.5 text-base font-bold tracking-wider text-neutral-900 transition-transform duration-250 hover:scale-[1.01]">
+                <img src="{{ asset('logo.png') }}" alt="Postan Logo" class="h-10 w-auto">
+                <span class="font-extrabold tracking-widest text-sm">POSTAN</span>
             </a>
 
-            <div class="ml-auto flex items-center gap-2 sm:gap-4">
-                <div class="hidden items-center rounded-xl bg-slate-100 p-1 md:flex">
-                    <a href="{{ route('beranda.index') }}#home" class="rounded-lg px-4 py-2 text-sm font-semibold transition {{ request()->routeIs('beranda.*') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-indigo-600' }}">Home</a>
-                    <a href="{{ route('info.index') }}#info" class="rounded-lg px-4 py-2 text-sm font-semibold transition {{ request()->routeIs('info.*') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-indigo-600' }}">Info</a>
-                    <a href="{{ route('contact.index') }}#contact" class="rounded-lg px-4 py-2 text-sm font-semibold transition {{ request()->routeIs('contact.*') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-indigo-600' }}">Contact</a>
+            <div class="flex items-center gap-6">
+                <!-- Desktop Nav Links (IDs added for scrollspy) -->
+                <div class="hidden items-center gap-1 md:flex">
+                    <a href="{{ route('beranda.index') }}#home" id="nav-home" class="rounded-md px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 text-sky-600 bg-sky-50/50">Home</a>
+                    <a href="{{ route('info.index') }}#info" id="nav-info" class="rounded-md px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-500 hover:text-neutral-900">Info</a>
+                    <a href="{{ route('contact.index') }}#contact" id="nav-contact" class="rounded-md px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-500 hover:text-neutral-900">Contact</a>
                 </div>
-                <details class="relative md:hidden">
-                    <summary class="cursor-pointer list-none rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-600">Menu</summary>
-                    <div class="absolute right-0 mt-3 w-44 rounded-xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-200">
-                        <a href="{{ route('beranda.index') }}#home" class="block rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('beranda.*') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:bg-slate-50' }}">Home</a>
-                        <a href="{{ route('info.index') }}#info" class="block rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('info.*') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:bg-slate-50' }}">Info</a>
-                        <a href="{{ route('contact.index') }}#contact" class="block rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('contact.*') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:bg-slate-50' }}">Contact</a>
-                    </div>
-                </details>
-                <a href="{{ route('login') }}" class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200">Login</a>
+                
+                <!-- Mobile Trigger Button -->
+                <button id="menu-toggle" class="md:hidden cursor-pointer rounded-lg border border-neutral-200 bg-white px-3.5 py-2 text-sm font-semibold text-neutral-700 transition hover:border-neutral-400 hover:text-neutral-900">
+                    Menu
+                </button>
+                
+                <a href="{{ route('login') }}" class="rounded-lg bg-neutral-900 px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2">Login</a>
             </div>
         </nav>
     </header>
 
     <main>
-        <section id="home" class="relative overflow-hidden">
-            <div class="absolute inset-x-0 top-0 -z-10 h-full bg-[radial-gradient(circle_at_top_right,_#c7d2fe_0,_transparent_32rem)]"></div>
-            <div class="mx-auto grid max-w-7xl gap-12 px-6 py-20 sm:py-28 lg:grid-cols-2 lg:items-center lg:px-8">
-                <div>
-                    <p class="mb-5 inline-flex rounded-full bg-indigo-50 px-4 py-2 text-xs font-bold tracking-widest text-indigo-700">SISTEM KASIR MODERN</p>
-                    <h1 class="max-w-xl text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">Kelola toko jadi lebih mudah bersama Postan.</h1>
-                    <p class="mt-6 max-w-lg text-lg leading-8 text-slate-600">Catat penjualan, pantau transaksi, dan bantu operasional bisnis Anda tetap rapi dalam satu sistem.</p>
-                    <div class="mt-8 flex flex-wrap gap-4">
-                        <a href="{{ route('login') }}" class="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700">Mulai sekarang</a>
-                        <a href="{{ route('info.index') }}#info" class="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-700">Pelajari lebih lanjut</a>
-                    </div>
-                </div>
+        <!-- Home Section -->
+        <section id="home" class="relative overflow-hidden min-h-[calc(100vh-5rem)] flex items-center py-12 border-b border-neutral-200/50">
+            <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"></div>
+            
+            <div class="absolute top-[12%] left-[6%] -z-20 h-28 w-28 rounded-full bg-gradient-to-br from-white/80 via-sky-50/30 to-sky-200/10 border border-white/50 shadow-[inset_4px_4px_12px_rgba(255,255,255,0.9),inset_-4px_-4px_12px_rgba(14,165,233,0.1),4px_8px_24px_rgba(14,165,233,0.06)] animate-float"></div>
+            <div class="absolute bottom-[15%] right-[8%] -z-20 h-36 w-36 rounded-full bg-gradient-to-br from-white/70 via-sky-50/20 to-sky-100/10 border border-white/40 shadow-[inset_6px_6px_16px_rgba(255,255,255,0.8),inset_-6px_-6px_16px_rgba(14,165,233,0.08),6px_12px_32px_rgba(14,165,233,0.05)] animate-float-delayed"></div>
+            <div class="absolute top-[40%] left-[45%] -z-20 h-16 w-16 rounded-full bg-gradient-to-br from-white/80 via-sky-50/25 to-sky-200/15 border border-white/50 shadow-[inset_3px_3px_8px_rgba(255,255,255,0.9),inset_-3px_-3px_8px_rgba(14,165,233,0.12),3px_6px_16px_rgba(14,165,233,0.06)] animate-float"></div>
 
-                <div class="rounded-3xl border border-indigo-100 bg-white p-6 shadow-2xl shadow-indigo-100 sm:p-8">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-5">
-                        <div><p class="text-sm text-slate-500">Penjualan hari ini</p><p class="mt-1 text-2xl font-bold">Rp 2.450.000</p></div>
-                        <span class="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-600">+12,5%</span>
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 w-full relative z-10">
+                <div class="grid gap-12 lg:grid-cols-12 lg:items-center">
+                    <!-- Left Column -->
+                    <div class="lg:col-span-7">
+                        <span class="inline-flex items-center gap-1 rounded-md border border-sky-200 bg-sky-50/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-sky-800">
+                            Sistem Kasir Modern
+                        </span>
+                        <h1 class="mt-6 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl lg:leading-[1.15] max-w-2xl">
+                            Kelola toko jadi lebih mudah bersama <span class="text-sky-500">Postan</span>.
+                        </h1>
+                        <p class="mt-5 text-sm leading-relaxed text-neutral-500 max-w-xl">
+                            Catat penjualan, pantau transaksi, dan kelola operasional bisnis harian Anda secara teratur dan real-time dalam satu sistem kasir yang ringkas.
+                        </p>
+                        
+                        <!-- CTA Buttons (Arrow removed from Mulai Sekarang) -->
+                        <div class="mt-8 flex flex-wrap gap-3">
+                            <a href="{{ route('login') }}" class="group inline-flex items-center rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-sky-600 shadow-sm">
+                                Mulai Sekarang
+                            </a>
+                            <a href="{{ route('info.index') }}#info" class="inline-flex items-center rounded-lg border border-neutral-200 bg-white px-5 py-3 text-sm font-semibold text-neutral-600 transition-all duration-200 hover:border-neutral-300 hover:text-neutral-950">
+                                Pelajari Lebih Lanjut
+                            </a>
+                        </div>
+
+                        <!-- Sub-features checkmarks -->
+                        <div class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3.5 text-xs text-neutral-400 border-t border-neutral-200/50 pt-8">
+                            <span class="flex items-center gap-2">
+                                <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                <span class="font-medium text-neutral-600">Cashless & Tunai</span>
+                            </span>
+                            <span class="flex items-center gap-2">
+                                <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                <span class="font-medium text-neutral-600">Manajemen Stok Otomatis</span>
+                            </span>
+                            <span class="flex items-center gap-2">
+                                <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                <span class="font-medium text-neutral-600">Laporan Penjualan Real-time</span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="mt-6 grid grid-cols-3 gap-3 text-center">
-                        <div class="rounded-xl bg-slate-50 p-4"><p class="text-lg font-bold text-indigo-600">28</p><p class="mt-1 text-xs text-slate-500">Transaksi</p></div>
-                        <div class="rounded-xl bg-slate-50 p-4"><p class="text-lg font-bold text-indigo-600">16</p><p class="mt-1 text-xs text-slate-500">Produk</p></div>
-                        <div class="rounded-xl bg-slate-50 p-4"><p class="text-lg font-bold text-indigo-600">8</p><p class="mt-1 text-xs text-slate-500">Pelanggan</p></div>
+
+                    <!-- Right Column (Dashboard App Preview) -->
+                    <div class="lg:col-span-5 relative">
+                        <div class="absolute -top-6 -left-6 -z-10 h-12 w-12 rounded-full bg-gradient-to-br from-white/90 via-sky-50/30 to-sky-200/20 border border-white/50 shadow-[inset_2px_2px_6px_rgba(255,255,255,0.9),inset_-2px_-2px_6px_rgba(14,165,233,0.1),2px_4px_12px_rgba(14,165,233,0.05)] animate-float-delayed"></div>
+                        
+                        <div class="relative rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-7">
+                            <!-- Dashboard Header -->
+                            <div class="flex items-center justify-between border-b border-neutral-100 pb-5">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Penjualan Hari Ini</p>
+                                    <p class="mt-1 text-2xl font-extrabold text-neutral-900 tracking-tight">Rp 2.450.000</p>
+                                </div>
+                                <span class="inline-flex items-center gap-0.5 rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-100">
+                                    +12.5%
+                                </span>
+                            </div>
+
+                            <!-- Dashboard Stats Grid -->
+                            <div class="mt-5 grid grid-cols-3 gap-3">
+                                <div class="rounded-lg border border-neutral-100 bg-neutral-50/50 p-3 text-center">
+                                    <p class="text-lg font-bold text-sky-500">28</p>
+                                    <p class="text-[10px] font-semibold text-neutral-400">Transaksi</p>
+                                </div>
+                                <div class="rounded-lg border border-neutral-100 bg-neutral-50/50 p-3 text-center">
+                                    <p class="text-lg font-bold text-sky-500">16</p>
+                                    <p class="text-[10px] font-semibold text-neutral-400">Produk</p>
+                                </div>
+                                <div class="rounded-lg border border-neutral-100 bg-neutral-50/50 p-3 text-center">
+                                    <p class="text-lg font-bold text-sky-500">8</p>
+                                    <p class="text-[10px] font-semibold text-neutral-400">Pelanggan</p>
+                                </div>
+                            </div>
+
+                            <!-- Beautiful SVG Line Chart Graph -->
+                            <div class="mt-5 rounded-lg border border-neutral-100 bg-neutral-50/20 p-2 overflow-hidden">
+                                <div class="h-24 w-full flex items-end">
+                                    <svg viewBox="0 0 300 100" class="w-full h-full text-sky-500" preserveAspectRatio="none">
+                                        <defs>
+                                            <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stop-color="currentColor" stop-opacity="0.08"/>
+                                                <stop offset="100%" stop-color="currentColor" stop-opacity="0.0"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <path d="M 0 85 Q 35 60 70 75 T 140 45 T 210 65 T 280 20 L 300 20 L 300 100 L 0 100 Z" fill="url(#chart-grad)" />
+                                        <path d="M 0 85 Q 35 60 70 75 T 140 45 T 210 65 T 280 20 L 300 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                        <circle cx="280" cy="20" r="3.5" fill="currentColor" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Mock Recent Transactions -->
+                            <div class="mt-5 border-t border-neutral-100 pt-5">
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Transaksi Terbaru</p>
+                                <div class="mt-3 space-y-2.5">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                            <span class="font-bold text-neutral-700">#TRX-0492</span>
+                                            <span class="text-neutral-400">10:14</span>
+                                        </div>
+                                        <p class="font-extrabold text-neutral-800">Rp 125.000</p>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                            <span class="font-bold text-neutral-700">#TRX-0491</span>
+                                            <span class="text-neutral-400">09:45</span>
+                                        </div>
+                                        <p class="font-extrabold text-neutral-800">Rp 45.000</p>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                            <span class="font-bold text-neutral-700">#TRX-0490</span>
+                                            <span class="text-neutral-400">08:30</span>
+                                        </div>
+                                        <p class="font-extrabold text-neutral-800">Rp 310.000</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mt-6 h-24 rounded-xl bg-gradient-to-r from-indigo-100 via-indigo-50 to-violet-100"></div>
                 </div>
             </div>
         </section>
 
-        <section id="info" class="bg-white py-20 sm:py-24">
-            <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="max-w-2xl"><p class="text-sm font-bold tracking-widest text-indigo-600">TENTANG POSTAN</p><h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Fitur sederhana untuk operasional yang lebih teratur.</h2></div>
-                <div class="mt-12 grid gap-6 md:grid-cols-3">
-                    <article class="rounded-2xl border border-slate-200 p-6"><div class="grid size-11 place-items-center rounded-xl bg-indigo-50 font-bold text-indigo-600">01</div><h3 class="mt-5 text-lg font-bold">Transaksi cepat</h3><p class="mt-2 text-sm leading-6 text-slate-600">Catat transaksi penjualan secara ringkas dan akurat.</p></article>
-                    <article class="rounded-2xl border border-slate-200 p-6"><div class="grid size-11 place-items-center rounded-xl bg-indigo-50 font-bold text-indigo-600">02</div><h3 class="mt-5 text-lg font-bold">Data terpusat</h3><p class="mt-2 text-sm leading-6 text-slate-600">Simpan data penjualan dan produk pada satu tempat.</p></article>
-                    <article class="rounded-2xl border border-slate-200 p-6"><div class="grid size-11 place-items-center rounded-xl bg-indigo-50 font-bold text-indigo-600">03</div><h3 class="mt-5 text-lg font-bold">Mudah dipantau</h3><p class="mt-2 text-sm leading-6 text-slate-600">Lihat gambaran aktivitas toko dengan lebih jelas.</p></article>
+        <!-- Info Section -->
+        <section id="info" class="relative overflow-hidden bg-transparent min-h-[calc(100vh-5rem)] flex flex-col justify-center py-16 border-b border-neutral-200/50">
+            <!-- Premium Background Grid Line Pattern -->
+            <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"></div>
+
+            <!-- 3D Bubbles in Info Background -->
+            <div class="absolute top-[10%] right-[5%] -z-10 h-32 w-32 rounded-full bg-gradient-to-br from-white/70 via-sky-50/20 to-sky-100/10 border border-white/40 shadow-[inset_5px_5px_14px_rgba(255,255,255,0.8),inset_-5px_-5px_14px_rgba(14,165,233,0.08),5px_10px_28px_rgba(14,165,233,0.04)] animate-float-delayed"></div>
+            <div class="absolute bottom-[10%] left-[4%] -z-10 h-24 w-24 rounded-full bg-gradient-to-br from-white/80 via-sky-50/25 to-sky-200/10 border border-white/50 shadow-[inset_4px_4px_10px_rgba(255,255,255,0.9),inset_-4px_-4px_10px_rgba(14,165,233,0.1),4px_8px_20px_rgba(14,165,233,0.05)] animate-float"></div>
+
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 relative z-10 w-full">
+                <!-- Section Title split style -->
+                <div class="grid gap-6 lg:grid-cols-12 lg:items-start border-b border-neutral-100 pb-10">
+                    <div class="lg:col-span-5">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-sky-800 border border-sky-200 bg-sky-50/30 px-2.5 py-1 rounded">Fitur Utama</span>
+                        <h2 class="mt-4 text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl leading-tight">
+                            Fitur operasional kasir terstruktur.
+                        </h2>
+                    </div>
+                    <div class="lg:col-span-7 lg:pt-6">
+                        <p class="text-sm text-neutral-500 leading-relaxed max-w-2xl">
+                            Postan dirancang untuk merapikan seluruh alur transaksi usaha Anda. Mulai dari pencatatan barang masuk, manajemen stok, proses kasir di depan meja, hingga rekapitulasi data penjualan harian dalam satu layar terpusat.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Rich Feature Grid -->
+                <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- Feature 1 -->
+                    <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
+                        <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
+                        
+                        <div class="inline-flex size-10 items-center justify-center rounded bg-sky-50 text-sky-500 transition-transform duration-300 group-hover:scale-105">
+                            <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h16.5M4.5 19.5h15m-15-3v-12a1.5 1.5 0 0 1 1.5-1.5h12a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6a1.5 1.5 0 0 1-1.5-1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.008 2.25h-.008v.008h.008V10.5Zm-3.75-2.25H6.75v.008h4.5V8.25Zm0 2.25H6.75v.008h4.5V10.5Z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-6 text-base font-bold text-neutral-900 group-hover:text-sky-500 transition-colors">Transaksi Instan</h3>
+                        <p class="mt-2.5 text-xs leading-relaxed text-neutral-500">
+                            Proses kasir yang ringkas dengan keranjang dinamis. Cepat, otomatis memotong stok barang, dan langsung cetak nota belanja pembeli.
+                        </p>
+                        
+                        <ul class="mt-4 space-y-2 border-t border-neutral-100 pt-4 text-[11px] text-neutral-400">
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Input nominal bayar & kembalian otomatis
+                            </li>
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Cetak struk ramah printer termal
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
+                        <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
+                        
+                        <div class="inline-flex size-10 items-center justify-center rounded bg-sky-50 text-sky-500 transition-transform duration-300 group-hover:scale-105">
+                            <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125M3.75 10.125v3.75m16.5-3.75v3.75m-16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125M3.75 13.875v3.75" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-6 text-base font-bold text-neutral-900 group-hover:text-sky-500 transition-colors">Manajemen Inventaris</h3>
+                        <p class="mt-2.5 text-xs leading-relaxed text-neutral-500">
+                            Kelola data produk Anda secara teratur. Kelompokkan berdasarkan kategori produk, pantau ketersediaan stok, dan unggah foto produk.
+                        </p>
+                        
+                        <ul class="mt-4 space-y-2 border-t border-neutral-100 pt-4 text-[11px] text-neutral-400">
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Upload foto produk terintegrasi
+                            </li>
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Pengelompokan kategori 1-N (One-to-Many)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
+                        <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
+                        
+                        <div class="inline-flex size-10 items-center justify-center rounded bg-sky-50 text-sky-500 transition-transform duration-300 group-hover:scale-105">
+                            <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-6 text-base font-bold text-neutral-900 group-hover:text-sky-500 transition-colors">Monitoring Omzet</h3>
+                        <p class="mt-2.5 text-xs leading-relaxed text-neutral-500">
+                            Grafik rekapitulasi data keuangan dan transaksi harian. Cari dan telusuri riwayat transaksi kasir Anda dengan filter tanggal terstruktur.
+                        </p>
+                        
+                        <ul class="mt-4 space-y-2 border-t border-neutral-100 pt-4 text-[11px] text-neutral-400">
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Pencarian riwayat transaksi ber-pagination
+                            </li>
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Grafik rekap harian & ekspor CSV/PDF
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="bg-slate-900 py-20 text-white sm:py-24">
-            <div class="mx-auto flex max-w-7xl flex-col justify-between gap-8 px-6 lg:flex-row lg:items-center lg:px-8">
-                <div><p class="text-sm font-bold tracking-widest text-indigo-300">HUBUNGI KAMI</p><h2 class="mt-3 text-3xl font-bold tracking-tight">Butuh bantuan menggunakan Postan?</h2><p class="mt-3 text-slate-300">Kami siap membantu kebutuhan bisnis Anda.</p></div>
-                <a href="mailto:halo@postan.test" class="inline-flex w-fit rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-indigo-50">halo@postan.test</a>
+        <!-- Contact Section -->
+        <section id="contact" class="relative overflow-hidden bg-transparent min-h-[calc(100vh-5rem)] flex flex-col justify-center py-16 border-b border-neutral-200/50">
+            <!-- Premium Background Grid Line Pattern -->
+            <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"></div>
+
+            <!-- 3D Bubbles in Contact Background -->
+            <div class="absolute top-[15%] left-[5%] -z-10 h-28 w-28 rounded-full bg-gradient-to-br from-white/70 via-sky-50/20 to-sky-100/10 border border-white/40 shadow-[inset_4px_4px_12px_rgba(255,255,255,0.8),inset_-4px_-4px_12px_rgba(14,165,233,0.08),4px_8px_24px_rgba(14,165,233,0.04)] animate-float"></div>
+            <div class="absolute bottom-[10%] right-[6%] -z-10 h-32 w-32 rounded-full bg-gradient-to-br from-white/80 via-sky-50/25 to-sky-200/10 border border-white/50 shadow-[inset_5px_5px_14px_rgba(255,255,255,0.9),inset_-5px_-5px_14px_rgba(14,165,233,0.1),5px_10px_28px_rgba(14,165,233,0.05)] animate-float-delayed"></div>
+
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 relative z-10 w-full">
+                <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+                    
+                    <!-- Left Side: Information & Socials -->
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-sky-800 border border-sky-200 bg-sky-50/30 px-2.5 py-1 rounded">Hubungi Kami</span>
+                        <h2 class="mt-4 text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl">
+                            Ada pertanyaan atau butuh bantuan?
+                        </h2>
+                        <p class="mt-2 text-sm text-neutral-500 max-w-md">
+                            Hubungi kami melalui media sosial resmi kami di bawah ini untuk konsultasi, bantuan setup, atau keluhan teknis.
+                        </p>
+
+                        <!-- Social Media Links (Arrows removed & Sky Blue combinations added) -->
+                        <div class="mt-8 space-y-3 max-w-md">
+                            <!-- WhatsApp Link -->
+                            <a href="https://wa.me/6281527641306" target="_blank" class="group flex items-center justify-start rounded-xl border border-neutral-200 bg-white p-4 transition-all duration-200 hover:border-sky-300 hover:bg-sky-50/20">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-9 w-9 items-center justify-center rounded bg-sky-50 text-sky-600">
+                                        <svg class="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-sky-600/70 uppercase tracking-wider">WhatsApp</p>
+                                        <p class="text-xs font-bold text-neutral-800 mt-0.5 group-hover:text-sky-600 transition-colors duration-200">+6281527641306</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Instagram Link -->
+                            <a href="https://instagram.com/kuzuroken.20" target="_blank" class="group flex items-center justify-start rounded-xl border border-neutral-200 bg-white p-4 transition-all duration-200 hover:border-sky-300 hover:bg-sky-50/20">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-9 w-9 items-center justify-center rounded bg-sky-50 text-sky-600">
+                                        <svg class="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-sky-600/70 uppercase tracking-wider">Instagram</p>
+                                        <p class="text-xs font-bold text-neutral-800 mt-0.5 group-hover:text-sky-600 transition-colors duration-200">@kuzuroken.20</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- TikTok Link -->
+                            <a href="https://tiktok.com/@kuzuroken" target="_blank" class="group flex items-center justify-start rounded-xl border border-neutral-200 bg-white p-4 transition-all duration-200 hover:border-sky-300 hover:bg-sky-50/20">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-9 w-9 items-center justify-center rounded bg-sky-50 text-sky-600">
+                                        <svg class="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.74-3.94-1.78-.22-.22-.41-.47-.59-.73v7.02c0 3.74-3.11 7.01-6.93 6.98-3.8-.03-6.96-3.28-6.79-7.07.15-3.47 3.09-6.38 6.56-6.4v4.03c-1.92.05-3.56 1.64-3.56 3.56-.02 2.16 1.95 3.99 4.12 3.82 1.83-.14 3.23-1.69 3.23-3.53V0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-sky-600/70 uppercase tracking-wider">TikTok</p>
+                                        <p class="text-xs font-bold text-neutral-800 mt-0.5 group-hover:text-sky-600 transition-colors duration-200">@kuzuroken</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Maps Embed -->
+                    <div>
+                        <div class="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white p-1.5">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.7703549413136!2d119.44030565436952!3d-5.140634619455414!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbefd0fcdc03983%3A0xe1ad0fda136ccb8f!2sPS%20gaming%20(Rental%20PS3%20dan%20PS4)!5e0!3m2!1sid!2sid!4v1784214140421!5m2!1sid!2sid" 
+                                width="100%" 
+                                height="320" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                class="rounded-xl">
+                            </iframe>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </section>
     </main>
 
-    <footer class="border-t border-slate-800 bg-slate-900 px-6 py-6 text-center text-sm text-slate-400">© {{ date('Y') }} Postan. Semua hak dilindungi.</footer>
+    <!-- Mobile Sidebar Drawer Overlay & Panel -->
+    <div id="mobile-sidebar" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
+        <!-- Backdrop -->
+        <div id="sidebar-overlay" class="absolute inset-0 bg-neutral-950/20 backdrop-blur-xs opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+        
+        <!-- Drawer Panel (Slides from the right) -->
+        <div id="sidebar-panel" class="absolute top-0 right-0 bottom-0 w-64 max-w-xs bg-white p-6 shadow-2xl border-l border-neutral-200 translate-x-full transition-transform duration-300 pointer-events-auto flex flex-col justify-between">
+            <div>
+                <!-- Header with Close button -->
+                <div class="flex items-center justify-between pb-6 border-b border-neutral-100">
+                    <div class="flex items-center gap-2">
+                        <img src="{{ asset('logo.png') }}" alt="Postan Logo" class="h-8 w-auto">
+                        <span class="font-extrabold tracking-widest text-xs">POSTAN</span>
+                    </div>
+                    <button id="menu-close" class="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800 transition cursor-pointer">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Navigation Links inside drawer -->
+                <nav class="mt-6 flex flex-col gap-2">
+                    <a href="{{ route('beranda.index') }}#home" id="mob-nav-home" class="rounded-md px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Home</a>
+                    <a href="{{ route('info.index') }}#info" id="mob-nav-info" class="rounded-md px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Info</a>
+                    <a href="{{ route('contact.index') }}#contact" id="mob-nav-contact" class="rounded-md px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Contact</a>
+                </nav>
+            </div>
+            
+            <!-- Login inside drawer -->
+            <div class="border-t border-neutral-100 pt-6">
+                <a href="{{ route('login') }}" class="block w-full text-center rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script handling dynamic navbar, scrollspy, and mobile drawer sidebar -->
+    <script>
+        const header = document.getElementById('main-header');
+        
+        // Scrollspy & Transparent Navbar combined
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = {
+            'home': document.getElementById('nav-home'),
+            'info': document.getElementById('nav-info'),
+            'contact': document.getElementById('nav-contact')
+        };
+        const mobileLinks = {
+            'home': document.getElementById('mob-nav-home'),
+            'info': document.getElementById('mob-nav-info'),
+            'contact': document.getElementById('mob-nav-contact')
+        };
+
+        function handleScroll() {
+            // Navbar Transparent Transition
+            if (window.scrollY > 20) {
+                header.classList.remove('border-transparent', 'bg-transparent');
+                header.classList.add('border-neutral-200/60', 'bg-white/95', 'backdrop-blur-md', 'shadow-[0_1px_3px_rgba(0,0,0,0.01)]');
+            } else {
+                header.classList.remove('border-neutral-200/60', 'bg-white/95', 'backdrop-blur-md', 'shadow-[0_1px_3px_rgba(0,0,0,0.01)]');
+                header.classList.add('border-transparent', 'bg-transparent');
+            }
+
+            // Scrollspy calculation
+            let currentSection = 'home';
+            const scrollPos = window.scrollY + 120; // offset for the sticky nav height
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            // Update desktop active links
+            Object.keys(navLinks).forEach(key => {
+                const link = navLinks[key];
+                if (link) {
+                    if (key === currentSection) {
+                        link.classList.add('text-sky-600', 'bg-sky-50/50');
+                        link.classList.remove('text-neutral-500', 'hover:text-neutral-900');
+                    } else {
+                        link.classList.remove('text-sky-600', 'bg-sky-50/50');
+                        link.classList.add('text-neutral-500', 'hover:text-neutral-900');
+                    }
+                }
+            });
+
+            // Update mobile active links
+            Object.keys(mobileLinks).forEach(key => {
+                const link = mobileLinks[key];
+                if (link) {
+                    if (key === currentSection) {
+                        link.classList.add('text-sky-600', 'bg-sky-50/50');
+                        link.classList.remove('text-neutral-700', 'hover:bg-neutral-50', 'hover:text-neutral-900');
+                    } else {
+                        link.classList.remove('text-sky-600', 'bg-sky-50/50');
+                        link.classList.add('text-neutral-700', 'hover:bg-neutral-50', 'hover:text-neutral-900');
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('DOMContentLoaded', handleScroll);
+        handleScroll();
+
+        // Mobile Sidebar Drawer JS Logic
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const sidebarPanel = document.getElementById('sidebar-panel');
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+
+        function openSidebar() {
+            mobileSidebar.classList.remove('pointer-events-none');
+            sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
+            sidebarPanel.classList.remove('translate-x-full');
+            sidebarPanel.classList.add('translate-x-0');
+        }
+
+        function closeSidebar() {
+            mobileSidebar.classList.add('pointer-events-none');
+            sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+            sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+            sidebarPanel.classList.add('translate-x-full');
+            sidebarPanel.classList.remove('translate-x-0');
+        }
+
+        menuToggle.addEventListener('click', openSidebar);
+        menuClose.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Close when clicking nav link in mobile sidebar drawer
+        [
+            document.getElementById('mob-nav-home'),
+            document.getElementById('mob-nav-info'),
+            document.getElementById('mob-nav-contact')
+        ].forEach(link => {
+            if (link) {
+                link.addEventListener('click', closeSidebar);
+            }
+        });
+    </script>
 </body>
 </html>
