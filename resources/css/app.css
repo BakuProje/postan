@@ -15,6 +15,39 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 html {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/*  1. BERANDA (Landing Page) CSS  */
+@keyframes float-beranda {
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-12px) rotate(2deg);
+    }
+}
+
+@keyframes float-delayed-beranda {
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(12px) rotate(-2deg);
+    }
+}
+
+.animate-float {
+    animation: float-beranda 7s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+    animation: float-delayed-beranda 9s ease-in-out infinite;
 }

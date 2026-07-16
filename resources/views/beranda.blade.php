@@ -5,25 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Postan - Sistem Kasir Modern</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(2deg); }
-        }
-        @keyframes float-delayed {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(12px) rotate(-2deg); }
-        }
-        .animate-float {
-            animation: float 7s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-            animation: float-delayed 9s ease-in-out infinite;
-        }
-    </style>
+
 </head>
 <body class="bg-neutral-50/50 font-sans text-neutral-800 antialiased selection:bg-sky-500 selection:text-white">
-    <!-- Header -->
+
     <header id="main-header" class="sticky top-0 z-50 transition-all duration-300 border-b border-transparent bg-transparent h-20">
         <nav class="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Navigasi utama">
             <a href="{{ route('beranda.index') }}#home" class="flex items-center gap-2.5 text-base font-bold tracking-wider text-neutral-900 transition-transform duration-250 hover:scale-[1.01]">
@@ -32,25 +17,27 @@
             </a>
 
             <div class="flex items-center gap-6">
-                <!-- Desktop Nav Links (IDs added for scrollspy) -->
                 <div class="hidden items-center gap-1 md:flex">
                     <a href="{{ route('beranda.index') }}#home" id="nav-home" class="rounded-md px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 text-sky-600 bg-sky-50/50">Home</a>
                     <a href="{{ route('info.index') }}#info" id="nav-info" class="rounded-md px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-500 hover:text-neutral-900">Info</a>
                     <a href="{{ route('contact.index') }}#contact" id="nav-contact" class="rounded-md px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-500 hover:text-neutral-900">Contact</a>
                 </div>
                 
-                <!-- Mobile Trigger Button -->
                 <button id="menu-toggle" class="md:hidden cursor-pointer rounded-lg border border-neutral-200 bg-white px-3.5 py-2 text-sm font-semibold text-neutral-700 transition hover:border-neutral-400 hover:text-neutral-900">
                     Menu
                 </button>
                 
+                @auth
+                <a href="{{ route('dashboard') }}" class="rounded-lg bg-sky-500 px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-sky-600 shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Dashboard</a>
+                @else
                 <a href="{{ route('login') }}" class="rounded-lg bg-neutral-900 px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2">Login</a>
+                @endauth
             </div>
         </nav>
     </header>
 
     <main>
-        <!-- Home Section -->
+
         <section id="home" class="relative overflow-hidden min-h-[calc(100vh-5rem)] flex items-center py-12 border-b border-neutral-200/50">
             <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"></div>
             
@@ -60,7 +47,7 @@
 
             <div class="mx-auto max-w-7xl px-6 lg:px-8 w-full relative z-10">
                 <div class="grid gap-12 lg:grid-cols-12 lg:items-center">
-                    <!-- Left Column -->
+
                     <div class="lg:col-span-7">
                         <span class="inline-flex items-center gap-1 rounded-md border border-sky-200 bg-sky-50/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-sky-800">
                             Sistem Kasir Modern
@@ -72,7 +59,7 @@
                             Catat penjualan, pantau transaksi, dan kelola operasional bisnis harian Anda secara teratur dan real-time dalam satu sistem kasir yang ringkas.
                         </p>
                         
-                        <!-- CTA Buttons (Arrow removed from Mulai Sekarang) -->
+
                         <div class="mt-8 flex flex-wrap gap-3">
                             <a href="{{ route('login') }}" class="group inline-flex items-center rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-sky-600 shadow-sm">
                                 Mulai Sekarang
@@ -82,7 +69,7 @@
                             </a>
                         </div>
 
-                        <!-- Sub-features checkmarks -->
+
                         <div class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3.5 text-xs text-neutral-400 border-t border-neutral-200/50 pt-8">
                             <span class="flex items-center gap-2">
                                 <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
@@ -105,12 +92,10 @@
                         </div>
                     </div>
 
-                    <!-- Right Column (Dashboard App Preview) -->
                     <div class="lg:col-span-5 relative">
                         <div class="absolute -top-6 -left-6 -z-10 h-12 w-12 rounded-full bg-gradient-to-br from-white/90 via-sky-50/30 to-sky-200/20 border border-white/50 shadow-[inset_2px_2px_6px_rgba(255,255,255,0.9),inset_-2px_-2px_6px_rgba(14,165,233,0.1),2px_4px_12px_rgba(14,165,233,0.05)] animate-float-delayed"></div>
                         
                         <div class="relative rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-7">
-                            <!-- Dashboard Header -->
                             <div class="flex items-center justify-between border-b border-neutral-100 pb-5">
                                 <div>
                                     <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Penjualan Hari Ini</p>
@@ -121,7 +106,6 @@
                                 </span>
                             </div>
 
-                            <!-- Dashboard Stats Grid -->
                             <div class="mt-5 grid grid-cols-3 gap-3">
                                 <div class="rounded-lg border border-neutral-100 bg-neutral-50/50 p-3 text-center">
                                     <p class="text-lg font-bold text-sky-500">28</p>
@@ -137,7 +121,6 @@
                                 </div>
                             </div>
 
-                            <!-- Beautiful SVG Line Chart Graph -->
                             <div class="mt-5 rounded-lg border border-neutral-100 bg-neutral-50/20 p-2 overflow-hidden">
                                 <div class="h-24 w-full flex items-end">
                                     <svg viewBox="0 0 300 100" class="w-full h-full text-sky-500" preserveAspectRatio="none">
@@ -154,7 +137,6 @@
                                 </div>
                             </div>
 
-                            <!-- Mock Recent Transactions -->
                             <div class="mt-5 border-t border-neutral-100 pt-5">
                                 <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Transaksi Terbaru</p>
                                 <div class="mt-3 space-y-2.5">
@@ -190,17 +172,12 @@
             </div>
         </section>
 
-        <!-- Info Section -->
         <section id="info" class="relative overflow-hidden bg-transparent min-h-[calc(100vh-5rem)] flex flex-col justify-center py-16 border-b border-neutral-200/50">
-            <!-- Premium Background Grid Line Pattern -->
             <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"></div>
-
-            <!-- 3D Bubbles in Info Background -->
             <div class="absolute top-[10%] right-[5%] -z-10 h-32 w-32 rounded-full bg-gradient-to-br from-white/70 via-sky-50/20 to-sky-100/10 border border-white/40 shadow-[inset_5px_5px_14px_rgba(255,255,255,0.8),inset_-5px_-5px_14px_rgba(14,165,233,0.08),5px_10px_28px_rgba(14,165,233,0.04)] animate-float-delayed"></div>
             <div class="absolute bottom-[10%] left-[4%] -z-10 h-24 w-24 rounded-full bg-gradient-to-br from-white/80 via-sky-50/25 to-sky-200/10 border border-white/50 shadow-[inset_4px_4px_10px_rgba(255,255,255,0.9),inset_-4px_-4px_10px_rgba(14,165,233,0.1),4px_8px_20px_rgba(14,165,233,0.05)] animate-float"></div>
 
             <div class="mx-auto max-w-7xl px-6 lg:px-8 relative z-10 w-full">
-                <!-- Section Title split style -->
                 <div class="grid gap-6 lg:grid-cols-12 lg:items-start border-b border-neutral-100 pb-10">
                     <div class="lg:col-span-5">
                         <span class="text-[10px] font-bold uppercase tracking-wider text-sky-800 border border-sky-200 bg-sky-50/30 px-2.5 py-1 rounded">Fitur Utama</span>
@@ -214,10 +191,8 @@
                         </p>
                     </div>
                 </div>
-                
-                <!-- Rich Feature Grid -->
+
                 <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    <!-- Feature 1 -->
                     <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
                         <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
                         
@@ -241,8 +216,7 @@
                         </ul>
                     </div>
 
-                    <!-- Feature 2 -->
-                    <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
+                <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
                         <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
                         
                         <div class="inline-flex size-10 items-center justify-center rounded bg-sky-50 text-sky-500 transition-transform duration-300 group-hover:scale-105">
@@ -265,7 +239,7 @@
                         </ul>
                     </div>
 
-                    <!-- Feature 3 -->
+       
                     <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
                         <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
                         
@@ -292,19 +266,14 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
         <section id="contact" class="relative overflow-hidden bg-transparent min-h-[calc(100vh-5rem)] flex flex-col justify-center py-16 border-b border-neutral-200/50">
-            <!-- Premium Background Grid Line Pattern -->
             <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"></div>
-
-            <!-- 3D Bubbles in Contact Background -->
             <div class="absolute top-[15%] left-[5%] -z-10 h-28 w-28 rounded-full bg-gradient-to-br from-white/70 via-sky-50/20 to-sky-100/10 border border-white/40 shadow-[inset_4px_4px_12px_rgba(255,255,255,0.8),inset_-4px_-4px_12px_rgba(14,165,233,0.08),4px_8px_24px_rgba(14,165,233,0.04)] animate-float"></div>
             <div class="absolute bottom-[10%] right-[6%] -z-10 h-32 w-32 rounded-full bg-gradient-to-br from-white/80 via-sky-50/25 to-sky-200/10 border border-white/50 shadow-[inset_5px_5px_14px_rgba(255,255,255,0.9),inset_-5px_-5px_14px_rgba(14,165,233,0.1),5px_10px_28px_rgba(14,165,233,0.05)] animate-float-delayed"></div>
 
             <div class="mx-auto max-w-7xl px-6 lg:px-8 relative z-10 w-full">
                 <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
                     
-                    <!-- Left Side: Information & Socials -->
                     <div>
                         <span class="text-[10px] font-bold uppercase tracking-wider text-sky-800 border border-sky-200 bg-sky-50/30 px-2.5 py-1 rounded">Hubungi Kami</span>
                         <h2 class="mt-4 text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl">
@@ -314,9 +283,7 @@
                             Hubungi kami melalui media sosial resmi kami di bawah ini untuk konsultasi, bantuan setup, atau keluhan teknis.
                         </p>
 
-                        <!-- Social Media Links (Arrows removed & Sky Blue combinations added) -->
                         <div class="mt-8 space-y-3 max-w-md">
-                            <!-- WhatsApp Link -->
                             <a href="https://wa.me/6281527641306" target="_blank" class="group flex items-center justify-start rounded-xl border border-neutral-200 bg-white p-4 transition-all duration-200 hover:border-sky-300 hover:bg-sky-50/20">
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-9 w-9 items-center justify-center rounded bg-sky-50 text-sky-600">
@@ -331,7 +298,6 @@
                                 </div>
                             </a>
 
-                            <!-- Instagram Link -->
                             <a href="https://instagram.com/kuzuroken.20" target="_blank" class="group flex items-center justify-start rounded-xl border border-neutral-200 bg-white p-4 transition-all duration-200 hover:border-sky-300 hover:bg-sky-50/20">
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-9 w-9 items-center justify-center rounded bg-sky-50 text-sky-600">
@@ -346,7 +312,6 @@
                                 </div>
                             </a>
 
-                            <!-- TikTok Link -->
                             <a href="https://tiktok.com/@kuzuroken" target="_blank" class="group flex items-center justify-start rounded-xl border border-neutral-200 bg-white p-4 transition-all duration-200 hover:border-sky-300 hover:bg-sky-50/20">
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-9 w-9 items-center justify-center rounded bg-sky-50 text-sky-600">
@@ -363,7 +328,6 @@
                         </div>
                     </div>
 
-                    <!-- Right Side: Maps Embed -->
                     <div>
                         <div class="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white p-1.5">
                             <iframe 
@@ -384,15 +348,12 @@
         </section>
     </main>
 
-    <!-- Mobile Sidebar Drawer Overlay & Panel -->
+
     <div id="mobile-sidebar" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
-        <!-- Backdrop -->
         <div id="sidebar-overlay" class="absolute inset-0 bg-neutral-950/20 backdrop-blur-xs opacity-0 transition-opacity duration-300 pointer-events-none"></div>
         
-        <!-- Drawer Panel (Slides from the right) -->
         <div id="sidebar-panel" class="absolute top-0 right-0 bottom-0 w-64 max-w-xs bg-white p-6 shadow-2xl border-l border-neutral-200 translate-x-full transition-transform duration-300 pointer-events-auto flex flex-col justify-between">
             <div>
-                <!-- Header with Close button -->
                 <div class="flex items-center justify-between pb-6 border-b border-neutral-100">
                     <div class="flex items-center gap-2">
                         <img src="{{ asset('logo.png') }}" alt="Postan Logo" class="h-8 w-auto">
@@ -405,7 +366,6 @@
                     </button>
                 </div>
                 
-                <!-- Navigation Links inside drawer -->
                 <nav class="mt-6 flex flex-col gap-2">
                     <a href="{{ route('beranda.index') }}#home" id="mob-nav-home" class="rounded-md px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Home</a>
                     <a href="{{ route('info.index') }}#info" id="mob-nav-info" class="rounded-md px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Info</a>
@@ -413,122 +373,16 @@
                 </nav>
             </div>
             
-            <!-- Login inside drawer -->
             <div class="border-t border-neutral-100 pt-6">
+                @auth
+                <a href="{{ route('dashboard') }}" class="block w-full text-center rounded-lg bg-sky-500 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-sky-600 shadow-sm">Dashboard</a>
+                @else
                 <a href="{{ route('login') }}" class="block w-full text-center rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800">Login</a>
+                @endauth
             </div>
         </div>
     </div>
 
-    <!-- Script handling dynamic navbar, scrollspy, and mobile drawer sidebar -->
-    <script>
-        const header = document.getElementById('main-header');
-        
-        // Scrollspy & Transparent Navbar combined
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = {
-            'home': document.getElementById('nav-home'),
-            'info': document.getElementById('nav-info'),
-            'contact': document.getElementById('nav-contact')
-        };
-        const mobileLinks = {
-            'home': document.getElementById('mob-nav-home'),
-            'info': document.getElementById('mob-nav-info'),
-            'contact': document.getElementById('mob-nav-contact')
-        };
 
-        function handleScroll() {
-            // Navbar Transparent Transition
-            if (window.scrollY > 20) {
-                header.classList.remove('border-transparent', 'bg-transparent');
-                header.classList.add('border-neutral-200/60', 'bg-white/95', 'backdrop-blur-md', 'shadow-[0_1px_3px_rgba(0,0,0,0.01)]');
-            } else {
-                header.classList.remove('border-neutral-200/60', 'bg-white/95', 'backdrop-blur-md', 'shadow-[0_1px_3px_rgba(0,0,0,0.01)]');
-                header.classList.add('border-transparent', 'bg-transparent');
-            }
-
-            // Scrollspy calculation
-            let currentSection = 'home';
-            const scrollPos = window.scrollY + 120; // offset for the sticky nav height
-
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    currentSection = section.getAttribute('id');
-                }
-            });
-
-            // Update desktop active links
-            Object.keys(navLinks).forEach(key => {
-                const link = navLinks[key];
-                if (link) {
-                    if (key === currentSection) {
-                        link.classList.add('text-sky-600', 'bg-sky-50/50');
-                        link.classList.remove('text-neutral-500', 'hover:text-neutral-900');
-                    } else {
-                        link.classList.remove('text-sky-600', 'bg-sky-50/50');
-                        link.classList.add('text-neutral-500', 'hover:text-neutral-900');
-                    }
-                }
-            });
-
-            // Update mobile active links
-            Object.keys(mobileLinks).forEach(key => {
-                const link = mobileLinks[key];
-                if (link) {
-                    if (key === currentSection) {
-                        link.classList.add('text-sky-600', 'bg-sky-50/50');
-                        link.classList.remove('text-neutral-700', 'hover:bg-neutral-50', 'hover:text-neutral-900');
-                    } else {
-                        link.classList.remove('text-sky-600', 'bg-sky-50/50');
-                        link.classList.add('text-neutral-700', 'hover:bg-neutral-50', 'hover:text-neutral-900');
-                    }
-                }
-            });
-        }
-
-        window.addEventListener('scroll', handleScroll);
-        window.addEventListener('DOMContentLoaded', handleScroll);
-        handleScroll();
-
-        // Mobile Sidebar Drawer JS Logic
-        const mobileSidebar = document.getElementById('mobile-sidebar');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-        const sidebarPanel = document.getElementById('sidebar-panel');
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose = document.getElementById('menu-close');
-
-        function openSidebar() {
-            mobileSidebar.classList.remove('pointer-events-none');
-            sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
-            sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
-            sidebarPanel.classList.remove('translate-x-full');
-            sidebarPanel.classList.add('translate-x-0');
-        }
-
-        function closeSidebar() {
-            mobileSidebar.classList.add('pointer-events-none');
-            sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
-            sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
-            sidebarPanel.classList.add('translate-x-full');
-            sidebarPanel.classList.remove('translate-x-0');
-        }
-
-        menuToggle.addEventListener('click', openSidebar);
-        menuClose.addEventListener('click', closeSidebar);
-        sidebarOverlay.addEventListener('click', closeSidebar);
-
-        // Close when clicking nav link in mobile sidebar drawer
-        [
-            document.getElementById('mob-nav-home'),
-            document.getElementById('mob-nav-info'),
-            document.getElementById('mob-nav-contact')
-        ].forEach(link => {
-            if (link) {
-                link.addEventListener('click', closeSidebar);
-            }
-        });
-    </script>
 </body>
 </html>

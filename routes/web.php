@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('beranda');
@@ -11,7 +12,12 @@ Route::get('/', function () {
 Route::view('/info', 'beranda')->name('info.index');
 Route::view('/contact', 'beranda')->name('contact.index');
 
-Route::view('/login', 'auth.login')->name('login');
+Route::get('/login', function () {
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    return view('auth.login');
+})->name('login');
 
 Route::post('/login', function () {
     $credentials = request()->validate([
@@ -22,7 +28,7 @@ Route::post('/login', function () {
     if (Auth::attempt($credentials, request()->boolean('remember'))) {
         request()->session()->regenerate();
 
-        return redirect()->intended('/');
+        return redirect()->route('dashboard');
     }
 
     return back()->withInput()->withErrors([
@@ -30,9 +36,20 @@ Route::post('/login', function () {
     ]);
 })->name('login.store');
 
-Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
+Route::post('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');
 
-Route::post('/forgot-password', function () {
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard')
+    ->middleware('auth');
+
+Route::view('/password', 'auth.lupa-password')->name('password.request');
+
+Route::post('/lupa-password', function () {
     request()->validate(['email' => ['required', 'email']]);
 
     $status = Password::sendResetLink(request()->only('email'));
