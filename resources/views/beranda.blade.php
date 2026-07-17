@@ -23,14 +23,16 @@
                     <a href="{{ route('contact.index') }}#contact" id="nav-contact" class="rounded-md px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 text-neutral-500 hover:text-neutral-900">Contact</a>
                 </div>
                 
-                <button id="menu-toggle" class="md:hidden cursor-pointer rounded-lg border border-neutral-200 bg-white px-3.5 py-2 text-sm font-semibold text-neutral-700 transition hover:border-neutral-400 hover:text-neutral-900">
-                    Menu
+                <button id="menu-toggle" class="md:hidden cursor-pointer rounded-lg border border-neutral-200 bg-white p-2.5 text-neutral-700 transition hover:border-neutral-400 hover:text-neutral-900 focus:outline-none">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
                 </button>
                 
                 @auth
-                <a href="{{ route('dashboard') }}" class="rounded-lg bg-sky-500 px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-sky-600 shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Dashboard</a>
+                <a href="{{ route('dashboard') }}" class="hidden md:inline-flex rounded-lg bg-sky-500 px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Dashboard</a>
                 @else
-                <a href="{{ route('login') }}" class="rounded-lg bg-neutral-900 px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2">Login</a>
+                <a href="{{ route('login') }}" class="hidden md:inline-flex rounded-lg bg-neutral-900 px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2">Login</a>
                 @endauth
             </div>
         </nav>
@@ -70,45 +72,41 @@
                         </div>
 
 
-                        <div class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3.5 text-xs text-neutral-400 border-t border-neutral-200/50 pt-8">
-                            <span class="flex items-center gap-2">
-                                <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                </svg>
-                                <span class="font-medium text-neutral-600">Cashless & Tunai</span>
-                            </span>
-                            <span class="flex items-center gap-2">
-                                <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                </svg>
-                                <span class="font-medium text-neutral-600">Manajemen Stok Otomatis</span>
-                            </span>
-                            <span class="flex items-center gap-2">
-                                <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                </svg>
-                                <span class="font-medium text-neutral-600">Laporan Penjualan Real-time</span>
-                            </span>
+                        <div class="mt-10 grid grid-cols-3 gap-6 border-t border-neutral-200/60 pt-8">
+                            <div>
+                                <p class="text-xl font-extrabold text-neutral-900">Instan</p>
+                                <p class="text-[10px] font-bold text-neutral-400 mt-1 uppercase tracking-wide">Setup & Mulai Cepat</p>
+                            </div>
+                            <div>
+                                <p class="text-xl font-extrabold text-neutral-900">Real-Time</p>
+                                <p class="text-[10px] font-bold text-neutral-400 mt-1 uppercase tracking-wide">Pantau Transaksi</p>
+                            </div>
+                            <div>
+                                <p class="text-xl font-extrabold text-neutral-900">Responsive</p>
+                                <p class="text-[10px] font-bold text-neutral-400 mt-1 uppercase tracking-wide">HP, Tablet, PC</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="lg:col-span-5 relative">
+                    <div class="lg:col-span-5 relative group">
+                        <div class="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-sky-400 to-indigo-400 opacity-20 blur-xl transition duration-1000 group-hover:opacity-30 group-hover:duration-200"></div>
+                        
                         <div class="absolute -top-6 -left-6 -z-10 h-12 w-12 rounded-full bg-gradient-to-br from-white/90 via-sky-50/30 to-sky-200/20 border border-white/50 shadow-[inset_2px_2px_6px_rgba(255,255,255,0.9),inset_-2px_-2px_6px_rgba(14,165,233,0.1),2px_4px_12px_rgba(14,165,233,0.05)] animate-float-delayed"></div>
                         
-                        <div class="relative rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-7">
+                        <div class="relative rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-7 transition duration-300 hover:border-neutral-300">
                             <div class="flex items-center justify-between border-b border-neutral-100 pb-5">
                                 <div>
                                     <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Penjualan Hari Ini</p>
-                                    <p class="mt-1 text-2xl font-extrabold text-neutral-900 tracking-tight">Rp 2.450.000</p>
+                                    <p id="realtime-sales" class="mt-1 text-2xl font-extrabold text-neutral-900 tracking-tight transition-all duration-350">Rp 2.450.000</p>
                                 </div>
-                                <span class="inline-flex items-center gap-0.5 rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-100">
+                                <span id="realtime-percent" class="inline-flex items-center gap-0.5 rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-100 transition-all duration-350">
                                     +12.5%
                                 </span>
                             </div>
 
                             <div class="mt-5 grid grid-cols-3 gap-3">
                                 <div class="rounded-lg border border-neutral-100 bg-neutral-50/50 p-3 text-center">
-                                    <p class="text-lg font-bold text-sky-500">28</p>
+                                    <p id="realtime-transactions" class="text-lg font-bold text-sky-500 transition-all duration-350">28</p>
                                     <p class="text-[10px] font-semibold text-neutral-400">Transaksi</p>
                                 </div>
                                 <div class="rounded-lg border border-neutral-100 bg-neutral-50/50 p-3 text-center">
@@ -116,7 +114,7 @@
                                     <p class="text-[10px] font-semibold text-neutral-400">Produk</p>
                                 </div>
                                 <div class="rounded-lg border border-neutral-100 bg-neutral-50/50 p-3 text-center">
-                                    <p class="text-lg font-bold text-sky-500">8</p>
+                                    <p id="realtime-customers" class="text-lg font-bold text-sky-500 transition-all duration-350">8</p>
                                     <p class="text-[10px] font-semibold text-neutral-400">Pelanggan</p>
                                 </div>
                             </div>
@@ -139,7 +137,7 @@
 
                             <div class="mt-5 border-t border-neutral-100 pt-5">
                                 <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Transaksi Terbaru</p>
-                                <div class="mt-3 space-y-2.5">
+                                <div id="realtime-list" class="mt-3 space-y-2.5">
                                     <div class="flex items-center justify-between text-xs">
                                         <div class="flex items-center gap-2">
                                             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
@@ -239,7 +237,6 @@
                         </ul>
                     </div>
 
-       
                     <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
                         <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
                         
@@ -259,6 +256,75 @@
                             </li>
                             <li class="flex items-center gap-1.5">
                                 <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Grafik rekap harian & ekspor CSV/PDF
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
+                        <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
+                        
+                        <div class="inline-flex size-10 items-center justify-center rounded bg-sky-50 text-sky-500 transition-transform duration-300 group-hover:scale-105">
+                            <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-6 text-base font-bold text-neutral-900 group-hover:text-sky-500 transition-colors">Peran & Hak Akses</h3>
+                        <p class="mt-2.5 text-xs leading-relaxed text-neutral-500">
+                            Pembagian wewenang yang aman untuk admin dan kasir. Batasi akses menu penting demi kerahasiaan keuangan toko Anda.
+                        </p>
+                        
+                        <ul class="mt-4 space-y-2 border-t border-neutral-100 pt-4 text-[11px] text-neutral-400">
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Pembagian role Admin & Kasir mandiri
+                            </li>
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Pengaturan profil personal aman
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
+                        <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
+                        
+                        <div class="inline-flex size-10 items-center justify-center rounded bg-sky-50 text-sky-500 transition-transform duration-300 group-hover:scale-105">
+                            <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-6 text-base font-bold text-neutral-900 group-hover:text-sky-500 transition-colors">Ekspor Laporan</h3>
+                        <p class="mt-2.5 text-xs leading-relaxed text-neutral-500">
+                            Unduh seluruh rekapitulasi data penjualan harian atau berkala. Mempermudah pembukuan dan kalkulasi keuntungan bisnis.
+                        </p>
+                        
+                        <ul class="mt-4 space-y-2 border-t border-neutral-100 pt-4 text-[11px] text-neutral-400">
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Ekspor laporan satu klik ke Excel/PDF
+                            </li>
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Histori penjualan lengkap ber-pagination
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="group rounded-xl border border-neutral-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-sm relative overflow-hidden">
+                        <div class="absolute -bottom-4 -right-4 size-16 rounded-full bg-sky-50/30 border border-white/40 -z-10"></div>
+                        
+                        <div class="inline-flex size-10 items-center justify-center rounded bg-sky-50 text-sky-500 transition-transform duration-300 group-hover:scale-105">
+                            <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-6 text-base font-bold text-neutral-900 group-hover:text-sky-500 transition-colors">Akses Multi-Device</h3>
+                        <p class="mt-2.5 text-xs leading-relaxed text-neutral-500">
+                            Antarmuka responsif yang dirancang agar sangat ringan. Akses sistem kasir dari smartphone, tablet, laptop, atau komputer.
+                        </p>
+                        
+                        <ul class="mt-4 space-y-2 border-t border-neutral-100 pt-4 text-[11px] text-neutral-400">
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Kompatibel dengan semua ukuran layar browser
+                            </li>
+                            <li class="flex items-center gap-1.5">
+                                <span class="h-1 w-1 rounded-full bg-neutral-300"></span> Tanpa instalasi aplikasi tambahan
                             </li>
                         </ul>
                     </div>
@@ -352,7 +418,7 @@
     <div id="mobile-sidebar" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
         <div id="sidebar-overlay" class="absolute inset-0 bg-neutral-950/20 backdrop-blur-xs opacity-0 transition-opacity duration-300 pointer-events-none"></div>
         
-        <div id="sidebar-panel" class="absolute top-0 right-0 bottom-0 w-64 max-w-xs bg-white p-6 shadow-2xl border-l border-neutral-200 translate-x-full transition-transform duration-300 pointer-events-auto flex flex-col justify-between">
+        <div id="sidebar-panel" class="absolute top-0 right-0 bottom-0 w-64 max-w-xs bg-white p-6 border-l border-neutral-200 translate-x-full transition-transform duration-300 pointer-events-auto flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between pb-6 border-b border-neutral-100">
                     <div class="flex items-center gap-2">
@@ -375,14 +441,12 @@
             
             <div class="border-t border-neutral-100 pt-6">
                 @auth
-                <a href="{{ route('dashboard') }}" class="block w-full text-center rounded-lg bg-sky-500 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-sky-600 shadow-sm">Dashboard</a>
+                <a href="{{ route('dashboard') }}" class="block w-full text-center rounded-lg bg-sky-500 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-sky-600">Dashboard</a>
                 @else
                 <a href="{{ route('login') }}" class="block w-full text-center rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800">Login</a>
                 @endauth
             </div>
         </div>
     </div>
-
-
 </body>
 </html>

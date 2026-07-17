@@ -217,73 +217,322 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
 // 6. KELOLA KASIR (Daftar & Konfirmasi Hapus) Script
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    const card = modal.querySelector('.bg-white');
 
-let activeDeleteFormId = null;
+    modal.classList.remove('pointer-events-none', 'opacity-0');
+    modal.classList.add('pointer-events-auto', 'opacity-100');
 
-function confirmDelete(event, userName, formId) {
-    event.preventDefault();
-    activeDeleteFormId = formId;
+    if (card) {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+    }
+}
 
-    const modal = document.getElementById('delete-modal');
-    const card = document.getElementById('delete-modal-card');
-    const nameSpan = document.getElementById('delete-modal-name');
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    const card = modal.querySelector('.bg-white');
 
-    if (modal && card && nameSpan) {
-        nameSpan.textContent = userName;
+    modal.classList.remove('pointer-events-auto', 'opacity-100');
+    modal.classList.add('pointer-events-none', 'opacity-0');
 
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-        modal.classList.add('opacity-100', 'pointer-events-auto');
+    if (card) {
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-95', 'opacity-0');
+    }
+}
 
-        setTimeout(() => {
-            card.classList.remove('scale-95', 'opacity-0');
-            card.classList.add('scale-100', 'opacity-100');
-        }, 10);
+function openEditModal(user) {
+    const form = document.getElementById('edit-user-form');
+    if (!form) return;
+    form.action = `/dashboard/users/${user.id}`;
+
+    const editUserIdField = document.getElementById('edit_user_id_field');
+    if (editUserIdField) editUserIdField.value = user.id;
+
+    const pageData = document.getElementById('users-page-data');
+    let oldName = '', oldEmail = '', oldRole = '', oldShift = '', isEditError = false;
+    if (pageData) {
+        oldName = pageData.dataset.oldName || '';
+        oldEmail = pageData.dataset.oldEmail || '';
+        oldRole = pageData.dataset.oldRole || '';
+        oldShift = pageData.dataset.oldShift || '';
+        isEditError = pageData.dataset.oldEditUserId === String(user.id);
+    }
+
+    const editNameInput = document.getElementById('edit_name');
+    const editEmailInput = document.getElementById('edit_email');
+    const editRoleInput = document.getElementById('edit_role');
+    const editShiftInput = document.getElementById('edit_shift');
+
+    if (editNameInput) editNameInput.value = (isEditError && oldName) ? oldName : user.name;
+    if (editEmailInput) editEmailInput.value = (isEditError && oldEmail) ? oldEmail : user.email;
+    if (editRoleInput) editRoleInput.value = (isEditError && oldRole) ? oldRole : user.role;
+    if (editShiftInput) editShiftInput.value = (isEditError && oldShift) ? oldShift : (user.shift || '');
+
+    const preview = document.getElementById('edit-avatar-preview');
+    const placeholder = document.getElementById('edit-avatar-placeholder');
+    if (preview && placeholder) {
+        if (user.profile_picture) {
+            preview.src = `/${user.profile_picture}`;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        } else {
+            preview.src = '#';
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            placeholder.textContent = user.name.substring(0, 2).toUpperCase();
+        }
+    }
+
+    const editPassInput = document.getElementById('edit_password');
+    if (editPassInput) editPassInput.value = '';
+
+    openModal('edit-user-modal');
+}
+
+
+function setupFilePreview(inputId, previewId, placeholderId) {
+    const fileInput = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    const placeholder = document.getElementById(placeholderId);
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                    }
+                    if (placeholder) {
+                        placeholder.classList.add('hidden');
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
     }
 }
 
 
-window.confirmDelete = confirmDelete;
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    const eyeShow = button.querySelector('.eye-show');
+    const eyeHide = button.querySelector('.eye-hide');
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (eyeShow) eyeShow.classList.add('hidden');
+        if (eyeHide) eyeHide.classList.remove('hidden');
+    } else {
+        input.type = 'password';
+        if (eyeShow) eyeShow.classList.remove('hidden');
+        if (eyeHide) eyeHide.classList.add('hidden');
+    }
+}
+
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.openEditModal = openEditModal;
+window.togglePassword = togglePassword;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('delete-modal');
-    const card = document.getElementById('delete-modal-card');
-    const cancelBtn = document.getElementById('delete-modal-cancel');
-    const confirmBtn = document.getElementById('delete-modal-confirm');
+    const pageData = document.getElementById('users-page-data');
+    if (!pageData) return;
 
-    function hideModal() {
-        if (modal && card) {
-            card.classList.remove('scale-100', 'opacity-100');
-            card.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.remove('opacity-100', 'pointer-events-auto');
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                activeDeleteFormId = null;
-            }, 150);
+    const hasErrors = pageData.dataset.hasErrors === 'true';
+    const editUserId = pageData.dataset.oldEditUserId;
+    const openCreateModalFlag = pageData.dataset.sessionOpenCreateModal === 'true';
+    const openEditModalIdFlag = pageData.dataset.sessionOpenEditModalId;
+    const users = JSON.parse(pageData.dataset.usersJson || '[]');
+
+    if (hasErrors) {
+        if (editUserId) {
+            const userToEdit = users.find(u => u.id == editUserId);
+            if (userToEdit) {
+                openEditModal(userToEdit);
+            }
+        } else {
+            openModal('create-user-modal');
+        }
+    } else if (openCreateModalFlag) {
+        openModal('create-user-modal');
+    } else if (openEditModalIdFlag) {
+        const userToEdit = users.find(u => u.id == openEditModalIdFlag);
+        if (userToEdit) {
+            openEditModal(userToEdit);
         }
     }
 
+    setupFilePreview('create_profile_picture', 'create-avatar-preview', 'create-avatar-placeholder');
+    setupFilePreview('edit_profile_picture', 'edit-avatar-preview', 'edit-avatar-placeholder');
+});
+
+
+let formToSubmit = null;
+
+function confirmDelete(event, name, formId) {
+    event.preventDefault();
+    formToSubmit = document.getElementById(formId);
+
+    const deleteModal = document.getElementById('delete-modal');
+    const card = document.getElementById('delete-modal-card');
+    const nameSpan = document.getElementById('delete-modal-name');
+
+    if (nameSpan) nameSpan.textContent = name;
+
+    if (deleteModal && card) {
+        deleteModal.classList.remove('opacity-0', 'pointer-events-none');
+        deleteModal.classList.add('opacity-100', 'pointer-events-auto');
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+    }
+}
+
+window.confirmDelete = confirmDelete;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const cancelBtn = document.getElementById('delete-modal-cancel');
+    const confirmBtn = document.getElementById('delete-modal-confirm');
+
     if (cancelBtn) {
-        cancelBtn.addEventListener('click', hideModal);
+        cancelBtn.addEventListener('click', () => {
+            const deleteModal = document.getElementById('delete-modal');
+            const card = document.getElementById('delete-modal-card');
+
+            if (deleteModal && card) {
+                deleteModal.classList.remove('opacity-100', 'pointer-events-auto');
+                deleteModal.classList.add('opacity-0', 'pointer-events-none');
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-95', 'opacity-0');
+            }
+            formToSubmit = null;
+        });
     }
 
     if (confirmBtn) {
         confirmBtn.addEventListener('click', () => {
-            if (activeDeleteFormId) {
-                const form = document.getElementById(activeDeleteFormId);
-                if (form) {
-                    form.submit();
-                }
+            if (formToSubmit) {
+                formToSubmit.submit();
             }
         });
     }
+});
 
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                hideModal();
+// 7. REAL-TIME TRANSACTION SIMULATOR (Beranda)
+document.addEventListener('DOMContentLoaded', () => {
+    const salesEl = document.getElementById('realtime-sales');
+    const percentEl = document.getElementById('realtime-percent');
+    const txEl = document.getElementById('realtime-transactions');
+    const custEl = document.getElementById('realtime-customers');
+    const listEl = document.getElementById('realtime-list');
+
+    if (salesEl || percentEl || txEl || custEl || listEl) {
+        let currentSales = 2450000;
+        let currentTx = 28;
+        let currentCust = 8;
+        let currentPercent = 12.5;
+
+        function formatRupiah(num) {
+            return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function simulateNewTransaction() {
+            const amounts = [15000, 25000, 45000, 75000, 110000, 150000, 210000, 320000];
+            const amount = amounts[Math.floor(Math.random() * amounts.length)];
+
+            currentSales += amount;
+            if (salesEl) {
+                salesEl.textContent = formatRupiah(currentSales);
+                salesEl.classList.add('scale-102', 'text-sky-500');
+                setTimeout(() => {
+                    salesEl.classList.remove('scale-102', 'text-sky-500');
+                }, 500);
             }
-        });
+
+            currentPercent += +(Math.random() * 0.4).toFixed(1);
+            if (percentEl) {
+                percentEl.textContent = '+' + currentPercent.toFixed(1) + '%';
+            }
+
+            currentTx += 1;
+            if (txEl) {
+                txEl.textContent = currentTx;
+                txEl.classList.add('scale-110', 'text-sky-500');
+                setTimeout(() => txEl.classList.remove('scale-110', 'text-sky-500'), 400);
+            }
+
+            if (Math.random() > 0.5) {
+                currentCust += 1;
+                if (custEl) {
+                    custEl.textContent = currentCust;
+                    custEl.classList.add('scale-110', 'text-sky-500');
+                    setTimeout(() => custEl.classList.remove('scale-110', 'text-sky-500'), 400);
+                }
+            }
+
+            if (listEl) {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const txId = '#TRX-' + String(Math.floor(1000 + Math.random() * 9000));
+
+                const newItem = document.createElement('div');
+                newItem.className = 'flex items-center justify-between text-xs animate-mock-tx';
+                newItem.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="relative flex h-1.5 w-1.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                        </span>
+                        <span class="font-bold text-neutral-700">${txId}</span>
+                        <span class="text-neutral-400">${timeStr}</span>
+                    </div>
+                    <p class="font-extrabold text-neutral-800">${formatRupiah(amount)}</p>
+                `;
+
+                listEl.insertBefore(newItem, listEl.firstChild);
+
+                if (listEl.children.length > 3) {
+                    listEl.removeChild(listEl.lastChild);
+                }
+            }
+        }
+
+        function scheduleNext() {
+            const delay = 4000 + Math.random() * 6000;
+            setTimeout(() => {
+                simulateNewTransaction();
+                scheduleNext();
+            }, delay);
+        }
+        scheduleNext();
+    }
+});
+
+// 8. GLOBAL TOAST AUTO-HIDE (Admin Layout)
+document.addEventListener('DOMContentLoaded', () => {
+    const toast = document.getElementById('toast-notification');
+    if (toast) {
+        setTimeout(() => {
+            toast.classList.remove('-translate-y-4', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+        }, 100);
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('-translate-y-4', 'opacity-0');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 2100);
     }
 });

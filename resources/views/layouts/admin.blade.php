@@ -7,8 +7,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-neutral-50/50 font-sans text-neutral-800 antialiased selection:bg-sky-500 selection:text-white min-h-screen flex">
-    
-  
     <aside class="hidden lg:flex lg:flex-col lg:w-64 bg-white border-r border-neutral-200/60 shrink-0 sticky top-0 h-screen p-6 justify-between z-20">
         <div class="space-y-8">
 
@@ -78,13 +76,15 @@
 
         <div class="border-t border-neutral-100 pt-5 space-y-4">
             <a href="{{ route('admin.profile') }}" class="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-neutral-50 transition group">
-                @if(Auth::user()->profile_picture)
-                    <img src="{{ asset(Auth::user()->profile_picture) }}" alt="Profil {{ Auth::user()->name }}" class="h-9 w-9 rounded-full object-cover border border-neutral-200">
-                @else
-                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 text-sky-600 font-extrabold text-xs border border-sky-100 uppercase">
-                        {{ substr(Auth::user()->name, 0, 2) }}
-                    </div>
-                @endif
+                <div class="h-9 w-9 rounded-full overflow-hidden border border-neutral-200/80 shrink-0 aspect-square">
+                    @if(Auth::user()->profile_picture)
+                        <img src="{{ asset(Auth::user()->profile_picture) }}" alt="Profil {{ Auth::user()->name }}" class="h-full w-full object-cover">
+                    @else
+                        <div class="h-full w-full bg-sky-50 text-sky-600 flex items-center justify-center font-extrabold text-xs uppercase">
+                            {{ substr(Auth::user()->name, 0, 2) }}
+                        </div>
+                    @endif
+                </div>
                 <div class="overflow-hidden">
                     <p class="text-xs font-bold text-neutral-900 truncate group-hover:text-sky-600 transition">{{ Auth::user()->name }}</p>
                     <p class="text-[10px] text-neutral-400 truncate">{{ Auth::user()->email }}</p>
@@ -182,13 +182,15 @@
 
             <div class="border-t border-neutral-100 pt-5 space-y-4">
                 <a href="{{ route('admin.profile') }}" class="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-neutral-50 transition group">
-                    @if(Auth::user()->profile_picture)
-                        <img src="{{ asset(Auth::user()->profile_picture) }}" alt="Profil {{ Auth::user()->name }}" class="h-9 w-9 rounded-full object-cover border border-neutral-200">
-                    @else
-                        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 text-sky-600 font-extrabold text-xs border border-sky-100 uppercase">
-                            {{ substr(Auth::user()->name, 0, 2) }}
-                        </div>
-                    @endif
+                    <div class="h-9 w-9 rounded-full overflow-hidden border border-neutral-200/80 shrink-0 aspect-square">
+                        @if(Auth::user()->profile_picture)
+                            <img src="{{ asset(Auth::user()->profile_picture) }}" alt="Profil {{ Auth::user()->name }}" class="h-full w-full object-cover">
+                        @else
+                            <div class="h-full w-full bg-sky-50 text-sky-600 flex items-center justify-center font-extrabold text-xs uppercase">
+                                {{ substr(Auth::user()->name, 0, 2) }}
+                            </div>
+                        @endif
+                    </div>
                     <div class="overflow-hidden">
                         <p class="text-xs font-bold text-neutral-900 truncate group-hover:text-sky-600 transition">{{ Auth::user()->name }}</p>
                         <p class="text-[10px] text-neutral-400 truncate">{{ Auth::user()->email }}</p>
@@ -227,5 +229,22 @@
             @yield('konten')
         </main>
     </div>
+
+    @if(session('success') || session('error'))
+    <div id="toast-notification" class="fixed top-6 left-1/2 z-50 transform -translate-x-1/2 -translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto">
+        <div class="flex items-center gap-3 rounded-xl border {{ session('success') ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-800' }} px-4 py-3 shadow-lg max-w-sm whitespace-nowrap">
+            @if(session('success'))
+            <svg class="h-4.5 w-4.5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+            @else
+            <svg class="h-4.5 w-4.5 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+            @endif
+            <p class="text-xs font-bold">{{ session('success') ?: session('error') }}</p>
+        </div>
+    </div>
+    @endif
 </body>
 </html>

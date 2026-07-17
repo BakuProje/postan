@@ -2,12 +2,6 @@
 @section('title', 'Profil Saya')
 @section('konten')
 <div class="max-w-2xl mx-auto space-y-6">
-    @if(session('success'))
-        <div class="rounded-lg border border-emerald-250 bg-emerald-50 px-4 py-3 text-xs text-emerald-700">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="bg-white rounded-2xl border border-neutral-200/60 p-8">
         <form method="POST" action="{{ route('admin.profile.update') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
