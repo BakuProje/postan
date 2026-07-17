@@ -14,7 +14,10 @@ Route::view('/contact', 'beranda')->name('contact.index');
 
 Route::get('/login', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('dashboard');
+        }
+        return redirect()->route('admin.transactions');
     }
     return view('auth.login');
 })->name('login');
@@ -28,7 +31,10 @@ Route::post('/login', function () {
     if (Auth::attempt($credentials, request()->boolean('remember'))) {
         request()->session()->regenerate();
 
-        return redirect()->route('dashboard');
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('dashboard');
+        }
+        return redirect()->route('admin.transactions');
     }
 
     return back()->withInput()->withErrors([
@@ -57,6 +63,38 @@ Route::get('/dashboard/products', [DashboardController::class, 'products'])
 
 Route::get('/dashboard/categories', [DashboardController::class, 'categories'])
     ->name('admin.categories')
+    ->middleware('auth');
+
+Route::get('/dashboard/users', [DashboardController::class, 'users'])
+    ->name('admin.users')
+    ->middleware('auth');
+
+Route::get('/dashboard/users/create', [DashboardController::class, 'createUser'])
+    ->name('admin.users.CreateKasir')
+    ->middleware('auth');
+
+Route::post('/dashboard/users', [DashboardController::class, 'storeUser'])
+    ->name('admin.users.store')
+    ->middleware('auth');
+
+Route::get('/dashboard/users/{user}/edit', [DashboardController::class, 'editUser'])
+    ->name('admin.users.EditKasir')
+    ->middleware('auth');
+
+Route::put('/dashboard/users/{user}', [DashboardController::class, 'updateUser'])
+    ->name('admin.users.update')
+    ->middleware('auth');
+
+Route::delete('/dashboard/users/{user}', [DashboardController::class, 'deleteUser'])
+    ->name('admin.users.delete')
+    ->middleware('auth');
+
+Route::get('/dashboard/profile', [DashboardController::class, 'profile'])
+    ->name('admin.profile')
+    ->middleware('auth');
+
+Route::put('/dashboard/profile', [DashboardController::class, 'updateProfile'])
+    ->name('admin.profile.update')
     ->middleware('auth');
 
 Route::view('/password', 'auth.lupa-password')->name('password.request');

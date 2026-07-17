@@ -73,42 +73,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById('menu-toggle');
     const menuClose = document.getElementById('menu-close');
 
-    function openSidebar() {
-        if (!mobileSidebar || !sidebarOverlay || !sidebarPanel) return;
-        mobileSidebar.classList.remove('pointer-events-none');
-        sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
-        sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
-        sidebarPanel.classList.remove('translate-x-full');
-        sidebarPanel.classList.add('translate-x-0');
-    }
-
-    function closeSidebar() {
-        if (!mobileSidebar || !sidebarOverlay || !sidebarPanel) return;
-        mobileSidebar.classList.add('pointer-events-none');
-        sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
-        sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
-        sidebarPanel.classList.add('translate-x-full');
-        sidebarPanel.classList.remove('translate-x-0');
-    }
-
-    if (menuToggle) {
-        menuToggle.addEventListener('click', openSidebar);
-    }
-    if (menuClose) {
-        menuClose.addEventListener('click', closeSidebar);
-    }
-    if (sidebarOverlay) {
-        // Disabled closing on overlay click as requested
-        // sidebarOverlay.addEventListener('click', closeSidebar);
-    }
-
-    // Close when clicking nav link in mobile sidebar drawer
-    ['mob-nav-home', 'mob-nav-info', 'mob-nav-contact'].forEach(id => {
-        const link = document.getElementById(id);
-        if (link) {
-            link.addEventListener('click', closeSidebar);
+    if (sidebarPanel && sidebarPanel.classList.contains('right-0')) {
+        function openSidebar() {
+            if (!mobileSidebar || !sidebarOverlay || !sidebarPanel) return;
+            mobileSidebar.classList.remove('pointer-events-none');
+            sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
+            sidebarPanel.classList.remove('translate-x-full');
+            sidebarPanel.classList.add('translate-x-0');
         }
-    });
+
+        function closeSidebar() {
+            if (!mobileSidebar || !sidebarOverlay || !sidebarPanel) return;
+            mobileSidebar.classList.add('pointer-events-none');
+            sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+            sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+            sidebarPanel.classList.add('translate-x-full');
+            sidebarPanel.classList.remove('translate-x-0');
+        }
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', openSidebar);
+        }
+        if (menuClose) {
+            menuClose.addEventListener('click', closeSidebar);
+        }
+        ['mob-nav-home', 'mob-nav-info', 'mob-nav-contact'].forEach(id => {
+            const link = document.getElementById(id);
+            if (link) {
+                link.addEventListener('click', closeSidebar);
+            }
+        });
+    }
 });
 
 
@@ -164,34 +160,130 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById('menu-toggle');
     const menuClose = document.getElementById('menu-close');
 
-    function openSidebar() {
-        if (!mobileSidebar || !sidebarOverlay || !sidebarPanel) return;
-        mobileSidebar.classList.remove('pointer-events-none');
-        sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
-        sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
-        sidebarPanel.classList.remove('-translate-x-full');
-        sidebarPanel.classList.add('translate-x-0');
+
+    if (sidebarPanel && sidebarPanel.classList.contains('left-0')) {
+        function openSidebar() {
+            if (!mobileSidebar || !sidebarOverlay || !sidebarPanel) return;
+            mobileSidebar.classList.remove('pointer-events-none');
+            sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
+            sidebarPanel.classList.remove('-translate-x-full');
+            sidebarPanel.classList.add('translate-x-0');
+        }
+
+        function closeSidebar() {
+            if (!mobileSidebar || !sidebarOverlay || !sidebarPanel) return;
+            mobileSidebar.classList.add('pointer-events-none');
+            sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+            sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+            sidebarPanel.classList.add('-translate-x-full');
+            sidebarPanel.classList.remove('translate-x-0');
+        }
+
+        const dashboardHeaderBurger = document.querySelector('header #menu-toggle');
+        if (dashboardHeaderBurger) {
+            dashboardHeaderBurger.addEventListener('click', openSidebar);
+        }
+        if (menuClose) {
+            menuClose.addEventListener('click', closeSidebar);
+        }
+    }
+});
+
+
+// 5. KARYAWAN (Cashier Profile Image Preview) Script
+
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('profile_picture');
+    const previewImg = document.getElementById('avatar-preview');
+    const placeholderSvg = document.getElementById('avatar-placeholder');
+
+    if (fileInput && previewImg) {
+        fileInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewImg.classList.remove('hidden');
+                    if (placeholderSvg) {
+                        placeholderSvg.classList.add('hidden');
+                        placeholderSvg.style.display = 'none';
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+
+
+// 6. KELOLA KASIR (Daftar & Konfirmasi Hapus) Script
+
+let activeDeleteFormId = null;
+
+function confirmDelete(event, userName, formId) {
+    event.preventDefault();
+    activeDeleteFormId = formId;
+
+    const modal = document.getElementById('delete-modal');
+    const card = document.getElementById('delete-modal-card');
+    const nameSpan = document.getElementById('delete-modal-name');
+
+    if (modal && card && nameSpan) {
+        nameSpan.textContent = userName;
+
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100', 'pointer-events-auto');
+
+        setTimeout(() => {
+            card.classList.remove('scale-95', 'opacity-0');
+            card.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+}
+
+
+window.confirmDelete = confirmDelete;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('delete-modal');
+    const card = document.getElementById('delete-modal-card');
+    const cancelBtn = document.getElementById('delete-modal-cancel');
+    const confirmBtn = document.getElementById('delete-modal-confirm');
+
+    function hideModal() {
+        if (modal && card) {
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.remove('opacity-100', 'pointer-events-auto');
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                activeDeleteFormId = null;
+            }, 150);
+        }
     }
 
-    function closeSidebar() {
-        if (!mobileSidebar || !sidebarOverlay || !sidebarPanel) return;
-        mobileSidebar.classList.add('pointer-events-none');
-        sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
-        sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
-        sidebarPanel.classList.add('-translate-x-full');
-        sidebarPanel.classList.remove('translate-x-0');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', hideModal);
     }
 
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            if (activeDeleteFormId) {
+                const form = document.getElementById(activeDeleteFormId);
+                if (form) {
+                    form.submit();
+                }
+            }
+        });
+    }
 
-    const dashboardHeaderBurger = document.querySelector('header #menu-toggle');
-    if (dashboardHeaderBurger) {
-        dashboardHeaderBurger.addEventListener('click', openSidebar);
-    }
-    if (menuClose) {
-        menuClose.addEventListener('click', closeSidebar);
-    }
-    if (sidebarOverlay) {
-        // Disabled closing on overlay click as requested
-        // sidebarOverlay.addEventListener('click', closeSidebar);
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
     }
 });
