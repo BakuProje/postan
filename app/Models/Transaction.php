@@ -13,17 +13,13 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    /**
-     * Get the user (cashier/admin) that processed the transaction.
-     */
+  
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the items for the transaction.
-     */
+
     public function items(): HasMany
     {
         return $this->hasMany(TransactionItem::class);

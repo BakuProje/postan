@@ -47,6 +47,18 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard')
     ->middleware('auth');
 
+Route::get('/dashboard/transactions', [DashboardController::class, 'transactions'])
+    ->name('admin.transactions')
+    ->middleware('auth');
+
+Route::get('/dashboard/products', [DashboardController::class, 'products'])
+    ->name('admin.products')
+    ->middleware('auth');
+
+Route::get('/dashboard/categories', [DashboardController::class, 'categories'])
+    ->name('admin.categories')
+    ->middleware('auth');
+
 Route::view('/password', 'auth.lupa-password')->name('password.request');
 
 Route::post('/lupa-password', function () {

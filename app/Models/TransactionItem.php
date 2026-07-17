@@ -12,17 +12,12 @@ class TransactionItem extends Model
 {
     use HasFactory;
 
-    /**
-     * Get the transaction that owns the item.
-     */
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);
     }
 
-    /**
-     * Get the product associated with the item.
-     */
+    
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

@@ -98,7 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
         menuClose.addEventListener('click', closeSidebar);
     }
     if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', closeSidebar);
+        // Disabled closing on overlay click as requested
+        // sidebarOverlay.addEventListener('click', closeSidebar);
     }
 
     // Close when clicking nav link in mobile sidebar drawer
@@ -190,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         menuClose.addEventListener('click', closeSidebar);
     }
     if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', closeSidebar);
+        // Disabled closing on overlay click as requested
+        // sidebarOverlay.addEventListener('click', closeSidebar);
     }
 });
