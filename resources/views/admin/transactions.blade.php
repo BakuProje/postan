@@ -30,12 +30,12 @@
                     </div>
                     <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <button type="button" data-category-id="all"
-                            class="pos-category-btn shrink-0 rounded-xl px-4 py-2.5 text-xs font-black border border-sky-150 bg-sky-50 text-sky-600 transition">
+                            class="pos-category-btn shrink-0 rounded-lg px-3 py-1.5 text-[10px] font-extrabold border border-sky-150 bg-sky-50 text-sky-600 transition">
                             Semua Kategori
                         </button>
                         @foreach ($categories as $cat)
                             <button type="button" data-category-id="{{ $cat->id }}"
-                                class="pos-category-btn shrink-0 rounded-xl px-4 py-2.5 text-xs font-bold border border-neutral-200/80 bg-white/40 text-neutral-600 transition hover:bg-white/80 hover:text-neutral-800">
+                                class="pos-category-btn shrink-0 rounded-lg px-3 py-1.5 text-[10px] font-bold border border-neutral-200/80 bg-white text-neutral-600 transition hover:bg-neutral-50 hover:text-neutral-800">
                                 {{ $cat->name }}
                             </button>
                         @endforeach
@@ -189,13 +189,13 @@
                     <button type="button" id="pay-select-cash-btn" onclick="selectPaymentMethod('cash')"
                         class="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-sky-500 bg-sky-50/50 text-sky-600 font-extrabold transition cursor-pointer">
                         <img src="{{ asset('cash.png') }}" class="h-10 w-auto mb-1.5" alt="Cash Logo">
-                        <span class="text-xs font-bold text-neutral-700">Uang Tunai / Cash</span>
+                        <span class="text-xs font-bold text-neutral-700">Cash</span>
                     </button>
 
                     <button type="button" id="pay-select-qris-btn" onclick="selectPaymentMethod('qris')"
                         class="flex flex-col items-center justify-center p-4 rounded-xl border border-neutral-200 hover:border-sky-400 hover:bg-neutral-50/40 text-neutral-500 font-extrabold transition cursor-pointer">
                         <img src="{{ asset('qris.png') }}" class="h-10 w-auto mb-1.5" alt="QRIS Logo">
-                        <span class="text-xs font-bold text-neutral-700">QRIS / Digital</span>
+                        <span class="text-xs font-bold text-neutral-700">QRIS</span>
                     </button>
                 </div>
 
@@ -254,21 +254,27 @@
     <div id="receipt-modal"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
         <div
-            class="bg-white rounded-2xl max-w-sm w-full border border-neutral-100 shadow-xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col">
+            class="bg-white rounded-2xl max-w-sm w-full border border-neutral-100 shadow-xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col relative">
+            <!-- Close Button X in Top Right -->
+            <button type="button" onclick="closeReceiptModal()"
+                class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600 transition cursor-pointer z-10">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
             <div id="print-area" class="p-6 bg-white overflow-y-auto max-h-[70vh] space-y-4">
                 <div class="text-center space-y-1">
-                    <h3 class="text-base font-black tracking-widest text-neutral-900">POSTAN</h3>
-                    <p class="text-[10px] text-neutral-500">Baku Proje POS System</p>
-                    <p class="text-[9px] text-neutral-400">Jl. Pembangunan No. 4, Jakarta</p>
+                    @if($outlet && $outlet->logo)
+                        <img src="{{ asset($outlet->logo) }}" class="h-10 w-auto mx-auto mb-1.5 object-contain" alt="Logo Outlet">
+                    @endif
+                    <h3 class="text-base font-black tracking-widest text-neutral-900">{{ $outlet->name ?? 'POSTAN' }}</h3>
+                    <p class="text-[9px] text-neutral-400">{{ $outlet->address ?? 'Jl. Pembangunan No. 4, Jakarta' }}</p>
                 </div>
 
                 <div class="border-b border-dashed border-neutral-300 my-2"></div>
 
                 <div class="text-[10px] text-neutral-600 space-y-1">
-                    <div class="flex justify-between">
-                        <span>No. Struk:</span>
-                        <span id="receipt-code" class="font-bold">TX-XXXXXXXX-XXXX</span>
-                    </div>
+                    <span id="receipt-code" class="hidden" style="display: none !important;">TX-XXXXXXXX-XXXX</span>
                     <div class="flex justify-between">
                         <span>Tanggal:</span>
                         <span id="receipt-date">--/--/---- --:--</span>
@@ -312,12 +318,10 @@
                 </div>
             </div>
 
-            <div class="px-6 py-4 bg-neutral-50 border-t border-neutral-100 flex items-center justify-end gap-3 shrink-0">
-                <button type="button" onclick="closeReceiptModal()"
-                    class="rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs font-bold text-neutral-500 transition hover:bg-neutral-50 hover:text-neutral-800 flex-1">Tutup</button>
+            <div class="px-6 py-4 bg-neutral-50 border-t border-neutral-100 shrink-0">
                 <button type="button" onclick="printReceipt()"
-                    class="rounded-xl bg-sky-500 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-sky-600 hover:shadow-lg active:scale-98 flex-1 flex items-center justify-center gap-1.5">
-                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    class="w-full rounded-xl bg-neutral-900 py-3.5 text-xs font-bold text-white transition hover:bg-neutral-850 hover:shadow-lg active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M6.72 13.82l-.24-2.22H3a1.5 1.5 0 01-1.5-1.5V5.25a3 3 0 013-3h15a3 3 0 013 3v4.85a1.5 1.5 0 01-1.5 1.5h-3.48l-.24 2.22m-11.28 0h11.28m-11.28 0v6.78a2.25 2.25 0 002.25 2.25h6.78a2.25 2.25 0 002.25-2.25v-6.78M9 5.25h6" />
                     </svg>

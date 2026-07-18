@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\Outlet;
 use Illuminate\Http\Request;
 
 use App\Models\User;
@@ -45,7 +46,8 @@ class DashboardController extends Controller
     {
         $products = Product::with('category')->latest()->get();
         $categories = Category::latest()->get();
-        return view('admin.transactions', compact('products', 'categories'));
+        $outlet = Outlet::first();
+        return view('admin.transactions', compact('products', 'categories', 'outlet'));
     }
 
     public function storeTransaction(Request $request)
@@ -367,6 +369,7 @@ class DashboardController extends Controller
             return redirect()->route('admin.transactions');
         }
 
+        $category->products()->delete();
         $category->delete();
 
         return redirect()->route('admin.categories')->with('success', 'Kategori berhasil dihapus.');
@@ -554,5 +557,55 @@ class DashboardController extends Controller
         $user->save();
 
         return back()->with('success', 'Profil Anda berhasil diperbarui.');
+    }
+
+    public function outlet()
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+        $outlet = Outlet::first() ?: new Outlet();
+        return view('admin.outlet', compact('outlet'));
+    }
+
+    public function updateOutlet(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:50',
+        ], [
+            'name.required' => 'Nama outlet wajib diisi.',
+            'logo.image' => 'Logo harus berupa gambar.',
+            'logo.max' => 'Ukuran logo maksimal 2MB.',
+        ]);
+
+        $outlet = Outlet::first() ?: new Outlet();
+        $outlet->name = $request->name;
+        $outlet->address = $request->address;
+        $outlet->phone = $request->phone;
+
+        if ($request->hasFile('logo')) {
+            if ($outlet->logo && file_exists(public_path($outlet->logo))) {
+                @unlink(public_path($outlet->logo));
+            }
+
+            $file = $request->file('logo');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('outlets'))) {
+                mkdir(public_path('outlets'), 0777, true);
+            }
+            $file->move(public_path('outlets'), $filename);
+            $outlet->logo = 'outlets/' . $filename;
+        }
+
+        $outlet->save();
+
+        return back()->with('success', 'Informasi outlet berhasil diperbarui.');
     }
 }

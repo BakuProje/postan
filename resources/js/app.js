@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeEl = document.getElementById('server-time');
         if (timeEl) {
             const now = new Date();
-            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WITA';
             timeEl.textContent = timeString;
         }
     }
@@ -521,6 +521,140 @@ function formatRupiah(num) {
     return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 window.formatRupiah = formatRupiah;
+
+function showToastNotification(message, type = 'success') {
+    const existing = document.getElementById('toast-notification-dynamic');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'toast-notification-dynamic';
+    toast.className = 'fixed top-6 left-1/2 z-50 transform -translate-x-1/2 -translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto';
+    
+    const isSuccess = type === 'success';
+    const borderClass = isSuccess ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-800';
+    const iconColor = isSuccess ? 'text-emerald-600' : 'text-rose-600';
+    
+    const svgIcon = isSuccess 
+        ? `<svg class="h-4.5 w-4.5 ${iconColor} shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+           </svg>`
+        : `<svg class="h-4.5 w-4.5 ${iconColor} shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+           </svg>`;
+
+    toast.innerHTML = `
+        <div class="flex items-center gap-3 rounded-xl border ${borderClass} px-4 py-3 shadow-lg max-w-sm whitespace-nowrap bg-white/95 backdrop-blur-md">
+            ${svgIcon}
+            <p class="text-xs font-bold">${message}</p>
+        </div>
+    `;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.remove('-translate-y-4', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+    }, 100);
+
+    setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-4', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+window.showToastNotification = showToastNotification;
+
+function printReceiptContent(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Cetak Struk</title>
+            <style>
+                @page {
+                    size: 80mm auto;
+                    margin: 0;
+                }
+                body {
+                    font-family: 'Courier New', Courier, monospace;
+                    font-size: 11px;
+                    color: #000 !important;
+                    background: #fff !important;
+                    margin: 0;
+                    padding: 8px;
+                    width: 72mm;
+                    box-sizing: border-box;
+                }
+                img {
+                    max-height: 45px;
+                    width: auto;
+                    display: block;
+                    margin: 0 auto 6px;
+                    filter: grayscale(100%) !important;
+                }
+                .text-center { text-align: center; }
+                .text-right { text-align: right; }
+                .font-bold { font-weight: bold; }
+                .flex-justify { display: flex; justify-content: space-between; }
+                .border-dashed { border-bottom: 1px dashed #000; margin: 8px 0; }
+                .text-uppercase { text-transform: uppercase; }
+                /* Helper classes */
+                .justify-between { display: flex; justify-content: space-between; }
+                .flex { display: flex; }
+                .gap-2 { gap: 8px; }
+                .flex-1 { flex: 1; }
+                .self-end { align-self: flex-end; }
+                .space-y-1 > * + * { margin-top: 4px; }
+                .space-y-2 > * + * { margin-top: 8px; }
+                .space-y-1\\.5 > * + * { margin-top: 6px; }
+                .font-medium { font-weight: 500; }
+                .block { display: block; }
+                .text-neutral-900 { color: #000 !important; }
+                .text-neutral-800 { color: #000 !important; }
+                .text-neutral-700 { color: #000 !important; }
+                .text-neutral-600 { color: #000 !important; }
+                .text-neutral-500 { color: #000 !important; }
+                .text-neutral-400 { color: #000 !important; }
+                .my-2 { margin-top: 8px; margin-bottom: 8px; }
+                .py-1 { padding-top: 4px; padding-bottom: 4px; }
+                .hidden { display: none !important; }
+                div, span, p, h3, h4 {
+                    color: #000 !important;
+                }
+            </style>
+        </head>
+        <body>
+            <div>
+                ${element.innerHTML}
+            </div>
+        </body>
+        </html>
+    `);
+    doc.close();
+
+    iframe.contentWindow.focus();
+    setTimeout(() => {
+        iframe.contentWindow.print();
+        setTimeout(() => {
+            iframe.remove();
+        }, 1000);
+    }, 500);
+}
+window.printReceiptContent = printReceiptContent;
+
 
 // 8. GLOBAL TOAST AUTO-HIDE (Admin Layout)
 document.addEventListener('DOMContentLoaded', () => {
@@ -980,7 +1114,7 @@ function openReceiptModal(txData) {
     document.getElementById('receipt-code').textContent = txData.transaction_code;
     document.getElementById('receipt-date').textContent = txData.created_at;
     document.getElementById('receipt-cashier').textContent = txData.cashier_name;
-    document.getElementById('receipt-payment-method').textContent = txData.payment_method === 'qris' ? 'QRIS' : 'CASH / TUNAI';
+    document.getElementById('receipt-payment-method').textContent = txData.payment_method === 'qris' ? 'QRIS' : 'CASH';
     document.getElementById('receipt-total').textContent = formatRupiah(txData.total_price);
     document.getElementById('receipt-paid').textContent = formatRupiah(txData.total_paid);
     document.getElementById('receipt-change').textContent = formatRupiah(txData.total_change);
@@ -1010,7 +1144,7 @@ function closeReceiptModal() {
 }
 
 function printReceipt() {
-    window.print();
+    printReceiptContent('print-area');
 }
 
 window.addProductToCart = addProductToCart;

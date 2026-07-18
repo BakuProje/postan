@@ -139,6 +139,14 @@ Route::put('/dashboard/profile', [DashboardController::class, 'updateProfile'])
     ->name('admin.profile.update')
     ->middleware('auth');
 
+Route::get('/dashboard/outlet', [DashboardController::class, 'outlet'])
+    ->name('admin.outlet')
+    ->middleware('auth');
+
+Route::put('/dashboard/outlet', [DashboardController::class, 'updateOutlet'])
+    ->name('admin.outlet.update')
+    ->middleware('auth');
+
 Route::view('/password', 'auth.lupa-password')->name('password.request');
 
 Route::post('/lupa-password', function () {
