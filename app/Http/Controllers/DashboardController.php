@@ -43,7 +43,104 @@ class DashboardController extends Controller
 
     public function transactions()
     {
-        return view('admin.transactions');
+        $products = Product::with('category')->latest()->get();
+        $categories = Category::latest()->get();
+        return view('admin.transactions', compact('products', 'categories'));
+    }
+
+    public function storeTransaction(Request $request)
+    {
+        $request->validate([
+            'cart' => 'required|array|min:1',
+            'cart.*.id' => 'required|exists:products,id',
+            'cart.*.quantity' => 'required|integer|min:1',
+            'payment_method' => 'required|in:cash,qris',
+            'total_paid' => 'required_if:payment_method,cash|numeric|min:0',
+        ], [
+            'cart.required' => 'Keranjang belanja tidak boleh kosong.',
+            'payment_method.required' => 'Metode pembayaran wajib dipilih.',
+            'total_paid.required_if' => 'Nominal pembayaran wajib diisi untuk metode tunai.',
+        ]);
+
+        try {
+            return \DB::transaction(function () use ($request) {
+                $datePart = date('Ymd');
+                $countToday = Transaction::whereDate('created_at', today())->count();
+                $seq = str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
+                $transactionCode = "TX-{$datePart}-{$seq}";
+
+                $totalPrice = 0;
+                $itemsToCreate = [];
+
+                foreach ($request->cart as $item) {
+                    $product = Product::lockForUpdate()->find($item['id']);
+                    
+                    if ($product->stock < $item['quantity']) {
+                        throw new \Exception("Stok produk '{$product->name}' tidak mencukupi (Tersedia: {$product->stock}).");
+                    }
+
+                    $product->decrement('stock', $item['quantity']);
+
+                    $subtotal = $product->price * $item['quantity'];
+                    $totalPrice += $subtotal;
+
+                    $itemsToCreate[] = [
+                        'product_id' => $product->id,
+                        'quantity' => $item['quantity'],
+                        'price' => $product->price,
+                        'subtotal' => $subtotal,
+                        'product_name' => $product->name
+                    ];
+                }
+
+                $paymentMethod = $request->payment_method;
+                $totalPaid = $paymentMethod === 'qris' ? $totalPrice : $request->total_paid;
+
+                if ($totalPaid < $totalPrice) {
+                    throw new \Exception("Uang pembayaran tidak mencukupi.");
+                }
+
+                $totalChange = $totalPaid - $totalPrice;
+
+                $transaction = Transaction::create([
+                    'user_id' => auth()->id(),
+                    'transaction_code' => $transactionCode,
+                    'total_price' => $totalPrice,
+                    'total_paid' => $totalPaid,
+                    'total_change' => $totalChange,
+                    'payment_method' => $paymentMethod,
+                ]);
+
+                foreach ($itemsToCreate as $itemData) {
+                    $transaction->items()->create([
+                        'product_id' => $itemData['product_id'],
+                        'quantity' => $itemData['quantity'],
+                        'price' => $itemData['price'],
+                        'subtotal' => $itemData['subtotal'],
+                    ]);
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Transaksi berhasil disimpan!',
+                    'data' => [
+                        'transaction_code' => $transaction->transaction_code,
+                        'created_at' => $transaction->created_at->format('d-m-Y H:i'),
+                        'cashier_name' => auth()->user()->name,
+                        'total_price' => $transaction->total_price,
+                        'total_paid' => $transaction->total_paid,
+                        'total_change' => $transaction->total_change,
+                        'payment_method' => $transaction->payment_method,
+                        'items' => $itemsToCreate,
+                    ]
+                ]);
+            });
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+        }
     }
 
     public function products()
@@ -51,7 +148,152 @@ class DashboardController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('admin.transactions');
         }
-        return view('admin.products');
+        $products = Product::with('category')->latest()->get();
+        $categories = Category::latest()->get();
+        return view('admin.products', compact('products', 'categories'));
+    }
+
+    public function createProduct()
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+        $categories = Category::latest()->get();
+        return view('admin.products.create', compact('categories'));
+    }
+
+    public function storeProduct(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+
+        if ($request->has('price')) {
+            $request->merge([
+                'price' => str_replace('.', '', $request->price)
+            ]);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:products,name',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Nama produk wajib diisi.',
+            'name.unique' => 'Nama produk sudah digunakan.',
+            'price.required' => 'Harga produk wajib diisi.',
+            'price.numeric' => 'Harga produk harus berupa angka.',
+            'stock.required' => 'Stok produk wajib diisi.',
+            'stock.integer' => 'Stok produk harus berupa bilangan bulat.',
+            'category_id.required' => 'Kategori produk wajib dipilih.',
+            'category_id.exists' => 'Kategori yang dipilih tidak valid.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif.',
+            'photo.max' => 'Ukuran foto maksimal 2MB.',
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id,
+        ];
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('products'))) {
+                mkdir(public_path('products'), 0777, true);
+            }
+            $file->move(public_path('products'), $filename);
+            $data['photo'] = 'products/' . $filename;
+        }
+
+        Product::create($data);
+
+        return redirect()->route('admin.products')->with('success', 'Produk berhasil ditambahkan.');
+    }
+
+    public function editProduct(Product $product)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+        $categories = Category::latest()->get();
+        return view('admin.products.edit', compact('product', 'categories'));
+    }
+
+    public function updateProduct(Request $request, Product $product)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+
+        if ($request->has('price')) {
+            $request->merge([
+                'price' => str_replace('.', '', $request->price)
+            ]);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:products,name,' . $product->id,
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Nama produk wajib diisi.',
+            'name.unique' => 'Nama produk sudah digunakan.',
+            'price.required' => 'Harga produk wajib diisi.',
+            'price.numeric' => 'Harga produk harus berupa angka.',
+            'stock.required' => 'Stok produk wajib diisi.',
+            'stock.integer' => 'Stok produk harus berupa bilangan bulat.',
+            'category_id.required' => 'Kategori produk wajib dipilih.',
+            'category_id.exists' => 'Kategori yang dipilih tidak valid.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif.',
+            'photo.max' => 'Ukuran foto maksimal 2MB.',
+        ]);
+
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->category_id = $request->category_id;
+
+        if ($request->hasFile('photo')) {
+            if ($product->photo && file_exists(public_path($product->photo))) {
+                @unlink(public_path($product->photo));
+            }
+            
+            $file = $request->file('photo');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('products'))) {
+                mkdir(public_path('products'), 0777, true);
+            }
+            $file->move(public_path('products'), $filename);
+            $product->photo = 'products/' . $filename;
+        }
+
+        $product->save();
+
+        return redirect()->route('admin.products')->with('success', 'Produk berhasil diubah.');
+    }
+
+    public function deleteProduct(Product $product)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+
+        if ($product->photo && file_exists(public_path($product->photo))) {
+            @unlink(public_path($product->photo));
+        }
+
+        $product->delete();
+
+        return redirect()->route('admin.products')->with('success', 'Produk berhasil dihapus.');
     }
 
     public function categories()
@@ -59,7 +301,75 @@ class DashboardController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('admin.transactions');
         }
-        return view('admin.categories');
+        $categories = Category::withCount('products')->latest()->get();
+        return view('admin.categories', compact('categories'));
+    }
+
+    public function createCategory()
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+        return view('admin.categories.create');
+    }
+
+    public function storeCategory(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name',
+        ], [
+            'name.required' => 'Nama kategori wajib diisi.',
+            'name.unique' => 'Nama kategori sudah digunakan.',
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('admin.categories')->with('success', 'Kategori berhasil ditambahkan.');
+    }
+
+    public function editCategory(Category $category)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+        return view('admin.categories.edit', compact('category'));
+    }
+
+    public function updateCategory(Request $request, Category $category)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+        ], [
+            'name.required' => 'Nama kategori wajib diisi.',
+            'name.unique' => 'Nama kategori sudah digunakan.',
+        ]);
+
+        $category->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('admin.categories')->with('success', 'Kategori berhasil diubah.');
+    }
+
+    public function deleteCategory(Category $category)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+
+        $category->delete();
+
+        return redirect()->route('admin.categories')->with('success', 'Kategori berhasil dihapus.');
     }
 
     public function users()
@@ -111,7 +421,6 @@ class DashboardController extends Controller
         if ($request->hasFile('profile_picture')) {
             $file = $request->file('profile_picture');
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            // Ensure directory exists
             if (!file_exists(public_path('profiles'))) {
                 mkdir(public_path('profiles'), 0777, true);
             }
@@ -168,7 +477,6 @@ class DashboardController extends Controller
 
             $file = $request->file('profile_picture');
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            // Ensure directory exists
             if (!file_exists(public_path('profiles'))) {
                 mkdir(public_path('profiles'), 0777, true);
             }

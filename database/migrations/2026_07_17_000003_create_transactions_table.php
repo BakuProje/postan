@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+  
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
@@ -18,13 +16,12 @@ return new class extends Migration
             $table->bigInteger('total_price');
             $table->bigInteger('total_paid');
             $table->bigInteger('total_change');
+            $table->string('payment_method')->default('cash');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+ 
     public function down(): void
     {
         Schema::dropIfExists('transactions');

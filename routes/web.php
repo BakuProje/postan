@@ -56,13 +56,55 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::get('/dashboard/transactions', [DashboardController::class, 'transactions'])
     ->name('admin.transactions')
     ->middleware('auth');
+Route::post('/dashboard/transactions', [DashboardController::class, 'storeTransaction'])
+    ->name('admin.transactions.store')
+    ->middleware('auth');
 
 Route::get('/dashboard/products', [DashboardController::class, 'products'])
     ->name('admin.products')
     ->middleware('auth');
+    
+Route::get('/dashboard/products/create', [DashboardController::class, 'createProduct'])
+    ->name('admin.products.create')
+    ->middleware('auth');
+
+Route::post('/dashboard/products', [DashboardController::class, 'storeProduct'])
+    ->name('admin.products.store')
+    ->middleware('auth');
+Route::get('/dashboard/products/{product}/edit', [DashboardController::class, 'editProduct'])
+    ->name('admin.products.edit')
+    ->middleware('auth');
+
+Route::put('/dashboard/products/{product}', [DashboardController::class, 'updateProduct'])
+    ->name('admin.products.update')
+    ->middleware('auth');
+
+Route::delete('/dashboard/products/{product}', [DashboardController::class, 'deleteProduct'])
+    ->name('admin.products.delete')
+    ->middleware('auth');
 
 Route::get('/dashboard/categories', [DashboardController::class, 'categories'])
     ->name('admin.categories')
+    ->middleware('auth');
+
+Route::get('/dashboard/categories/create', [DashboardController::class, 'createCategory'])
+    ->name('admin.categories.create')
+    ->middleware('auth');
+
+Route::post('/dashboard/categories', [DashboardController::class, 'storeCategory'])
+    ->name('admin.categories.store')
+    ->middleware('auth');
+
+Route::get('/dashboard/categories/{category}/edit', [DashboardController::class, 'editCategory'])
+    ->name('admin.categories.edit')
+    ->middleware('auth');
+
+Route::put('/dashboard/categories/{category}', [DashboardController::class, 'updateCategory'])
+    ->name('admin.categories.update')
+    ->middleware('auth');
+
+Route::delete('/dashboard/categories/{category}', [DashboardController::class, 'deleteCategory'])
+    ->name('admin.categories.delete')
     ->middleware('auth');
 
 Route::get('/dashboard/users', [DashboardController::class, 'users'])
