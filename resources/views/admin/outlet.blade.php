@@ -2,7 +2,6 @@
 @section('title', 'Pengaturan Outlet')
 @section('konten')
     <div class="max-w-[1440px] w-full mx-auto relative">
-        <!-- Dekorasi 3D Bubble Soft UI -->
         <div
             class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-gradient-to-tr from-sky-400/20 via-sky-300/10 to-transparent blur-md pointer-events-none">
         </div>
@@ -11,7 +10,6 @@
         </div>
 
         <div class="grid gap-8 lg:grid-cols-3">
-            <!-- FORM PENGATURAN OUTLET -->
             <div class="lg:col-span-2 space-y-6">
                 <div
                     class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1">
@@ -99,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- UJI KONEKSI PRINTER THERMAL -->
             <div class="space-y-6">
                 <div
                     class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden flex flex-col justify-between h-full transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1">
@@ -112,9 +109,6 @@
                             <h2 class="text-sm font-black text-neutral-900 uppercase tracking-wider">Cek Mesin Printer</h2>
                         </div>
 
-
-
-                        <!-- Preview Kertas Struk Dummy -->
                         <div
                             class="bg-neutral-50 rounded-xl p-4.5 border border-neutral-150 font-mono text-[9px] text-neutral-600 space-y-2 select-none">
                             <div class="text-center">

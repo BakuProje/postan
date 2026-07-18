@@ -255,7 +255,6 @@
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
         <div
             class="bg-white rounded-2xl max-w-sm w-full border border-neutral-100 shadow-xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col relative">
-            <!-- Close Button X in Top Right -->
             <button type="button" onclick="closeReceiptModal()"
                 class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600 transition cursor-pointer z-10">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -264,8 +263,9 @@
             </button>
             <div id="print-area" class="p-6 bg-white overflow-y-auto max-h-[70vh] space-y-4">
                 <div class="text-center space-y-1">
-                    @if($outlet && $outlet->logo)
-                        <img src="{{ asset($outlet->logo) }}" class="h-10 w-auto mx-auto mb-1.5 object-contain" alt="Logo Outlet">
+                    @if ($outlet && $outlet->logo)
+                        <img src="{{ asset($outlet->logo) }}" class="h-10 w-auto mx-auto mb-1.5 object-contain"
+                            alt="Logo Outlet">
                     @endif
                     <h3 class="text-base font-black tracking-widest text-neutral-900">{{ $outlet->name ?? 'POSTAN' }}</h3>
                     <p class="text-[9px] text-neutral-400">{{ $outlet->address ?? 'Jl. Pembangunan No. 4, Jakarta' }}</p>
