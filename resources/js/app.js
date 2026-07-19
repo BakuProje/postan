@@ -729,6 +729,65 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 11. PRODUK MANAGEMENT MODALS (Kelola Produk)
+function toggleCustomDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    const arrow = document.getElementById(dropdownId + '-arrow');
+    if (!dropdown) return;
+    
+    document.querySelectorAll('[id$="-dropdown"]').forEach(el => {
+        if (el.id !== dropdownId) {
+            el.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            const otherArrow = document.getElementById(el.id + '-arrow');
+            if (otherArrow) otherArrow.classList.remove('rotate-180');
+        }
+    });
+
+    if (dropdown.classList.contains('pointer-events-none')) {
+        dropdown.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        if (arrow) arrow.classList.add('rotate-180');
+    } else {
+        dropdown.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        if (arrow) arrow.classList.remove('rotate-180');
+    }
+}
+
+function selectCustomCategory(prefix, categoryId, categoryName) {
+    const hiddenInput = document.getElementById(prefix + '_product_category_input');
+    const label = document.getElementById(prefix + '-category-dropdown-label');
+    const dropdown = document.getElementById(prefix + '-category-dropdown');
+    const arrow = document.getElementById(prefix + '-category-dropdown-arrow');
+    
+    if (hiddenInput && label && dropdown) {
+        hiddenInput.value = categoryId;
+        label.textContent = categoryName;
+        dropdown.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        if (arrow) arrow.classList.remove('rotate-180');
+    }
+}
+
+window.toggleCustomDropdown = toggleCustomDropdown;
+window.selectCustomCategory = selectCustomCategory;
+
+// Close custom dropdowns if clicked outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#create-category-dropdown-btn') && !e.target.closest('#create-category-dropdown')) {
+        const createDrop = document.getElementById('create-category-dropdown');
+        const createArrow = document.getElementById('create-category-dropdown-arrow');
+        if (createDrop) {
+            createDrop.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            if (createArrow) createArrow.classList.remove('rotate-180');
+        }
+    }
+    if (!e.target.closest('#edit-category-dropdown-btn') && !e.target.closest('#edit-category-dropdown')) {
+        const editDrop = document.getElementById('edit-category-dropdown');
+        const editArrow = document.getElementById('edit-category-dropdown-arrow');
+        if (editDrop) {
+            editDrop.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            if (editArrow) editArrow.classList.remove('rotate-180');
+        }
+    }
+});
+
 function openEditProductModal(product) {
     const form = document.getElementById('edit-product-form');
     if (!form) return;
@@ -748,12 +807,24 @@ function openEditProductModal(product) {
     }
 
     const editNameInput = document.getElementById('edit_product_name');
-    const editCategorySelect = document.getElementById('edit_product_category');
+    const editCategoryInput = document.getElementById('edit_product_category_input');
+    const editCategoryLabel = document.getElementById('edit-category-dropdown-label');
     const editPriceInput = document.getElementById('edit_product_price');
     const editStockInput = document.getElementById('edit_product_stock');
 
     if (editNameInput) editNameInput.value = (isEditError && oldName) ? oldName : product.name;
-    if (editCategorySelect) editCategorySelect.value = (isEditError && oldCategoryId) ? oldCategoryId : product.category_id;
+    
+    const selectedCategoryId = (isEditError && oldCategoryId) ? oldCategoryId : product.category_id;
+    if (editCategoryInput) editCategoryInput.value = selectedCategoryId;
+    if (editCategoryLabel) {
+        const categoryBtn = document.querySelector(`button[onclick*="selectCustomCategory('edit', ${selectedCategoryId},"]`);
+        if (categoryBtn) {
+            editCategoryLabel.textContent = categoryBtn.textContent.trim();
+        } else {
+            editCategoryLabel.textContent = 'Pilih Kategori';
+        }
+    }
+
     if (editPriceInput) editPriceInput.value = formatNumberWithDots(String((isEditError && oldPrice) ? oldPrice : product.price));
     if (editStockInput) editStockInput.value = (isEditError && oldStock) ? oldStock : product.stock;
 
@@ -786,6 +857,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const openCreateModalFlag = pageData.dataset.sessionOpenCreateModal === 'true';
     const openEditModalIdFlag = pageData.dataset.sessionOpenEditModalId;
     const products = JSON.parse(pageData.dataset.productsJson || '[]');
+
+    // Restore old create category on validation error
+    const createCategoryId = pageData.dataset.oldCategoryId;
+    if (createCategoryId) {
+        const createCategoryInput = document.getElementById('create_product_category_input');
+        const createCategoryLabel = document.getElementById('create-category-dropdown-label');
+        if (createCategoryInput) createCategoryInput.value = createCategoryId;
+        if (createCategoryLabel) {
+            const categoryBtn = document.querySelector(`button[onclick*="selectCustomCategory('create', ${createCategoryId},"]`);
+            if (categoryBtn) {
+                createCategoryLabel.textContent = categoryBtn.textContent.trim();
+            }
+        }
+    }
 
     if (hasErrors) {
         if (editProductId) {
@@ -1053,6 +1138,17 @@ function setQuickCash(value) {
 function checkoutTransaction() {
     if (posCart.length === 0) return;
 
+    const customerInput = document.getElementById('pos-customer-input');
+    const customerVal = customerInput ? customerInput.value.trim() : '';
+
+    if (!customerVal) {
+        showToastNotification('Nama customer wajib diisi.', 'error');
+        if (customerInput) {
+            customerInput.focus();
+        }
+        return;
+    }
+
     const rawInput = document.getElementById('pos-paid-input');
     const paidVal = parseInt(rawInput.value) || 0;
     const totalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -1085,7 +1181,8 @@ function checkoutTransaction() {
         body: JSON.stringify({
             cart: posCart,
             payment_method: activePaymentMethod,
-            total_paid: activePaymentMethod === 'qris' ? totalPrice : paidVal
+            total_paid: activePaymentMethod === 'qris' ? totalPrice : paidVal,
+            customer_name: document.getElementById('pos-customer-input')?.value || ''
         })
     })
         .then(async response => {
@@ -1114,6 +1211,10 @@ function openReceiptModal(txData) {
     document.getElementById('receipt-code').textContent = txData.transaction_code;
     document.getElementById('receipt-date').textContent = txData.created_at;
     document.getElementById('receipt-cashier').textContent = txData.cashier_name;
+    const customerEl = document.getElementById('receipt-customer');
+    if (customerEl) {
+        customerEl.textContent = txData.customer_name || '-';
+    }
     document.getElementById('receipt-payment-method').textContent = txData.payment_method === 'qris' ? 'QRIS' : 'CASH';
     document.getElementById('receipt-total').textContent = formatRupiah(txData.total_price);
     document.getElementById('receipt-paid').textContent = formatRupiah(txData.total_paid);
@@ -1284,3 +1385,281 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     setupFilePreview('photo', 'photo-preview', 'photo-placeholder');
 });
+
+// 14. LAYOUT CLOCK & NOTIFICATION TOGGLE
+document.addEventListener('DOMContentLoaded', () => {
+    function updateNavbarClock() {
+        const dateEl = document.getElementById('live-navbar-date');
+        const timeEl = document.getElementById('live-navbar-time');
+        if (!dateEl || !timeEl) return;
+
+        const now = new Date();
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+            'September', 'Oktober', 'November', 'Desember'
+        ];
+
+        const dayName = days[now.getDay()];
+        const dateNum = now.getDate();
+        const monthName = months[now.getMonth()];
+        const year = now.getFullYear();
+
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        dateEl.textContent = `${dayName}, ${dateNum} ${monthName} ${year}`;
+        timeEl.textContent = `${hours}:${minutes} WITA`;
+    }
+    setInterval(updateNavbarClock, 1000);
+    updateNavbarClock();
+
+    const bellBtn = document.getElementById('notification-bell-btn');
+    const panel = document.getElementById('notification-panel');
+    if (bellBtn && panel) {
+        bellBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            panel.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!panel.contains(e.target) && !bellBtn.contains(e.target)) {
+                panel.classList.add('hidden');
+            }
+        });
+    }
+});
+
+// 15. DASHBOARD CHART INITIALIZATION
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('salesChart');
+    const chartDataEl = document.getElementById('sales-chart-data');
+    if (!ctx || !chartDataEl) return;
+
+    const chartLabels = JSON.parse(chartDataEl.dataset.labels || '[]');
+    const chartSales = JSON.parse(chartDataEl.dataset.sales || '[]');
+
+    const gradientSales = ctx.getContext('2d').createLinearGradient(0, 0, 0, 220);
+    gradientSales.addColorStop(0, 'rgba(14, 165, 233, 0.25)');
+    gradientSales.addColorStop(1, 'rgba(14, 165, 233, 0.00)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                label: 'Total Pemasukan',
+                data: chartSales,
+                borderColor: '#0ea5e9',
+                borderWidth: 3,
+                backgroundColor: gradientSales,
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: '#0ea5e9',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 8,
+                pointHoverBackgroundColor: '#ffffff',
+                pointHoverBorderColor: '#0ea5e9',
+                pointHoverBorderWidth: 3,
+                pointHitRadius: 10,
+                clip: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            layout: {
+                padding: {
+                    top: 15,
+                    bottom: 5,
+                    left: 20,
+                    right: 25
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: '#171717',
+                    padding: 10,
+                    titleFont: {
+                        size: 10,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 10
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('id-ID', {
+                                    style: 'currency',
+                                    currency: 'IDR',
+                                    maximumFractionDigits: 0
+                                }).format(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    min: 0,
+                    beginAtZero: true,
+                    suggestedMax: 100000,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.03)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        padding: 10,
+                        font: {
+                            size: 9,
+                            family: "'Inter', sans-serif"
+                        },
+                        color: '#737373',
+                        callback: function(value) {
+                            return 'Rp ' + (value >= 1000000 ? (value / 1000000) + 'jt' : (
+                                value >= 1000 ? (value / 1000) + 'rb' : value));
+                        }
+                    }
+                },
+                x: {
+                    offset: false,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        align: 'inner',
+                        font: {
+                            size: 10,
+                            family: "'Inter', sans-serif",
+                            weight: 'bold'
+                        },
+                        color: '#171717'
+                    }
+                }
+            }
+        }
+    });
+});
+
+// 16. TRANSACTION HISTORY DETAILS MODAL
+function showTxDetail(btn) {
+    const modal = document.getElementById('transaction-detail-modal');
+    const content = document.getElementById('modal-content');
+    if (!modal || !content) return;
+    
+    const code = btn.getAttribute('data-code');
+    const date = btn.getAttribute('data-date');
+    const cashier = btn.getAttribute('data-cashier');
+    const customer = btn.getAttribute('data-customer');
+    const method = btn.getAttribute('data-method');
+    const total = btn.getAttribute('data-total');
+    const paid = btn.getAttribute('data-paid');
+    const change = btn.getAttribute('data-change');
+    const items = JSON.parse(btn.getAttribute('data-items') || '[]');
+
+    document.getElementById('modal-invoice-code').textContent = code;
+    document.getElementById('modal-invoice-cashier').textContent = cashier;
+    document.getElementById('modal-invoice-customer').textContent = customer;
+    document.getElementById('modal-invoice-date').textContent = date;
+    document.getElementById('modal-invoice-method').textContent = method;
+    document.getElementById('modal-invoice-total').textContent = total;
+    document.getElementById('modal-invoice-paid').textContent = paid;
+    document.getElementById('modal-invoice-change').textContent = change;
+
+    document.getElementById('print-receipt-code').textContent = code;
+    document.getElementById('print-receipt-date').textContent = date;
+    document.getElementById('print-receipt-cashier').textContent = cashier;
+    document.getElementById('print-receipt-customer').textContent = customer;
+    document.getElementById('print-receipt-payment-method').textContent = method;
+    document.getElementById('print-receipt-total').textContent = total;
+    document.getElementById('print-receipt-paid').textContent = paid;
+    document.getElementById('print-receipt-change').textContent = change;
+
+    const container = document.getElementById('modal-invoice-items');
+    container.innerHTML = '';
+
+    const printList = document.getElementById('print-receipt-items-list');
+    printList.innerHTML = '';
+    
+    items.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'flex justify-between items-center border-b border-neutral-100 pb-2 last:border-0 last:pb-0';
+        row.innerHTML = `
+            <div class="min-w-0 pr-2">
+                <p class="font-bold text-neutral-800 truncate">${item.name}</p>
+                <p class="text-[9px] text-neutral-400 font-semibold mt-0.5">${item.qty} x ${item.price}</p>
+            </div>
+            <span class="font-bold text-neutral-855 shrink-0">${item.subtotal}</span>
+        `;
+        container.appendChild(row);
+
+        const printRow = document.createElement('div');
+        printRow.className = 'text-[10px] text-neutral-600 flex justify-between gap-2';
+        printRow.style.display = 'flex';
+        printRow.style.justifyContent = 'space-between';
+        printRow.style.fontSize = '10px';
+        printRow.innerHTML = `
+            <div style="flex: 1;">
+                <span style="font-weight: 500; color: #000; display: block;">${item.name}</span>
+                <span style="color: #666; display: block;">${item.qty} x ${item.price}</span>
+            </div>
+            <span style="font-weight: bold; color: #000; align-self: flex-end;">${item.subtotal}</span>
+        `;
+        printList.appendChild(printRow);
+    });
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function closeTxDetail() {
+    const modal = document.getElementById('transaction-detail-modal');
+    const content = document.getElementById('modal-content');
+    if (!modal || !content) return;
+
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 250);
+}
+
+function printHistoryReceipt() {
+    if (window.printReceiptContent) {
+        window.printReceiptContent('print-area-history');
+    } else {
+        alert('Fungsi cetak tidak tersedia.');
+    }
+}
+
+window.showTxDetail = showTxDetail;
+window.closeTxDetail = closeTxDetail;
+window.printHistoryReceipt = printHistoryReceipt;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const historyModal = document.getElementById('transaction-detail-modal');
+    if (historyModal) {
+        historyModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTxDetail();
+            }
+        });
+    }
+});
+
+

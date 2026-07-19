@@ -185,6 +185,7 @@
                         Tagihan</span>
                     <span id="payment-modal-total-label" class="text-2xl font-black text-sky-600 mt-1 block">Rp 0</span>
                 </div>
+
                 <div class="grid grid-cols-2 gap-3.5">
                     <button type="button" id="pay-select-cash-btn" onclick="selectPaymentMethod('cash')"
                         class="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-sky-500 bg-sky-50/50 text-sky-600 font-extrabold transition cursor-pointer">
@@ -197,6 +198,20 @@
                         <img src="{{ asset('qris.png') }}" class="h-10 w-auto mb-1.5" alt="QRIS Logo">
                         <span class="text-xs font-bold text-neutral-700">QRIS</span>
                     </button>
+                </div>
+
+                <!-- Input Nama Customer -->
+                <div class="space-y-2">
+                    <label for="pos-customer-input" class="block text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Nama Customer</label>
+                    <div class="relative">
+                        <input type="text" id="pos-customer-input" placeholder="Masukkan nama customer..."
+                            class="block w-full rounded-xl border border-neutral-250 bg-white pl-10 pr-4 py-3.5 text-sm font-bold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100/50">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                        </span>
+                    </div>
                 </div>
 
                 <div id="payment-cash-panel" class="space-y-4">
@@ -282,6 +297,10 @@
                     <div class="flex justify-between">
                         <span>Kasir:</span>
                         <span id="receipt-cashier">--</span>
+                    </div>
+                    <div class="flex justify-between" id="receipt-customer-row">
+                        <span>Customer:</span>
+                        <span id="receipt-customer">--</span>
                     </div>
                     <div class="flex justify-between">
                         <span>Metode:</span>

@@ -271,26 +271,25 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label for="create_product_category"
-                            class="block text-xs font-bold text-neutral-700">Kategori</label>
+                        <label class="block text-xs font-bold text-neutral-700">Kategori</label>
                         <div class="relative">
-                            <select id="create_product_category" name="category_id" required
-                                class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 px-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
-                                <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Pilih Kategori
-                                </option>
+                            <input type="hidden" name="category_id" id="create_product_category_input" required
+                                value="{{ old('edit_product_id') ? '' : old('category_id') }}">
+                            <button type="button" id="create-category-dropdown-btn" onclick="toggleCustomDropdown('create-category-dropdown')"
+                                class="flex items-center justify-between w-full rounded-xl border border-neutral-200 bg-neutral-50/30 px-4 py-3 text-xs font-bold text-neutral-800 outline-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50 cursor-pointer">
+                                <span id="create-category-dropdown-label">Pilih Kategori</span>
+                            </button>
+                            
+                            <!-- Custom Dropdown Popup -->
+                            <div id="create-category-dropdown"
+                                class="absolute z-50 w-full mt-2 bg-white/95 backdrop-blur-md border border-neutral-200/80 rounded-2xl shadow-xl py-2 scale-95 opacity-0 pointer-events-none transition-all duration-200 origin-top">
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}"
-                                        {{ old('category_id') == $category->id && !old('edit_product_id') ? 'selected' : '' }}>
-                                        {{ $category->name }}</option>
+                                    <button type="button" onclick="selectCustomCategory('create', {{ $category->id }}, '{{ $category->name }}')"
+                                        class="flex items-center w-full px-4 py-2.5 text-xs text-neutral-700 font-bold hover:bg-sky-50 hover:text-sky-600 transition-all text-left cursor-pointer">
+                                        {{ $category->name }}
+                                    </button>
                                 @endforeach
-                            </select>
-                            <span
-                                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-neutral-400">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                </svg>
-                            </span>
+                            </div>
                         </div>
                         @error('category_id')
                             @if (!old('edit_product_id'))
@@ -404,26 +403,28 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label for="edit_product_category"
-                            class="block text-xs font-bold text-neutral-700">Kategori</label>
+                        <label class="block text-xs font-bold text-neutral-700">Kategori</label>
                         <div class="relative">
-                            <select id="edit_product_category" name="category_id" required
-                                class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 px-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
+                            <input type="hidden" name="category_id" id="edit_product_category_input" required value="">
+                            <button type="button" id="edit-category-dropdown-btn" onclick="toggleCustomDropdown('edit-category-dropdown')"
+                                class="flex items-center justify-between w-full rounded-xl border border-neutral-200 bg-neutral-50/30 px-4 py-3 text-xs font-bold text-neutral-800 outline-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50 cursor-pointer">
+                                <span id="edit-category-dropdown-label">Pilih Kategori</span>
+                            </button>
+                            
+                            <!-- Custom Dropdown Popup -->
+                            <div id="edit-category-dropdown"
+                                class="absolute z-50 w-full mt-2 bg-white/95 backdrop-blur-md border border-neutral-200/80 rounded-2xl shadow-xl py-2 scale-95 opacity-0 pointer-events-none transition-all duration-200 origin-top">
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <button type="button" onclick="selectCustomCategory('edit', {{ $category->id }}, '{{ $category->name }}')"
+                                        class="flex items-center w-full px-4 py-2.5 text-xs text-neutral-700 font-bold hover:bg-sky-50 hover:text-sky-600 transition-all text-left cursor-pointer">
+                                        {{ $category->name }}
+                                    </button>
                                 @endforeach
-                            </select>
-                            <span
-                                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-neutral-400">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                </svg>
-                            </span>
+                            </div>
                         </div>
                         @error('category_id')
                             @if (old('edit_product_id'))
-                                <p class="text-xs text-rose-600 font-semibold mt-1">{{ $message }}</p>
+                               <p class="text-xs text-rose-600 font-semibold mt-1">{{ $message }}</p>
                             @endif
                         @enderror
                     </div>
@@ -501,5 +502,4 @@
         data-session-open-create-modal="{{ session('open_create_modal') ? 'true' : 'false' }}"
         data-session-open-edit-modal-id="{{ session('open_edit_modal_id') }}"
         data-products-json="{{ json_encode($products) }}" class="hidden">
-    </div>
-@endsection
+    </div>@endsection
