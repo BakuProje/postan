@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Kelola Kasir')
+@section('title', '')
 @section('konten')
     <div class="space-y-6 relative">
         <div
@@ -9,88 +9,335 @@
             class="absolute -bottom-8 -left-10 -z-10 h-32 w-32 rounded-full bg-gradient-to-br from-white/70 via-sky-50/20 to-sky-100/10 border border-white/40 shadow-[inset_5px_5px_14px_rgba(255,255,255,0.8),inset_-5px_-5px_14px_rgba(14,165,233,0.08)] pointer-events-none">
         </div>
 
+        <!-- Header Page & Action Buttons (Gambar 1) -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
             <div>
-                <h2 class="text-2xl font-black text-neutral-900 tracking-tight">Daftar Karyawan</h2>
-                <p class="text-sm text-neutral-500 mt-1">Buat akun kasir/admin, atur shift kerja, dan kelola hak akses
+                <h2 class="text-2xl font-black text-neutral-900 tracking-tight">Kelola Kasir</h2>
+                <p class="text-xs text-neutral-500 mt-1">Kelola akun kasir/admin, atur shift kerja, dan kelola hak akses
                     sistem.</p>
             </div>
-            <a href="{{ route('admin.users.CreateKasir') }}"
-                onclick="if(window.innerWidth >= 768) { event.preventDefault(); openModal('create-user-modal'); }"
-                class="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-600 hover:shadow-lg hover:shadow-sky-500/10 active:scale-98 w-fit cursor-pointer">
-                <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Tambah Akun Karyawan
-            </a>
+            <div class="flex items-center gap-2">
+                <!-- Kelola Shift Button -->
+                <button type="button" onclick="openModal('manage-shifts-modal');"
+                    class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-xs font-bold text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300 transition shadow-2xs active:scale-98 cursor-pointer">
+                    <svg class="h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm0 5.25h.007v.008H3.75V12Zm0 5.25h.007v.008H3.75v-.008Z" />
+                    </svg>
+                    Kelola Shift
+                </button>
+                <!-- Tambah Shift Button -->
+                <button type="button" onclick="openModal('create-shift-modal');"
+                    class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-200 bg-sky-50 px-3.5 py-2.5 text-xs font-bold text-sky-700 hover:bg-sky-100 hover:border-sky-300 transition shadow-2xs active:scale-98 cursor-pointer">
+                    <svg class="h-4 w-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    Tambah Shift
+                </button>
+                <!-- Tambah Karyawan Button -->
+                <button type="button" onclick="openModal('create-user-modal');"
+                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-sky-600 shadow-sm active:scale-98 cursor-pointer">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Tambah Karyawan
+                </button>
+            </div>
         </div>
 
+        <!-- 4 Metric Cards (Gambar 1) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+            <!-- Total Karyawan -->
+            <div
+                class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 border border-blue-100/50">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">TOTAL
+                        KARYAWAN</span>
+                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">{{ $users->count() }}
+                        <span class="text-xs font-bold text-neutral-500">Orang</span>
+                    </h3>
+                    <span class="text-[11px] font-bold text-neutral-400 block mt-1.5">Semua akun terdaftar</span>
+                </div>
+            </div>
+
+            <!-- Kasir Aktif -->
+            <div
+                class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 border border-emerald-100/50">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">KASIR AKTIF</span>
+                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                        {{ $users->where('role', 'kasir')->count() }} <span
+                            class="text-xs font-bold text-neutral-500">Orang</span></h3>
+                    <span class="text-[11px] font-bold text-emerald-600 block mt-1.5 flex items-center gap-1.5">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Sedang online
+                    </span>
+                </div>
+            </div>
+
+            <!-- Shift Berjalan -->
+            <div
+                class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 border border-amber-100/50">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">SHIFT
+                        BERJALAN</span>
+                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                        {{ $users->whereNotNull('shift')->count() }} <span
+                            class="text-xs font-bold text-neutral-500">Shift</span></h3>
+                    <span class="text-[11px] font-bold text-amber-600 block mt-1.5 flex items-center gap-1.5">
+                        <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                        Saat ini berlangsung
+                    </span>
+                </div>
+            </div>
+
+            <!-- Administrator -->
+            <div
+                class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-purple-50 text-purple-500 flex items-center justify-center shrink-0 border border-purple-100/50">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0 1 12 2.714Z" />
+                    </svg>
+                </div>
+                <div>
+                    <span
+                        class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">ADMINISTRATOR</span>
+                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                        {{ $users->where('role', 'admin')->count() }} <span
+                            class="text-xs font-bold text-neutral-500">Orang</span></h3>
+                    <span class="text-[11px] font-bold text-purple-600 block mt-1.5">Memiliki akses penuh</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Search Bar (Gambar 1) -->
         <div
-            class="hidden md:block bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_20px_50px_rgba(0,0,0,0.02)] overflow-hidden relative z-10">
+            class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-4 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3 relative z-10">
+            <div class="relative w-full md:w-80">
+                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none"
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                <input id="user-search-input" type="text" onkeyup="filterUsersTable()"
+                    placeholder="Cari karyawan (nama, email)..."
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-sky-500 transition-colors">
+            </div>
+            <div class="flex items-center gap-2.5 w-full md:w-auto">
+                <select id="user-role-filter" onchange="filterUsersTable()"
+                    class="px-3.5 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-700 bg-white focus:outline-none focus:border-sky-500 transition-colors cursor-pointer w-full md:w-auto">
+                    <option value="">Semua Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="kasir">Kasir</option>
+                </select>
+                <select id="user-shift-filter" onchange="filterUsersTable()"
+                    class="px-3.5 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-700 bg-white focus:outline-none focus:border-sky-500 transition-colors cursor-pointer w-full md:w-auto">
+                    <option value="">Semua Shift</option>
+                    <option value="pagi">Shift Pagi</option>
+                    <option value="siang">Shift Siang</option>
+                    <option value="malam">Shift Malam</option>
+                    <option value="tanpa shift">Tanpa Shift</option>
+                </select>
+                <select id="user-status-filter" onchange="filterUsersTable()"
+                    class="px-3.5 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-700 bg-white focus:outline-none focus:border-sky-500 transition-colors cursor-pointer w-full md:w-auto">
+                    <option value="">Semua Status</option>
+                    <option value="online">Online</option>
+                    <option value="istirahat">Istirahat</option>
+                    <option value="offline">Offline</option>
+                </select>
+                <button type="button" onclick="filterUsersTable()"
+                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 bg-white text-xs font-bold text-sky-600 hover:bg-neutral-50 transition cursor-pointer shrink-0">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                    </svg>
+                    Filter
+                </button>
+            </div>
+        </div>
+
+        <!-- Karyawan Table View (Gambar 1 & Gambar 2) -->
+        <div
+            class="hidden md:block bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 shadow-2xs overflow-hidden relative z-10">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm border-collapse">
+                <table class="w-full text-left text-xs border-collapse">
                     <thead>
                         <tr
-                            class="text-neutral-400 border-b border-neutral-100 text-xs font-bold tracking-wider bg-neutral-50/50">
-                            <th class="p-5 font-bold">Foto</th>
-                            <th class="p-5 font-bold">Nama Karyawan</th>
-                            <th class="p-5 font-bold">Gmail</th>
-                            <th class="p-5 font-bold">Role</th>
-                            <th class="p-5 font-bold">Shift Kerja</th>
-                            <th class="p-5 font-bold text-center">Aksi</th>
+                            class="text-neutral-400 border-b border-neutral-100 text-[11px] font-extrabold uppercase tracking-wider bg-neutral-50/50">
+                            <th class="p-4 pl-6 font-bold">KARYAWAN</th>
+                            <th class="p-4 font-bold">ROLE</th>
+                            <th class="p-4 font-bold">STATUS</th>
+                            <th class="p-4 font-bold">SHIFT KERJA</th>
+                            <th class="p-4 font-bold">EMAIL</th>
+                            <th class="p-4 font-bold">TERAKHIR LOGIN</th>
+                            <th class="p-4 pr-6 font-bold text-center">AKSI</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-neutral-100 text-neutral-600">
-                        @forelse($users as $user)
-                            <tr class="hover:bg-neutral-50/30 transition-colors">
-                                <td class="p-5 whitespace-nowrap">
-                                    <div
-                                        class="h-10 w-10 rounded-full overflow-hidden border border-neutral-200/80 shrink-0 aspect-square">
-                                        @if ($user->profile_picture)
-                                            <img src="{{ asset($user->profile_picture) }}" alt="Profil {{ $user->name }}"
-                                                class="h-full w-full object-cover">
-                                        @else
+                    <tbody id="users-table-body" class="divide-y divide-neutral-100/70 text-neutral-600">
+                        @forelse($users as $index => $user)
+                            @php
+                                $shiftName = $user->shift ?: 'Tanpa Shift';
+                                $shiftHoursDisplay = $user->shift_hours;
+                                if (empty($shiftHoursDisplay)) {
+                                    if ($user->shift === 'Pagi') {
+                                        $shiftHoursDisplay = '06:00 - 14:00';
+                                    } elseif ($user->shift === 'Siang') {
+                                        $shiftHoursDisplay = '14:00 - 22:00';
+                                    } elseif ($user->shift === 'Malam') {
+                                        $shiftHoursDisplay = '22:00 - 06:00';
+                                    } else {
+                                        $shiftHoursDisplay = '';
+                                    }
+                                }
+
+                                // Mock status & last login for demonstration matching screenshots
+                                $statusVal = 'online';
+                                $statusLabel = 'Online';
+                                $statusClass = 'bg-emerald-50 text-emerald-600 border-emerald-100';
+                                $statusDot = 'bg-emerald-500';
+
+                                if ($index % 3 == 1) {
+                                    $statusVal = 'istirahat';
+                                    $statusLabel = 'Istirahat';
+                                    $statusClass = 'bg-amber-50 text-amber-600 border-amber-100';
+                                    $statusDot = 'bg-amber-500';
+                                } elseif ($index % 3 == 2) {
+                                    $statusVal = 'offline';
+                                    $statusLabel = 'Offline';
+                                    $statusClass = 'bg-rose-50 text-rose-500 border-rose-100';
+                                    $statusDot = 'bg-rose-500';
+                                }
+
+                                $lastLoginText =
+                                    $index == 0
+                                        ? '10 menit lalu'
+                                        : ($index == 1
+                                            ? '5 menit lalu'
+                                            : ($index == 2
+                                                ? '2 jam lalu'
+                                                : '1 hari lalu'));
+                                $lastLoginDate = '20 Jul 2026, ' . (11 - $index) . ':16';
+                            @endphp
+                            <tr class="user-row hover:bg-neutral-50/50 transition-colors"
+                                data-name="{{ strtolower($user->name) }}" data-email="{{ strtolower($user->email) }}"
+                                data-role="{{ strtolower($user->role) }}" data-shift="{{ strtolower($shiftName) }}"
+                                data-status="{{ $statusVal }}">
+                                <td class="p-4 pl-6 whitespace-nowrap">
+                                    <div class="flex items-center gap-3">
+                                        <div class="relative shrink-0">
                                             <div
-                                                class="h-full w-full bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-xs uppercase">
-                                                {{ substr($user->name, 0, 2) }}
+                                                class="h-10 w-10 rounded-full overflow-hidden border border-neutral-200/80 aspect-square bg-sky-50 flex items-center justify-center">
+                                                @if ($user->profile_picture)
+                                                    <img src="{{ asset($user->profile_picture) }}"
+                                                        alt="{{ $user->name }}" class="h-full w-full object-cover">
+                                                @else
+                                                    <span
+                                                        class="font-extrabold text-xs text-sky-600 uppercase">{{ substr($user->name, 0, 2) }}</span>
+                                                @endif
                                             </div>
-                                        @endif
+                                            <span
+                                                class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full {{ $statusDot }} ring-2 ring-white"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-neutral-900 text-xs leading-tight">
+                                                {{ $user->name }}</p>
+                                            <p class="text-[10px] text-neutral-400 font-semibold mt-0.5">
+                                                {{ $user->role === 'admin' ? 'Administrator' : 'Kasir' }}</p>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="p-5 font-bold text-neutral-800 whitespace-nowrap">
-                                    {{ $user->name }}
-                                </td>
-                                <td class="p-5 whitespace-nowrap">
-                                    {{ $user->email }}
-                                </td>
-                                <td class="p-5 whitespace-nowrap">
+                                <td class="p-4 whitespace-nowrap">
                                     @if ($user->role === 'admin')
                                         <span
-                                            class="inline-flex items-center gap-1 rounded bg-sky-50 px-2.5 py-1 text-xs font-bold text-sky-700 border border-sky-100">
+                                            class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-extrabold bg-sky-100/80 text-sky-700 border border-sky-200/60">
                                             Admin
                                         </span>
                                     @else
                                         <span
-                                            class="inline-flex items-center gap-1 rounded bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-100">
+                                            class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-extrabold bg-emerald-100/80 text-emerald-700 border border-emerald-200/60">
                                             Kasir
                                         </span>
                                     @endif
                                 </td>
-                                <td class="p-5 whitespace-nowrap">
+                                <td class="p-4 whitespace-nowrap">
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold border {{ $statusClass }}">
+                                        {{ $statusLabel }}
+                                    </span>
+                                </td>
+                                <td class="p-4 whitespace-nowrap">
                                     @if ($user->shift)
-                                        <span
-                                            class="inline-flex items-center gap-1 rounded bg-neutral-100 px-2.5 py-1 text-xs font-semibold text-neutral-700 border border-neutral-200">
-                                            {{ $user->shift }}
-                                        </span>
+                                        <div class="flex items-center gap-1.5">
+                                            @if ($user->shift === 'Malam')
+                                                <svg class="h-3.5 w-3.5 text-blue-500 shrink-0" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                                                </svg>
+                                            @else
+                                                <svg class="h-3.5 w-3.5 text-amber-500 shrink-0" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                                                </svg>
+                                            @endif
+                                            <div>
+                                                <span
+                                                    class="font-extrabold text-neutral-800 text-xs block leading-tight">{{ $user->shift }}</span>
+                                                @if ($shiftHoursDisplay)
+                                                    <span
+                                                        class="text-[10px] text-neutral-400 font-semibold block mt-0.5">{{ $shiftHoursDisplay }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
                                     @else
-                                        <span class="text-neutral-400 italic text-xs">Tanpa Shift</span>
+                                        <div>
+                                            <span class="text-xs font-bold text-neutral-400 block leading-tight">-</span>
+                                            <span class="text-[10px] text-neutral-400 font-semibold block mt-0.5">Tanpa
+                                                Shift</span>
+                                        </div>
                                     @endif
                                 </td>
-                                <td class="p-5 whitespace-nowrap">
-                                    <div class="flex items-center justify-center gap-2">
+                                <td class="p-4 whitespace-nowrap text-xs font-semibold text-neutral-700">
+                                    {{ $user->email }}
+                                </td>
+                                <td class="p-4 whitespace-nowrap">
+                                    <span
+                                        class="font-extrabold text-neutral-800 text-xs block leading-tight">{{ $lastLoginText }}</span>
+                                    <span
+                                        class="text-[10px] text-neutral-400 font-semibold block mt-0.5">{{ $lastLoginDate }}</span>
+                                </td>
+                                <td class="p-4 pr-6 whitespace-nowrap text-center">
+                                    <div class="flex items-center justify-center gap-1.5">
                                         <button type="button" onclick="openEditModal({{ json_encode($user) }})"
-                                            class="inline-flex h-7 w-7 items-center justify-center rounded bg-amber-50 text-amber-600 border border-amber-100 hover:bg-amber-100 transition-colors cursor-pointer">
-                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                            class="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-neutral-200 bg-white text-sky-600 hover:bg-sky-50 shadow-2xs transition cursor-pointer">
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
@@ -104,8 +351,8 @@
                                             </form>
                                             <button type="button"
                                                 onclick="confirmDelete(event, '{{ $user->name }}', 'delete-form-{{ $user->id }}')"
-                                                class="inline-flex h-7 w-7 items-center justify-center rounded bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-100 transition-colors cursor-pointer">
-                                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                                class="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-neutral-200 bg-white text-rose-500 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 shadow-2xs transition cursor-pointer">
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                                     stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -117,7 +364,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="p-8 text-center text-neutral-400 italic">
+                                <td colspan="7" class="p-8 text-center text-neutral-400 italic">
                                     Belum ada data karyawan terdaftar.
                                 </td>
                             </tr>
@@ -214,6 +461,188 @@
                     Belum ada data karyawan terdaftar.
                 </div>
             @endforelse
+        </div>
+    </div>
+
+    <!-- KELOLA LIST SHIFT MODAL -->
+    <div id="manage-shifts-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+        <div
+            class="bg-white rounded-2xl max-w-lg w-full border border-neutral-200/60 shadow-xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col">
+            <div class="px-6 py-4 border-b border-neutral-100 flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-bold text-neutral-900">Daftar Shift Kerja</h3>
+                    <p class="text-[11px] text-neutral-400 mt-0.5">Daftar seluruh shift kerja yang terdaftar di sistem.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="closeModal('manage-shifts-modal'); openModal('create-shift-modal');"
+                        class="inline-flex items-center gap-1 rounded-lg bg-sky-50 px-3 py-1.5 text-xs font-bold text-sky-600 hover:bg-sky-100 transition cursor-pointer">
+                        Tambah Shift
+                    </button>
+                    <button type="button" onclick="closeModal('manage-shifts-modal')"
+                        class="text-neutral-400 hover:text-neutral-600 transition cursor-pointer p-1">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[60vh] space-y-3">
+                @forelse($shifts as $s)
+                    <div
+                        class="flex items-center justify-between p-3.5 rounded-xl border border-neutral-200/80 bg-neutral-50/50 hover:bg-white hover:border-neutral-300 transition duration-200 shadow-2xs">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="h-9 w-9 rounded-lg bg-sky-100/70 text-sky-600 flex items-center justify-center font-bold text-xs">
+                                ☀️
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-neutral-800">Shift {{ $s->name }}</h4>
+                                <p class="text-[11px] text-neutral-500 font-medium mt-0.5">
+                                    @if ($s->start_time && $s->end_time)
+                                        {{ $s->start_time }} - {{ $s->end_time }}
+                                    @else
+                                        Fleksibel / Tanpa Jam
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick='openEditShiftModal(@json($s))'
+                                class="rounded-lg border border-neutral-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-sky-600 hover:bg-sky-50 transition cursor-pointer">
+                                Ubah
+                            </button>
+                            <form method="POST" action="{{ route('admin.shifts.delete', $s->id) }}"
+                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus shift ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="rounded-lg border border-rose-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-8 text-neutral-400 italic text-xs">
+                        Belum ada shift kerja yang ditambahkan.<br>
+                        Silakan klik tombol <strong>Tambah Shift</strong> di atas.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- UBAH SHIFT MODAL -->
+    <div id="edit-shift-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+        <div
+            class="bg-white rounded-2xl max-w-md w-full border border-neutral-200/60 shadow-xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col">
+            <div class="px-6 py-4 border-b border-neutral-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-neutral-900">Ubah Shift Kerja</h3>
+                <button type="button" onclick="closeModal('edit-shift-modal')"
+                    class="text-neutral-400 hover:text-neutral-600 transition cursor-pointer">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="edit-shift-form" method="POST" action="" class="p-6 space-y-4">
+                @csrf
+                @method('PUT')
+                <div class="space-y-2">
+                    <label for="edit_shift_name" class="block text-xs font-bold text-neutral-700">Nama Shift</label>
+                    <div class="relative">
+                        <span
+                            class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400 pointer-events-none">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </span>
+                        <input id="edit_shift_name" name="name" type="text" required
+                            placeholder="Contoh: Pagi, Siang, Malam, Lembur"
+                            class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none transition duration-200 placeholder:text-neutral-400/80 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label for="edit_shift_start_time" class="block text-xs font-bold text-neutral-700">Jam
+                            Mulai</label>
+                        <input id="edit_shift_start_time" name="start_time" type="time"
+                            class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 px-4 py-3 text-xs outline-none transition duration-200 focus:border-sky-500 focus:bg-white">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="edit_shift_end_time" class="block text-xs font-bold text-neutral-700">Jam
+                            Selesai</label>
+                        <input id="edit_shift_end_time" name="end_time" type="time"
+                            class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 px-4 py-3 text-xs outline-none transition duration-200 focus:border-sky-500 focus:bg-white">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-neutral-100 flex items-center justify-end">
+                    <button type="submit"
+                        class="w-full rounded-xl bg-sky-500 py-3 text-xs font-bold text-white transition hover:bg-sky-600 shadow-sm active:scale-98 cursor-pointer">Simpan
+                        Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TAMBAH SHIFT MODAL -->
+    <div id="create-shift-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+        <div
+            class="bg-white rounded-2xl max-w-md w-full border border-neutral-200/60 shadow-xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col">
+            <div class="px-6 py-4 border-b border-neutral-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-neutral-900">Tambah Shift Kerja Baru</h3>
+                <button type="button" onclick="closeModal('create-shift-modal')"
+                    class="text-neutral-400 hover:text-neutral-600 transition cursor-pointer">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form method="POST" action="{{ route('admin.shifts.store') }}" class="p-6 space-y-4">
+                @csrf
+                <div class="space-y-2">
+                    <label for="shift_name" class="block text-xs font-bold text-neutral-700">Nama Shift</label>
+                    <div class="relative">
+                        <span
+                            class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400 pointer-events-none">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </span>
+                        <input id="shift_name" name="name" type="text" required
+                            placeholder="Contoh: Pagi, Siang, Malam, Lembur"
+                            class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none transition duration-200 placeholder:text-neutral-400/80 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label for="shift_start_time" class="block text-xs font-bold text-neutral-700">Jam Mulai</label>
+                        <input id="shift_start_time" name="start_time" type="time" placeholder="06:00"
+                            class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 px-4 py-3 text-xs outline-none transition duration-200 focus:border-sky-500 focus:bg-white">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="shift_end_time" class="block text-xs font-bold text-neutral-700">Jam Selesai</label>
+                        <input id="shift_end_time" name="end_time" type="time" placeholder="14:00"
+                            class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 px-4 py-3 text-xs outline-none transition duration-200 focus:border-sky-500 focus:bg-white">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-neutral-100 flex items-center justify-end">
+                    <button type="submit"
+                        class="w-full rounded-xl bg-sky-500 py-3 text-xs font-bold text-white transition hover:bg-sky-600 shadow-sm active:scale-98 cursor-pointer">Simpan
+                        Shift</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -395,19 +824,19 @@
                                 </svg>
                             </span>
                             <select id="create_shift" name="shift"
-                                class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
+                                class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50 cursor-pointer">
                                 <option value=""
                                     {{ old('shift') === '' && !old('edit_user_id') ? 'selected' : '' }}>Tanpa Shift
                                     (Default/Kantor)</option>
-                                <option value="Pagi"
-                                    {{ old('shift') === 'Pagi' && !old('edit_user_id') ? 'selected' : '' }}>Shift Pagi
-                                </option>
-                                <option value="Siang"
-                                    {{ old('shift') === 'Siang' && !old('edit_user_id') ? 'selected' : '' }}>Shift Siang
-                                </option>
-                                <option value="Malam"
-                                    {{ old('shift') === 'Malam' && !old('edit_user_id') ? 'selected' : '' }}>Shift Malam
-                                </option>
+                                @forelse($shifts as $s)
+                                    <option value="{{ $s->name }}"
+                                        {{ old('shift') === $s->name && !old('edit_user_id') ? 'selected' : '' }}>
+                                        Shift {{ $s->name }} @if ($s->start_time && $s->end_time)
+                                            ({{ $s->start_time }} - {{ $s->end_time }})
+                                        @endif
+                                    </option>
+                                @empty
+                                @endforelse
                             </select>
                             <span
                                 class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-neutral-400">
@@ -420,7 +849,7 @@
                     </div>
                 </div>
 
-                <div class="pt-24 border-t border-neutral-100 flex items-center justify-end">
+                <div class="pt-6 border-t border-neutral-100 flex items-center justify-end">
                     <button type="submit"
                         class="w-full rounded-xl bg-sky-500 py-3.5 text-xs font-bold text-white transition hover:bg-sky-600 hover:shadow-lg active:scale-98 cursor-pointer">Simpan
                         Karyawan</button>
@@ -538,21 +967,6 @@
                         <input id="edit_password" name="password" type="password"
                             placeholder="Kosongkan jika tidak ingin mengubah kata sandi"
                             class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-10 py-3 text-xs outline-none transition duration-200 placeholder:text-neutral-400/80 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
-                        <button type="button" onclick="togglePassword('edit_password', this)"
-                            class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-neutral-400 hover:text-neutral-600 transition cursor-pointer">
-                            <svg class="eye-show h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <svg class="eye-hide h-4.5 w-4.5 hidden" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.895 7.895L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                            </svg>
-                        </button>
                     </div>
                     @error('password')
                         @if (old('edit_user_id'))
@@ -574,7 +988,7 @@
                                 </svg>
                             </span>
                             <select id="edit_role" name="role" required
-                                class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
+                                class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50 cursor-pointer">
                                 <option value="kasir">Kasir</option>
                                 <option value="admin">Admin</option>
                             </select>
@@ -600,11 +1014,16 @@
                                 </svg>
                             </span>
                             <select id="edit_shift" name="shift"
-                                class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
+                                class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50 cursor-pointer">
                                 <option value="">Tanpa Shift (Default/Kantor)</option>
-                                <option value="Pagi">Shift Pagi</option>
-                                <option value="Siang">Shift Siang</option>
-                                <option value="Malam">Shift Malam</option>
+                                @forelse($shifts as $s)
+                                    <option value="{{ $s->name }}">
+                                        Shift {{ $s->name }} @if ($s->start_time && $s->end_time)
+                                            ({{ $s->start_time }} - {{ $s->end_time }})
+                                        @endif
+                                    </option>
+                                @empty
+                                @endforelse
                             </select>
                             <span
                                 class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-neutral-400">
@@ -617,7 +1036,7 @@
                     </div>
                 </div>
 
-                <div class="pt-24 border-t border-neutral-100 flex items-center justify-end">
+                <div class="pt-6 border-t border-neutral-100 flex items-center justify-end">
                     <button type="submit"
                         class="w-full rounded-xl bg-sky-500 py-3.5 text-xs font-bold text-white transition hover:bg-sky-600 hover:shadow-lg active:scale-98 cursor-pointer">Simpan
                         Perubahan</button>
@@ -626,8 +1045,7 @@
         </div>
     </div>
 
-
-    <!-- HAPUS -->
+    <!-- HAPUS MODAL -->
     <div id="delete-modal"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
         <div id="delete-modal-card"
@@ -655,12 +1073,86 @@
             </div>
         </div>
     </div>
-    <div id="users-page-data" data-auth-id="{{ auth()->id() }}"
-        data-has-errors="{{ $errors->any() ? 'true' : 'false' }}" data-old-edit-user-id="{{ old('edit_user_id') }}"
-        data-old-name="{{ old('name') }}" data-old-email="{{ old('email') }}" data-old-role="{{ old('role') }}"
-        data-old-shift="{{ old('shift') }}"
-        data-session-open-create-modal="{{ session('open_create_modal') ? 'true' : 'false' }}"
-        data-session-open-edit-modal-id="{{ session('open_edit_modal_id') }}"
-        data-users-json="{{ json_encode($users) }}" class="hidden">
-    </div>
+
+    <script>
+        function autoFillShiftHours(selectElem, targetInputId) {
+            const targetInput = document.getElementById(targetInputId);
+            if (!targetInput) return;
+            const val = selectElem.value;
+            if (val === 'Pagi') {
+                targetInput.value = '06:00 - 14:00';
+            } else if (val === 'Siang') {
+                targetInput.value = '14:00 - 22:00';
+            } else if (val === 'Malam') {
+                targetInput.value = '22:00 - 06:00';
+            } else if (val === '') {
+                targetInput.value = '';
+            }
+        }
+
+        function filterUsersTable() {
+            const searchVal = (document.getElementById('user-search-input')?.value || '').toLowerCase().trim();
+            const roleVal = (document.getElementById('user-role-filter')?.value || '').toLowerCase().trim();
+            const shiftVal = (document.getElementById('user-shift-filter')?.value || '').toLowerCase().trim();
+            const statusVal = (document.getElementById('user-status-filter')?.value || '').toLowerCase().trim();
+
+            const rows = document.querySelectorAll('.user-row');
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name') || '';
+                const email = row.getAttribute('data-email') || '';
+                const role = row.getAttribute('data-role') || '';
+                const shift = row.getAttribute('data-shift') || '';
+                const status = row.getAttribute('data-status') || '';
+
+                const matchesSearch = !searchVal || name.includes(searchVal) || email.includes(searchVal);
+                const matchesRole = !roleVal || role === roleVal;
+                const matchesShift = !shiftVal || shift.includes(shiftVal);
+                const matchesStatus = !statusVal || status === statusVal;
+
+                if (matchesSearch && matchesRole && matchesShift && matchesStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function openEditModal(user) {
+            const modal = document.getElementById('edit-user-modal');
+            if (!modal) return;
+            const form = document.getElementById('edit-user-form');
+            form.action = `/admin/users/${user.id}`;
+            document.getElementById('edit_user_id_field').value = user.id;
+            document.getElementById('edit_name').value = user.name || '';
+            document.getElementById('edit_email').value = user.email || '';
+            document.getElementById('edit_role').value = user.role || 'kasir';
+            document.getElementById('edit_shift').value = user.shift || '';
+
+            const placeholder = document.getElementById('edit-avatar-placeholder');
+            const preview = document.getElementById('edit-avatar-preview');
+            if (user.profile_picture) {
+                preview.src = `/${user.profile_picture}`;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                preview.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                placeholder.textContent = user.name ? user.name.substring(0, 2).toUpperCase() : '';
+            }
+
+            openModal('edit-user-modal');
+        }
+
+        function openEditShiftModal(shift) {
+            closeModal('manage-shifts-modal');
+            const modal = document.getElementById('edit-shift-modal');
+            if (!modal) return;
+            const form = document.getElementById('edit-shift-form');
+            form.action = `/admin/shifts/${shift.id}`;
+            document.getElementById('edit_shift_name').value = shift.name || '';
+            document.getElementById('edit_shift_start_time').value = shift.start_time || '';
+            document.getElementById('edit_shift_end_time').value = shift.end_time || '';
+            openModal('edit-shift-modal');
+        }
+    </script>
 @endsection

@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Transaksi')
+@section('title', '')
 @section('konten')
     <div class="pos-page h-full flex flex-col space-y-4">
         <div class="flex md:hidden bg-neutral-200/60 p-1.5 rounded-xl gap-1 shrink-0">

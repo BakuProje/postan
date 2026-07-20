@@ -48,7 +48,6 @@ Route::post('/login', function () {
                 'subtitle' => $user->role === 'admin' ? 'Sesi Admin dimulai' : "Shift " . ($user->shift ?? 'Harian') . " dimulai",
             ]);
         } catch (\Exception $e) {
-            // Ignore
         }
 
         if (Auth::user()->role === 'admin') {
@@ -141,6 +140,18 @@ Route::get('/dashboard/users/create', [UserController::class, 'createUser'])
 
 Route::post('/dashboard/users', [UserController::class, 'storeUser'])
     ->name('admin.users.store')
+    ->middleware('auth');
+
+Route::post('/dashboard/shifts', [UserController::class, 'storeShift'])
+    ->name('admin.shifts.store')
+    ->middleware('auth');
+
+Route::put('/dashboard/shifts/{shift}', [UserController::class, 'updateShift'])
+    ->name('admin.shifts.update')
+    ->middleware('auth');
+
+Route::delete('/dashboard/shifts/{shift}', [UserController::class, 'deleteShift'])
+    ->name('admin.shifts.delete')
     ->middleware('auth');
 
 Route::get('/dashboard/users/{user}/edit', [UserController::class, 'editUser'])

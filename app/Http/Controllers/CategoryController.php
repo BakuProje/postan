@@ -12,8 +12,10 @@ class CategoryController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('admin.transactions');
         }
-        $categories = Category::withCount('products')->latest()->get();
-        return view('admin.categories', compact('categories'));
+        $categories = Category::withCount('products')->with('products')->latest()->get();
+        $totalProducts = \App\Models\Product::count();
+        $totalStock = \App\Models\Product::sum('stock');
+        return view('admin.categories', compact('categories', 'totalProducts', 'totalStock'));
     }
 
     public function createCategory()

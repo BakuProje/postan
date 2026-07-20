@@ -110,25 +110,30 @@
                         </svg>
                         <span class="sidebar-text">Kelola Kasir</span>
                     </a>
-                    <a href="{{ route('admin.products') }}"
-                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all duration-150 sidebar-nav-link {{ request()->routeIs('admin.products') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
-                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581a1.44 1.44 0 0 0 2.037 0l4.318-4.318a1.44 1.44 0 0 0 0-2.037L10.12 3.659A2.25 2.25 0 0 0 9.568 3Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                        </svg>
-                        <span class="sidebar-text">Produk</span>
-                    </a>
-                    <a href="{{ route('admin.categories') }}"
-                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all duration-150 sidebar-nav-link {{ request()->routeIs('admin.categories') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
-                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
-                        </svg>
-                        <span class="sidebar-text">Kategori</span>
-                    </a>
+                    <div class="inventaris-group space-y-1">
+                        <button type="button" onclick="toggleInventaris(this)"
+                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all duration-150 sidebar-nav-link {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
+                            <div class="flex items-center gap-3">
+                                <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25M9 7.5v9" />
+                                </svg>
+                                <span class="sidebar-text">Inventaris</span>
+                            </div>
+                            <svg class="size-3.5 transition-transform duration-200 sidebar-text inventaris-chevron {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+                        <div class="inventaris-submenu pl-9 space-y-1 sidebar-text {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? '' : 'hidden' }}">
+                            <a href="{{ route('admin.products') }}"
+                                class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.products*') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
+                                Produk
+                            </a>
+                            <a href="{{ route('admin.categories') }}"
+                                class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.categories*') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
+                                Kategori
+                            </a>
+                        </div>
+                    </div>
                     <a href="{{ route('admin.reports') }}"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all duration-150 sidebar-nav-link {{ request()->routeIs('admin.reports') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
                         <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -333,25 +338,30 @@
                             </svg>
                             Kelola Kasir
                         </a>
-                        <a href="{{ route('admin.products') }}"
-                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold {{ request()->routeIs('admin.products') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
-                            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581a1.44 1.44 0 0 0 2.037 0l4.318-4.318a1.44 1.44 0 0 0 0-2.037L10.12 3.659A2.25 2.25 0 0 0 9.568 3Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                            </svg>
-                            Produk
-                        </a>
-                        <a href="{{ route('admin.categories') }}"
-                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold {{ request()->routeIs('admin.categories') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
-                            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
-                            </svg>
-                            Kategori
-                        </a>
+                        <div class="inventaris-group space-y-1">
+                            <button type="button" onclick="toggleInventaris(this)"
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all duration-150 {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
+                                <div class="flex items-center gap-3">
+                                    <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25M9 7.5v9" />
+                                    </svg>
+                                    <span>Inventaris</span>
+                                </div>
+                                <svg class="size-3.5 transition-transform duration-200 inventaris-chevron {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                            <div class="inventaris-submenu pl-9 space-y-1 {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? '' : 'hidden' }}">
+                                <a href="{{ route('admin.products') }}"
+                                    class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.products*') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
+                                    Produk
+                                </a>
+                                <a href="{{ route('admin.categories') }}"
+                                    class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.categories*') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
+                                    Kategori
+                                </a>
+                            </div>
+                        </div>
                         <a href="{{ route('admin.reports') }}"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold {{ request()->routeIs('admin.reports') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
                             <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -612,6 +622,17 @@
             </div>
         </div>
     @endif
+
+    <script>
+        function toggleInventaris(button) {
+            const group = button.closest('.inventaris-group');
+            if (!group) return;
+            const submenu = group.querySelector('.inventaris-submenu');
+            const chevron = group.querySelector('.inventaris-chevron');
+            if (submenu) submenu.classList.toggle('hidden');
+            if (chevron) chevron.classList.toggle('rotate-180');
+        }
+    </script>
 </body>
 
 </html>
