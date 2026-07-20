@@ -161,3 +161,12 @@ main:has(.pos-page) {
     padding-left: 0.5rem !important;
     padding-right: 1.5rem !important;
 }
+
+
+@media (min-width: 1024px) {
+    .mockup-3d {
+        transform: none;
+        transform-style: flat;
+        backface-visibility: visible;
+    }
+}

@@ -51,27 +51,6 @@
                                 class="text-neutral-400 bg-neutral-50 border border-neutral-200/30 rounded-full px-2.5 py-0.5">0%</span>
                         @endif
                     </div>
-                    <div class="w-24 h-8 shrink-0">
-                        <svg class="w-full h-full overflow-visible" viewBox="-4 -4 128 48" fill="none"
-                            preserveAspectRatio="none">
-                            <path d="M0 28 C10 24, 15 14, 25 18 S40 8, 50 12 S65 6, 75 10 S90 4, 100 14 S110 10, 120 8"
-                                stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                                fill="none" filter="url(#glow-green)" />
-                            <path
-                                d="M0 28 C10 24, 15 14, 25 18 S40 8, 50 12 S65 6, 75 10 S90 4, 100 14 S110 10, 120 8 L120 40 L0 40 Z"
-                                fill="url(#grad-green)" opacity="0.12" />
-                            <defs>
-                                <linearGradient id="grad-green" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#10b981" />
-                                    <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
-                                </linearGradient>
-                                <filter id="glow-green" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#10b981"
-                                        flood-opacity="0.3" />
-                                </filter>
-                            </defs>
-                        </svg>
-                    </div>
                 </div>
             </div>
 
@@ -116,28 +95,6 @@
                             <span
                                 class="text-neutral-400 bg-neutral-50 border border-neutral-200/30 rounded-full px-2.5 py-0.5">0%</span>
                         @endif
-                    </div>
-                    <div class="w-24 h-8 shrink-0">
-                        <svg class="w-full h-full overflow-visible" viewBox="-4 -4 128 48" fill="none"
-                            preserveAspectRatio="none">
-                            <path d="M0 30 C8 22, 18 26, 28 18 S42 10, 52 16 S68 8, 78 14 S92 22, 102 12 S112 6, 120 10"
-                                stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                                fill="none" filter="url(#glow-blue)" />
-                            <path
-                                d="M0 30 C8 22, 18 26, 28 18 S42 10, 52 16 S68 8, 78 14 S92 22, 102 12 S112 6, 120 10 L120 40 L0 40 Z"
-                                fill="url(#grad-blue)" opacity="0.12" />
-                            <defs>
-                                <linearGradient id="grad-blue" x1="0" y1="0" x2="0"
-                                    y2="1">
-                                    <stop offset="0%" stop-color="#3b82f6" />
-                                    <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
-                                </linearGradient>
-                                <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#3b82f6"
-                                        flood-opacity="0.3" />
-                                </filter>
-                            </defs>
-                        </svg>
                     </div>
                 </div>
             </div>
@@ -184,28 +141,6 @@
                                 class="text-neutral-400 bg-neutral-50 border border-neutral-200/30 rounded-full px-2.5 py-0.5">0%</span>
                         @endif
                     </div>
-                    <div class="w-24 h-8 shrink-0">
-                        <svg class="w-full h-full overflow-visible" viewBox="-4 -4 128 48" fill="none"
-                            preserveAspectRatio="none">
-                            <path d="M0 20 C12 28, 20 10, 32 18 S48 30, 58 14 S72 24, 82 10 S96 20, 108 16 L120 22"
-                                stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                                fill="none" filter="url(#glow-orange)" />
-                            <path
-                                d="M0 20 C12 28, 20 10, 32 18 S48 30, 58 14 S72 24, 82 10 S96 20, 108 16 L120 22 L120 40 L0 40 Z"
-                                fill="url(#grad-orange)" opacity="0.12" />
-                            <defs>
-                                <linearGradient id="grad-orange" x1="0" y1="0" x2="0"
-                                    y2="1">
-                                    <stop offset="0%" stop-color="#f97316" />
-                                    <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
-                                </linearGradient>
-                                <filter id="glow-orange" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#f97316"
-                                        flood-opacity="0.3" />
-                                </filter>
-                            </defs>
-                        </svg>
-                    </div>
                 </div>
             </div>
 
@@ -235,28 +170,6 @@
                             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                             Aktif
                         </span>
-                    </div>
-                    <div class="w-24 h-8 shrink-0">
-                        <svg class="w-full h-full overflow-visible" viewBox="-4 -4 128 48" fill="none"
-                            preserveAspectRatio="none">
-                            <path d="M0 18 C10 12, 22 24, 32 16 S46 8, 56 20 S70 28, 82 14 S96 10, 108 22 L120 18"
-                                stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                                fill="none" filter="url(#glow-purple)" />
-                            <path
-                                d="M0 18 C10 12, 22 24, 32 16 S46 8, 56 20 S70 28, 82 14 S96 10, 108 22 L120 18 L120 40 L0 40 Z"
-                                fill="url(#grad-purple)" opacity="0.12" />
-                            <defs>
-                                <linearGradient id="grad-purple" x1="0" y1="0" x2="0"
-                                    y2="1">
-                                    <stop offset="0%" stop-color="#7c3aed" />
-                                    <stop offset="100%" stop-color="#7c3aed" stop-opacity="0" />
-                                </linearGradient>
-                                <filter id="glow-purple" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#7c3aed"
-                                        flood-opacity="0.3" />
-                                </filter>
-                            </defs>
-                        </svg>
                     </div>
                 </div>
             </div>
