@@ -15,7 +15,7 @@ class CategoryController extends Controller
         $categories = Category::withCount('products')->with('products')->latest()->get();
         $totalProducts = \App\Models\Product::count();
         $totalStock = \App\Models\Product::sum('stock');
-        return view('admin.categories', compact('categories', 'totalProducts', 'totalStock'));
+        return view('admin.categories.index', compact('categories', 'totalProducts', 'totalStock'));
     }
 
     public function createCategory()

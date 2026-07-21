@@ -105,7 +105,7 @@ Route::get('/dashboard/users', [UserController::class, 'users'])
     ->middleware('auth');
 
 Route::get('/dashboard/users/create', [UserController::class, 'createUser'])
-    ->name('admin.users.CreateKasir')
+    ->name('admin.users.create')
     ->middleware('auth');
 
 Route::post('/dashboard/users', [UserController::class, 'storeUser'])
@@ -125,7 +125,7 @@ Route::delete('/dashboard/shifts/{shift}', [UserController::class, 'deleteShift'
     ->middleware('auth');
 
 Route::get('/dashboard/users/{user}/edit', [UserController::class, 'editUser'])
-    ->name('admin.users.EditKasir')
+    ->name('admin.users.edit')
     ->middleware('auth');
 
 Route::put('/dashboard/users/{user}', [UserController::class, 'updateUser'])

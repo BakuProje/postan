@@ -416,7 +416,7 @@
                     </div>
 
                     <div class="flex items-center justify-end gap-3 border-t border-neutral-100 pt-3.5">
-                        <a href="{{ route('admin.users.EditKasir', $user->id) }}"
+                        <a href="{{ route('admin.users.edit', $user->id) }}"
                             class="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-50 text-xs font-bold text-amber-600 border border-amber-100 hover:bg-amber-100 transition active:scale-98 cursor-pointer text-center">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor">

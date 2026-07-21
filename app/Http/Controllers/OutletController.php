@@ -13,7 +13,7 @@ class OutletController extends Controller
             return redirect()->route('admin.transactions');
         }
         $outlet = Outlet::first() ?: new Outlet();
-        return view('admin.outlet', compact('outlet'));
+        return view('admin.outlet.index', compact('outlet'));
     }
 
     public function updateOutlet(Request $request)

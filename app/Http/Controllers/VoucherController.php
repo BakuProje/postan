@@ -53,7 +53,7 @@ class VoucherController extends Controller
         $expiringVouchers = Voucher::where('is_active', true)->whereBetween('end_date', [$today, $sevenDaysLater])->count();
         $totalUsed        = Voucher::sum('used_count');
 
-        return view('admin.vouchers', compact(
+        return view('admin.vouchers.index', compact(
             'vouchers',
             'totalVouchers',
             'activeVouchers',

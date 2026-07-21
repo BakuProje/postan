@@ -78,7 +78,7 @@ class UserController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('admin.transactions');
         }
-        return view('admin.users.CreateKasir');
+        return view('admin.users.create');
     }
 
     public function storeUser(Request $request)
@@ -138,7 +138,7 @@ class UserController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('admin.transactions');
         }
-        return view('admin.users.EditKasir', compact('user'));
+        return view('admin.users.edit', compact('user'));
     }
 
     public function updateUser(Request $request, User $user)

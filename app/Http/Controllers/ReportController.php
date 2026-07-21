@@ -111,7 +111,7 @@ class ReportController extends Controller
         $transactions = $query->latest()->paginate(10)->withQueryString();
         $cashiers = User::orderBy('name')->get();
 
-        return view('admin.reports', compact(
+        return view('admin.reports.index', compact(
             'startDate',
             'endDate',
             'period',

@@ -15,7 +15,7 @@ class ProductController extends Controller
         }
         $products = Product::with('category')->latest()->get();
         $categories = Category::latest()->get();
-        return view('admin.products', compact('products', 'categories'));
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function createProduct()

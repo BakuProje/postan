@@ -15,7 +15,7 @@ class TransactionController extends Controller
         $products = Product::with('category')->latest()->get();
         $categories = Category::latest()->get();
         $outlet = Outlet::first();
-        return view('admin.transactions', compact('products', 'categories', 'outlet'));
+        return view('admin.transactions.index', compact('products', 'categories', 'outlet'));
     }
 
     public function storeTransaction(Request $request)
@@ -166,6 +166,6 @@ class TransactionController extends Controller
         
         $transactions = $query->latest()->paginate(10)->withQueryString();
         $outlet = Outlet::first();
-        return view('admin.history', compact('transactions', 'outlet'));
+        return view('admin.transactions.history', compact('transactions', 'outlet'));
     }
 }

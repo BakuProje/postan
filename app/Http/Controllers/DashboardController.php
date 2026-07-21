@@ -65,7 +65,7 @@ class DashboardController extends Controller
 
         $produkTerjual = \App\Models\TransactionItem::sum('quantity') ?: 0;
 
-        return view('admin.dashboard', compact(
+        return view('admin.dashboard.index', compact(
             'omset',
             'penjualan',
             'performaKasir',
@@ -157,7 +157,7 @@ class DashboardController extends Controller
         $totalTerlarisCount = count($products);
         $avgPrice = $totalItemsSoldAll > 0 ? round($totalRevenueAll / $totalItemsSoldAll) : 0;
 
-        return view('admin.terlaris', compact(
+        return view('admin.reports.terlaris', compact(
             'categories',
             'products',
             'top5Products',
