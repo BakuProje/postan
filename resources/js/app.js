@@ -529,12 +529,12 @@ function showToastNotification(message, type = 'success') {
     const toast = document.createElement('div');
     toast.id = 'toast-notification-dynamic';
     toast.className = 'fixed top-6 left-1/2 z-50 transform -translate-x-1/2 -translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto';
-    
+
     const isSuccess = type === 'success';
     const borderClass = isSuccess ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-800';
     const iconColor = isSuccess ? 'text-emerald-600' : 'text-rose-600';
-    
-    const svgIcon = isSuccess 
+
+    const svgIcon = isSuccess
         ? `<svg class="h-4.5 w-4.5 ${iconColor} shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
            </svg>`
@@ -542,13 +542,17 @@ function showToastNotification(message, type = 'success') {
                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
            </svg>`;
 
-    toast.innerHTML = `
-        <div class="flex items-center gap-3 rounded-xl border ${borderClass} px-4 py-3 shadow-lg max-w-sm whitespace-nowrap bg-white/95 backdrop-blur-md">
-            ${svgIcon}
-            <p class="text-xs font-bold">${message}</p>
-        </div>
-    `;
+    // Prevent HTML/XSS injection: create container and use textContent securely!
+    const container = document.createElement('div');
+    container.className = `flex items-center gap-3 rounded-xl border ${borderClass} px-4 py-3 max-w-sm bg-white/95 backdrop-blur-md`;
+    container.innerHTML = svgIcon;
 
+    const p = document.createElement('p');
+    p.className = 'text-xs font-bold';
+    p.textContent = message; // textContent automatically escapes XSS/HTML injections!
+
+    container.appendChild(p);
+    toast.appendChild(container);
     document.body.appendChild(toast);
 
     setTimeout(() => {
@@ -733,7 +737,7 @@ function toggleCustomDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
     const arrow = document.getElementById(dropdownId + '-arrow');
     if (!dropdown) return;
-    
+
     document.querySelectorAll('[id$="-dropdown"]').forEach(el => {
         if (el.id !== dropdownId) {
             el.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
@@ -756,7 +760,7 @@ function selectCustomCategory(prefix, categoryId, categoryName) {
     const label = document.getElementById(prefix + '-category-dropdown-label');
     const dropdown = document.getElementById(prefix + '-category-dropdown');
     const arrow = document.getElementById(prefix + '-category-dropdown-arrow');
-    
+
     if (hiddenInput && label && dropdown) {
         hiddenInput.value = categoryId;
         label.textContent = categoryName;
@@ -813,7 +817,7 @@ function openEditProductModal(product) {
     const editStockInput = document.getElementById('edit_product_stock');
 
     if (editNameInput) editNameInput.value = (isEditError && oldName) ? oldName : product.name;
-    
+
     const selectedCategoryId = (isEditError && oldCategoryId) ? oldCategoryId : product.category_id;
     if (editCategoryInput) editCategoryInput.value = selectedCategoryId;
     if (editCategoryLabel) {
@@ -895,14 +899,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 12. POS CASHIER TRANSACTION MANAGEMENT
 let posCart = [];
+let activeVoucher = null;
 let activePaymentMethod = 'cash'; // 'cash' or 'qris'
 
 function addProductToCart(element) {
-    const id = parseInt(element.dataset.id);
-    const name = element.dataset.name;
-    const price = parseInt(element.dataset.price);
-    const stock = parseInt(element.dataset.stock);
-    const photo = element.dataset.photo || '';
+    if (!element) return;
+    const id = parseInt(element.dataset.id || 0);
+    const name = element.dataset.name || 'Produk';
+    const price = parseInt(element.dataset.price || 0);
+    const stock = parseInt(element.dataset.stock || 0);
+    const photo = (element.dataset.photo && typeof element.dataset.photo === 'string') ? element.dataset.photo : '';
 
     if (stock <= 0) {
         showToastNotification('Stok produk habis.', 'error');
@@ -949,92 +955,143 @@ function removeCartItem(id) {
 
 function clearCart() {
     posCart = [];
+    activeVoucher = null;
+    const codeInput = document.getElementById('pos-voucher-code');
+    if (codeInput) codeInput.value = '';
+    const inputGrp = document.getElementById('pos-voucher-input-group');
+    if (inputGrp) inputGrp.classList.remove('hidden');
+    const appliedVch = document.getElementById('pos-applied-voucher');
+    if (appliedVch) appliedVch.classList.add('hidden');
     renderPosCart();
 }
 
 function renderPosCart() {
-    const container = document.getElementById('cart-items-container');
-    const emptyPlaceholder = document.getElementById('cart-empty-placeholder');
-    const badge = document.getElementById('cart-badge');
+    try {
+        const container = document.getElementById('cart-items-container');
+        const emptyPlaceholder = document.getElementById('cart-empty-placeholder');
+        const badge = document.getElementById('cart-badge');
 
-    if (!container) return;
+        if (!container) return;
 
-    const oldItems = container.querySelectorAll('.pos-cart-item-row');
-    oldItems.forEach(el => el.remove());
+        const oldItems = container.querySelectorAll('.pos-cart-item-row');
+        oldItems.forEach(el => el.remove());
 
-    if (posCart.length === 0) {
-        if (emptyPlaceholder) emptyPlaceholder.classList.remove('hidden');
-        if (badge) badge.classList.add('hidden');
-    } else {
-        if (emptyPlaceholder) emptyPlaceholder.classList.add('hidden');
-        if (badge) {
-            badge.classList.remove('hidden');
-            badge.textContent = posCart.reduce((acc, i) => acc + i.quantity, 0);
-        }
-
-        posCart.forEach(item => {
-            const itemRow = document.createElement('div');
-            itemRow.className = 'pos-cart-item-row bg-white/45 backdrop-blur-md rounded-xl p-3 border border-white/20 flex items-center justify-between gap-3 text-sm';
-
-            let imgHtml = '';
-            if (item.photo && item.photo.trim() !== '') {
-                imgHtml = `<img src="${item.photo}" class="h-10 w-10 rounded-lg object-cover border border-neutral-100 shrink-0 shadow-xs">`;
-            } else {
-                imgHtml = `<div class="h-10 w-10 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center font-extrabold text-xs uppercase shrink-0 select-none">${item.name.substring(0, 2)}</div>`;
+        if (posCart.length === 0) {
+            if (emptyPlaceholder) emptyPlaceholder.classList.remove('hidden');
+            if (badge) badge.classList.add('hidden');
+        } else {
+            if (emptyPlaceholder) emptyPlaceholder.classList.add('hidden');
+            if (badge) {
+                badge.classList.remove('hidden');
+                badge.textContent = posCart.reduce((acc, i) => acc + (i.quantity || 0), 0);
             }
 
-            itemRow.innerHTML = `
-                <div class="flex items-center gap-2.5 flex-1 min-w-0">
-                    ${imgHtml}
-                    <div class="min-w-0">
-                        <p class="font-bold text-neutral-800 truncate text-xs sm:text-sm">${item.name}</p>
-                        <p class="text-xs text-neutral-400 mt-0.5">${formatRupiah(item.price)}</p>
+            posCart.forEach(item => {
+                const itemRow = document.createElement('div');
+                itemRow.className = 'pos-cart-item-row bg-white/45 backdrop-blur-md rounded-xl p-3 border border-white/20 flex items-center justify-between gap-3 text-sm';
+
+                let imgHtml = '';
+                const photoUrl = (item.photo && typeof item.photo === 'string') ? item.photo.trim() : '';
+                if (photoUrl !== '') {
+                    imgHtml = `<img src="${photoUrl}" class="h-10 w-10 rounded-lg object-cover border border-neutral-100 shrink-0 shadow-xs">`;
+                } else {
+                    const shortName = (item.name && typeof item.name === 'string') ? item.name.substring(0, 2) : 'PR';
+                    imgHtml = `<div class="h-10 w-10 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center font-extrabold text-xs uppercase shrink-0 select-none">${shortName}</div>`;
+                }
+
+                itemRow.innerHTML = `
+                    <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                        ${imgHtml}
+                        <div class="min-w-0">
+                            <p class="font-bold text-neutral-800 truncate text-xs sm:text-sm">${item.name}</p>
+                            <p class="text-xs text-neutral-400 mt-0.5">${formatRupiah(item.price)}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="flex items-center gap-1.5 shrink-0">
-                    <button type="button" onclick="updateCartQty(${item.id}, -1)" class="h-7 w-7 rounded bg-white border border-neutral-200 hover:border-sky-400 hover:text-sky-600 flex items-center justify-center font-bold text-sm select-none cursor-pointer">-</button>
-                    <span class="font-extrabold text-neutral-700 w-5 text-center text-xs sm:text-sm">${item.quantity}</span>
-                    <button type="button" onclick="updateCartQty(${item.id}, 1)" class="h-7 w-7 rounded bg-white border border-neutral-200 hover:border-sky-400 hover:text-sky-600 flex items-center justify-center font-bold text-sm select-none cursor-pointer">+</button>
-                </div>
-                <div class="text-right min-w-[70px] shrink-0">
-                    <span class="font-extrabold text-neutral-800 block text-xs sm:text-sm">${formatRupiah(item.price * item.quantity)}</span>
-                </div>
-                <button type="button" onclick="removeCartItem(${item.id})" class="text-neutral-400 hover:text-rose-500 transition shrink-0 cursor-pointer">
-                    <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            `;
-            container.appendChild(itemRow);
-        });
-    }
-
-    const totalQty = posCart.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-    const qtyLabel = document.getElementById('total-qty-label');
-    const priceLabel = document.getElementById('total-price-label');
-    const openPaymentBtn = document.getElementById('btn-open-payment-modal');
-
-    if (qtyLabel) qtyLabel.textContent = `${totalQty} Item`;
-    if (priceLabel) priceLabel.textContent = formatRupiah(totalPrice);
-
-    if (openPaymentBtn) {
-        if (posCart.length > 0) {
-            openPaymentBtn.disabled = false;
-            openPaymentBtn.className = 'w-full rounded-xl py-4 text-sm font-black text-white bg-sky-500 hover:bg-sky-600 active:scale-98 transition duration-200 flex items-center justify-center gap-2 shadow-md cursor-pointer';
-        } else {
-            openPaymentBtn.disabled = true;
-            openPaymentBtn.className = 'w-full rounded-xl py-4 text-sm font-bold text-neutral-400 bg-neutral-150 border border-neutral-250 pointer-events-none transition duration-200 flex items-center justify-center gap-2 shadow-sm';
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="updateCartQty(${item.id}, -1)" class="h-7 w-7 rounded bg-white border border-neutral-200 hover:border-sky-400 hover:text-sky-600 flex items-center justify-center font-bold text-sm select-none cursor-pointer">-</button>
+                        <span class="font-extrabold text-neutral-700 w-5 text-center text-xs sm:text-sm">${item.quantity}</span>
+                        <button type="button" onclick="updateCartQty(${item.id}, 1)" class="h-7 w-7 rounded bg-white border border-neutral-200 hover:border-sky-400 hover:text-sky-600 flex items-center justify-center font-bold text-sm select-none cursor-pointer">+</button>
+                    </div>
+                    <div class="text-right min-w-[70px] shrink-0">
+                        <span class="font-extrabold text-neutral-800 block text-xs sm:text-sm">${formatRupiah(item.price * item.quantity)}</span>
+                    </div>
+                    <button type="button" onclick="removeCartItem(${item.id})" class="text-neutral-400 hover:text-rose-500 transition shrink-0 cursor-pointer">
+                        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+                container.appendChild(itemRow);
+            });
         }
+
+        const totalQty = posCart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        const originalPrice = posCart.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 0)), 0);
+        let discount = 0;
+
+        if (typeof activeVoucher !== 'undefined' && activeVoucher) {
+            if (activeVoucher.type === 'discount_percent') {
+                discount = Math.floor(originalPrice * ((activeVoucher.value || 0) / 100));
+            } else {
+                discount = activeVoucher.value || 0;
+            }
+            discount = Math.min(discount, originalPrice);
+        }
+
+        const finalPrice = Math.max(0, originalPrice - discount);
+
+        const qtyLabel = document.getElementById('total-qty-label');
+        const priceLabel = document.getElementById('total-price-label');
+        const openPaymentBtn = document.getElementById('btn-open-payment-modal');
+
+        if (qtyLabel) qtyLabel.textContent = `${totalQty} Item`;
+        if (priceLabel) priceLabel.textContent = formatRupiah(finalPrice);
+
+        // Update Voucher Discount Row
+        const discountRow = document.getElementById('pos-voucher-discount-row');
+        const discountDesc = document.getElementById('pos-voucher-discount-desc');
+        const discountLabel = document.getElementById('pos-voucher-discount-label');
+        if (discountRow && discountDesc && discountLabel) {
+            if (discount > 0 && typeof activeVoucher !== 'undefined' && activeVoucher) {
+                discountRow.classList.remove('hidden');
+                discountDesc.textContent = activeVoucher.discount_desc || (activeVoucher.type === 'discount_percent' ? `${activeVoucher.value}%` : formatRupiah(activeVoucher.value));
+                discountLabel.textContent = `- ${formatRupiah(discount)}`;
+            } else {
+                discountRow.classList.add('hidden');
+            }
+        }
+
+        if (openPaymentBtn) {
+            if (posCart.length > 0) {
+                openPaymentBtn.disabled = false;
+                openPaymentBtn.classList.remove('opacity-50', 'pointer-events-none', 'bg-neutral-150', 'text-neutral-400');
+                openPaymentBtn.className = 'w-full rounded-xl py-4 text-sm font-black text-white bg-sky-500 hover:bg-sky-600 active:scale-98 transition duration-200 flex items-center justify-center gap-2 shadow-md cursor-pointer';
+            } else {
+                openPaymentBtn.disabled = true;
+                openPaymentBtn.className = 'w-full rounded-xl py-4 text-sm font-bold text-neutral-400 bg-neutral-150 border border-neutral-250 pointer-events-none transition duration-200 flex items-center justify-center gap-2 shadow-sm';
+            }
+        }
+    } catch (err) {
+        console.error("Error in renderPosCart:", err);
     }
 }
 
 function openPaymentModal() {
-    const totalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const originalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    let discount = 0;
+    if (activeVoucher) {
+        if (activeVoucher.type === 'discount_percent') {
+            discount = Math.floor(originalPrice * (activeVoucher.value / 100));
+        } else {
+            discount = activeVoucher.value;
+        }
+        discount = Math.min(discount, originalPrice);
+    }
+    const finalPrice = originalPrice - discount;
+
     const totalLabel = document.getElementById('payment-modal-total-label');
     if (totalLabel) {
-        totalLabel.textContent = formatRupiah(totalPrice);
+        totalLabel.textContent = formatRupiah(finalPrice);
     }
 
     const rawInput = document.getElementById('pos-paid-input');
@@ -1065,12 +1122,23 @@ function selectPaymentMethod(method) {
         if (qrisPanel) qrisPanel.classList.remove('hidden');
         if (cashPanel) cashPanel.classList.add('hidden');
 
-        const totalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const originalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        let discount = 0;
+        if (activeVoucher) {
+            if (activeVoucher.type === 'discount_percent') {
+                discount = Math.floor(originalPrice * (activeVoucher.value / 100));
+            } else {
+                discount = activeVoucher.value;
+            }
+            discount = Math.min(discount, originalPrice);
+        }
+        const finalPrice = originalPrice - discount;
+
         const rawInput = document.getElementById('pos-paid-input');
-        if (rawInput) rawInput.value = totalPrice;
+        if (rawInput) rawInput.value = finalPrice;
 
         const qrisAutoLabel = document.getElementById('qris-auto-price-label');
-        if (qrisAutoLabel) qrisAutoLabel.textContent = formatRupiah(totalPrice);
+        if (qrisAutoLabel) qrisAutoLabel.textContent = formatRupiah(finalPrice);
 
         const checkoutBtn = document.getElementById('btn-checkout');
         if (checkoutBtn) {
@@ -1091,7 +1159,17 @@ function calculateChange() {
 
     if (!rawInput || !changeLabel || !checkoutBtn) return;
 
-    const totalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const originalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    let discount = 0;
+    if (activeVoucher) {
+        if (activeVoucher.type === 'discount_percent') {
+            discount = Math.floor(originalPrice * (activeVoucher.value / 100));
+        } else {
+            discount = activeVoucher.value;
+        }
+        discount = Math.min(discount, originalPrice);
+    }
+    const finalPrice = originalPrice - discount;
 
     if (activePaymentMethod === 'qris') {
         changeLabel.textContent = 'Rp 0';
@@ -1109,8 +1187,8 @@ function calculateChange() {
         return;
     }
 
-    if (paidVal >= totalPrice) {
-        const change = paidVal - totalPrice;
+    if (paidVal >= finalPrice) {
+        const change = paidVal - finalPrice;
         changeLabel.textContent = formatRupiah(change);
         checkoutBtn.disabled = false;
         checkoutBtn.className = 'w-full rounded-xl py-3.5 text-xs font-bold text-white bg-sky-500 hover:bg-sky-600 active:scale-98 transition duration-200 flex items-center justify-center gap-1.5 shadow-md cursor-pointer';
@@ -1126,13 +1204,85 @@ function setQuickCash(value) {
     const formattedInput = document.getElementById('pos-paid-input-formatted');
     if (!rawInput || !formattedInput) return;
 
-    const totalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const amount = value === 'pas' ? totalPrice : value;
+    const originalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    let discount = 0;
+    if (activeVoucher) {
+        if (activeVoucher.type === 'discount_percent') {
+            discount = Math.floor(originalPrice * (activeVoucher.value / 100));
+        } else {
+            discount = activeVoucher.value;
+        }
+        discount = Math.min(discount, originalPrice);
+    }
+    const finalPrice = originalPrice - discount;
+    const amount = value === 'pas' ? finalPrice : value;
 
     rawInput.value = amount;
     formattedInput.value = formatNumberWithDots(String(amount));
 
     calculateChange();
+}
+
+function applyVoucher() {
+    const codeInput = document.getElementById('pos-voucher-code');
+    if (!codeInput) return;
+    const code = codeInput.value.trim();
+    if (!code) {
+        showToastNotification('Harap masukkan kode voucher.', 'error');
+        return;
+    }
+
+    const totalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    if (totalPrice === 0) {
+        showToastNotification('Keranjang belanja masih kosong.', 'error');
+        return;
+    }
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    fetch('/dashboard/vouchers/check', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ code: code, total_price: totalPrice })
+    })
+        .then(async response => {
+            const resData = await response.json();
+            if (!response.ok) {
+                throw new Error(resData.message || 'Voucher tidak valid.');
+            }
+            return resData;
+        })
+        .then(res => {
+            activeVoucher = res.data;
+            showToastNotification(res.message || 'Voucher berhasil digunakan!');
+
+            document.getElementById('pos-voucher-input-group')?.classList.add('hidden');
+            const appliedVoucherEl = document.getElementById('pos-applied-voucher');
+            if (appliedVoucherEl) appliedVoucherEl.classList.remove('hidden');
+            const appliedLabel = document.getElementById('pos-applied-voucher-label');
+            if (appliedLabel) appliedLabel.textContent = `Voucher: ${activeVoucher.code}`;
+
+            renderPosCart();
+        })
+        .catch(err => {
+            showToastNotification(err.message || 'Gagal menerapkan voucher.', 'error');
+        });
+}
+
+function removeVoucher() {
+    activeVoucher = null;
+    const codeInput = document.getElementById('pos-voucher-code');
+    if (codeInput) codeInput.value = '';
+
+    document.getElementById('pos-voucher-input-group')?.classList.remove('hidden');
+    document.getElementById('pos-applied-voucher')?.classList.add('hidden');
+
+    renderPosCart();
+    showToastNotification('Voucher dihapus.');
 }
 
 function checkoutTransaction() {
@@ -1142,18 +1292,27 @@ function checkoutTransaction() {
     const customerVal = customerInput ? customerInput.value.trim() : '';
 
     if (!customerVal) {
-        showToastNotification('Nama customer wajib diisi.', 'error');
-        if (customerInput) {
-            customerInput.focus();
-        }
+        showToastNotification('Nama customer wajib diisi sebelum melanjutkan checkout.', 'error');
+        if (customerInput) customerInput.focus();
         return;
     }
 
     const rawInput = document.getElementById('pos-paid-input');
     const paidVal = parseInt(rawInput.value) || 0;
-    const totalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    if (activePaymentMethod === 'cash' && paidVal < totalPrice) {
+    const originalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    let discount = 0;
+    if (activeVoucher) {
+        if (activeVoucher.type === 'discount_percent') {
+            discount = Math.floor(originalPrice * (activeVoucher.value / 100));
+        } else {
+            discount = activeVoucher.value;
+        }
+        discount = Math.min(discount, originalPrice);
+    }
+    const finalPrice = originalPrice - discount;
+
+    if (activePaymentMethod === 'cash' && paidVal < finalPrice) {
         showToastNotification('Uang pembayaran tidak mencukupi.', 'error');
         return;
     }
@@ -1181,8 +1340,9 @@ function checkoutTransaction() {
         body: JSON.stringify({
             cart: posCart,
             payment_method: activePaymentMethod,
-            total_paid: activePaymentMethod === 'qris' ? totalPrice : paidVal,
-            customer_name: document.getElementById('pos-customer-input')?.value || ''
+            total_paid: activePaymentMethod === 'qris' ? finalPrice : paidVal,
+            customer_name: customerVal,
+            voucher_code: activeVoucher ? activeVoucher.code : null
         })
     })
         .then(async response => {
@@ -1256,6 +1416,8 @@ window.openPaymentModal = openPaymentModal;
 window.selectPaymentMethod = selectPaymentMethod;
 window.setQuickCash = setQuickCash;
 window.checkoutTransaction = checkoutTransaction;
+window.applyVoucher = applyVoucher;
+window.removeVoucher = removeVoucher;
 window.closeReceiptModal = closeReceiptModal;
 window.printReceipt = printReceipt;
 
@@ -1495,7 +1657,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         size: 10
                     },
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             let label = context.dataset.label || '';
                             if (label) label += ': ';
                             if (context.parsed.y !== null) {
@@ -1526,7 +1688,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             family: "'Inter', sans-serif"
                         },
                         color: '#737373',
-                        callback: function(value) {
+                        callback: function (value) {
                             return 'Rp ' + (value >= 1000000 ? (value / 1000000) + 'jt' : (
                                 value >= 1000 ? (value / 1000) + 'rb' : value));
                         }
@@ -1557,7 +1719,7 @@ function showTxDetail(btn) {
     const modal = document.getElementById('transaction-detail-modal');
     const content = document.getElementById('modal-content');
     if (!modal || !content) return;
-    
+
     const code = btn.getAttribute('data-code');
     const date = btn.getAttribute('data-date');
     const cashier = btn.getAttribute('data-cashier');
@@ -1591,7 +1753,7 @@ function showTxDetail(btn) {
 
     const printList = document.getElementById('print-receipt-items-list');
     printList.innerHTML = '';
-    
+
     items.forEach(item => {
         const row = document.createElement('div');
         row.className = 'flex justify-between items-center border-b border-neutral-100 pb-2 last:border-0 last:pb-0';
@@ -1633,7 +1795,7 @@ function closeTxDetail() {
 
     content.classList.remove('scale-100', 'opacity-100');
     content.classList.add('scale-95', 'opacity-0');
-    
+
     setTimeout(() => {
         modal.classList.add('hidden');
     }, 250);
@@ -1654,12 +1816,421 @@ window.printHistoryReceipt = printHistoryReceipt;
 document.addEventListener('DOMContentLoaded', () => {
     const historyModal = document.getElementById('transaction-detail-modal');
     if (historyModal) {
-        historyModal.addEventListener('click', function(e) {
+        historyModal.addEventListener('click', function (e) {
             if (e.target === this) {
                 closeTxDetail();
             }
         });
     }
 });
+
+// Admin Sidebar Navigation & Export Menu Functions
+window.toggleDashboardTree = function (button) {
+    const group = button.closest('.dashboard-tree-group');
+    if (!group) return;
+    const submenu = group.querySelector('.dashboard-tree-submenu');
+    const chevron = group.querySelector('.dashboard-tree-chevron');
+    if (submenu) submenu.classList.toggle('hidden');
+    if (chevron) chevron.classList.toggle('rotate-180');
+};
+
+window.toggleInventaris = function (button) {
+    const group = button.closest('.inventaris-group');
+    if (!group) return;
+    const submenu = group.querySelector('.inventaris-submenu');
+    const chevron = group.querySelector('.inventaris-chevron');
+    if (submenu) submenu.classList.toggle('hidden');
+    if (chevron) chevron.classList.toggle('rotate-180');
+};
+
+window.toggleLaporanTree = function (button) {
+    const group = button.closest('.laporan-tree-group');
+    if (!group) return;
+    const submenu = group.querySelector('.laporan-tree-submenu');
+    const chevron = group.querySelector('.laporan-tree-chevron');
+    if (submenu) submenu.classList.toggle('hidden');
+    if (chevron) chevron.classList.toggle('rotate-180');
+};
+
+window.toggleExportMenu = function (event) {
+    event.stopPropagation();
+    const menu = document.getElementById('export-menu');
+    if (menu) menu.classList.toggle('hidden');
+};
+
+document.addEventListener('click', function (e) {
+    const container = document.getElementById('export-dropdown-container');
+    const menu = document.getElementById('export-menu');
+    if (container && menu && !container.contains(e.target)) {
+        menu.classList.add('hidden');
+    }
+});
+
+// 7. LAPORAN PENJUALAN (Reports Page) Script
+
+window.openExportReportModal = function () {
+    const modal = document.getElementById('export-report-modal');
+    if (modal) modal.classList.remove('hidden');
+};
+
+window.closeExportReportModal = function () {
+    const modal = document.getElementById('export-report-modal');
+    if (modal) modal.classList.add('hidden');
+};
+
+window.updateExportFormat = function (type) {
+    const form = document.getElementById('export-form');
+    const excelLabel = document.getElementById('label-excel-opt');
+    const pdfLabel = document.getElementById('label-pdf-opt');
+
+    if (type === 'pdf') {
+        if (form) form.action = "/dashboard/reports/export/pdf";
+        if (pdfLabel) pdfLabel.className = "flex items-center justify-between p-3.5 rounded-2xl border border-sky-500 bg-sky-50/40 cursor-pointer transition";
+        if (excelLabel) excelLabel.className = "flex items-center justify-between p-3.5 rounded-2xl border border-neutral-200 bg-white hover:bg-neutral-50 cursor-pointer transition";
+    } else {
+        if (form) form.action = "/dashboard/reports/export/excel";
+        if (excelLabel) excelLabel.className = "flex items-center justify-between p-3.5 rounded-2xl border border-sky-500 bg-sky-50/40 cursor-pointer transition";
+        if (pdfLabel) pdfLabel.className = "flex items-center justify-between p-3.5 rounded-2xl border border-neutral-200 bg-white hover:bg-neutral-50 cursor-pointer transition";
+    }
+};
+
+window.showChartTooltip = function (evt, dateLabel, amountLabel, x, y) {
+    const tooltip = document.getElementById('chart-tooltip');
+    const dateEl = document.getElementById('tooltip-date');
+    const valEl = document.getElementById('tooltip-val');
+    if (!tooltip || !dateEl || !valEl) return;
+
+    dateEl.innerText = dateLabel;
+    valEl.innerText = amountLabel;
+
+    const leftPercent = (x / 700) * 100;
+    const topPercent = (y / 200) * 100;
+
+    tooltip.style.left = leftPercent + '%';
+    tooltip.style.top = (topPercent - 8) + '%';
+    tooltip.classList.remove('hidden');
+};
+
+window.hideChartTooltip = function () {
+    const tooltip = document.getElementById('chart-tooltip');
+    if (tooltip) tooltip.classList.add('hidden');
+};
+
+// 8. VOUCHER BELANJA (Vouchers Page) Script
+function formatVoucherValueInput(prefix) {
+    const typeEl = document.getElementById(`${prefix}-type`);
+    const displayInput = document.getElementById(`${prefix}-value-display`);
+    const rawInput = document.getElementById(`${prefix}-value`);
+    if (!displayInput || !rawInput) return;
+
+    let cleanVal = displayInput.value.replace(/\D/g, '');
+
+    if (typeEl && typeEl.value === 'discount_percent') {
+        let num = parseInt(cleanVal) || 0;
+        if (num > 100) num = 100;
+        cleanVal = num ? String(num) : '';
+        displayInput.value = cleanVal;
+        rawInput.value = cleanVal;
+    } else {
+        if (cleanVal) {
+            let formatted = cleanVal.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            displayInput.value = formatted;
+            rawInput.value = cleanVal;
+        } else {
+            displayInput.value = '';
+            rawInput.value = '';
+        }
+    }
+}
+
+function updateValueHelperText(prefix) {
+    const selectEl = document.getElementById(`${prefix}-type`);
+    const helperEl = document.getElementById(`${prefix}-value-helper`);
+    if (!selectEl || !helperEl) return;
+
+    if (selectEl.value === 'discount_percent') {
+        helperEl.textContent = 'Masukkan angka persentase diskon (contoh: 20 untuk diskon 20%)';
+    } else {
+        helperEl.textContent = 'Masukkan nominal potongan harga (contoh: 222.222 untuk potongan Rp222.222)';
+    }
+
+    formatVoucherValueInput(prefix);
+}
+
+function openVoucherModalById(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    const card = modal.querySelector('.bg-white');
+
+    modal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+    modal.classList.add('pointer-events-auto', 'opacity-100');
+
+    if (card) {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+    }
+}
+
+function closeVoucherModalById(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    const card = modal.querySelector('.bg-white');
+
+    modal.classList.remove('pointer-events-auto', 'opacity-100');
+    modal.classList.add('hidden', 'pointer-events-none', 'opacity-0');
+
+    if (card) {
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-95', 'opacity-0');
+    }
+
+    const menus = document.querySelectorAll('[id^="dropdown-menu-"]');
+    menus.forEach(menu => menu.classList.add('hidden'));
+}
+
+window.openCreateVoucherModal = function () {
+    const displayInput = document.getElementById('create-value-display');
+    const rawInput = document.getElementById('create-value');
+    if (displayInput) displayInput.value = '';
+    if (rawInput) rawInput.value = '';
+    updateValueHelperText('create');
+    openVoucherModalById('create-voucher-modal');
+};
+
+window.openEditVoucherModalFromBtn = function (btn) {
+    try {
+        const rawData = btn.getAttribute('data-voucher');
+        if (!rawData) return;
+        const v = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
+        window.openEditVoucherModal(v);
+    } catch (err) {
+        console.error("Error parsing voucher data:", err);
+    }
+};
+
+window.openEditVoucherModal = function (v) {
+    const menus = document.querySelectorAll('[id^="dropdown-menu-"]');
+    menus.forEach(menu => menu.classList.add('hidden'));
+
+    const form = document.getElementById('edit-voucher-form');
+    if (!form) return;
+    form.action = `/dashboard/vouchers/${v.id}`;
+
+    if (document.getElementById('edit-code')) document.getElementById('edit-code').value = v.code || '';
+    if (document.getElementById('edit-type')) document.getElementById('edit-type').value = v.type || 'discount_percent';
+
+    const displayInput = document.getElementById('edit-value-display');
+    const rawInput = document.getElementById('edit-value');
+    const numVal = Math.round(v.value || 0);
+    if (rawInput) rawInput.value = numVal;
+    if (displayInput) {
+        if (v.type === 'discount_percent') {
+            displayInput.value = numVal;
+        } else {
+            displayInput.value = String(numVal).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+    }
+
+    if (document.getElementById('edit-description')) document.getElementById('edit-description').value = v.description || '';
+
+    if (v.end_date && document.getElementById('edit-end_date')) {
+        const cleanDate = String(v.end_date).split('T')[0].split(' ')[0];
+        document.getElementById('edit-end_date').value = cleanDate;
+    }
+
+    updateValueHelperText('edit');
+    openVoucherModalById('edit-voucher-modal');
+};
+
+window.openEditVoucherModalDirect = function (e, id, code, type, value, endDate, description) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    const menus = document.querySelectorAll('[id^="dropdown-menu-"]');
+    menus.forEach(menu => menu.classList.add('hidden'));
+
+    const form = document.getElementById('edit-voucher-form');
+    if (form) form.action = `/dashboard/vouchers/${id}`;
+
+    if (document.getElementById('edit-code')) document.getElementById('edit-code').value = code || '';
+    if (document.getElementById('edit-type')) document.getElementById('edit-type').value = type || 'discount_percent';
+
+    const displayInput = document.getElementById('edit-value-display');
+    const rawInput = document.getElementById('edit-value');
+    const numVal = Math.round(value || 0);
+    if (rawInput) rawInput.value = numVal;
+    if (displayInput) {
+        if (type === 'discount_percent') {
+            displayInput.value = numVal;
+        } else {
+            displayInput.value = String(numVal).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+    }
+
+    if (document.getElementById('edit-description')) document.getElementById('edit-description').value = description || '';
+
+    if (endDate && document.getElementById('edit-end_date')) {
+        const cleanDate = String(endDate).split('T')[0].split(' ')[0];
+        document.getElementById('edit-end_date').value = cleanDate;
+    }
+
+    updateValueHelperText('edit');
+    openVoucherModalById('edit-voucher-modal');
+};
+
+window.confirmDeleteVoucher = function (id, code) {
+    const form = document.getElementById('confirm-delete-form');
+    if (form) form.action = `/dashboard/vouchers/${id}`;
+    const codeEl = document.getElementById('delete-voucher-code');
+    if (codeEl) codeEl.textContent = code;
+    openVoucherModalById('delete-confirmation-modal');
+};
+
+window.toggleDropdownMenu = function (e, id) {
+    if (e) e.stopPropagation();
+    const menus = document.querySelectorAll('[id^="dropdown-menu-"]');
+    menus.forEach(menu => {
+        if (menu.id !== id) menu.classList.add('hidden');
+    });
+    const target = document.getElementById(id);
+    if (target) target.classList.toggle('hidden');
+};
+
+window.formatVoucherValueInput = formatVoucherValueInput;
+window.updateValueHelperText = updateValueHelperText;
+
+// 9. KATEGORI & PRODUK INVENTARIS Script
+window.toggleSubCategories = function (btn) {
+    const group = btn.closest('.category-item-group');
+    if (!group) return;
+    const subList = group.querySelector('.sub-category-list');
+    const svg = btn.querySelector('svg');
+    if (subList) subList.classList.toggle('hidden');
+    if (svg) svg.classList.toggle('-rotate-90');
+};
+
+window.filterCategoriesTree = function () {
+    const query = (document.getElementById('category-search-input')?.value || '').toLowerCase().trim();
+    const groups = document.querySelectorAll('.category-item-group');
+    groups.forEach(group => {
+        const name = group.getAttribute('data-name') || '';
+        if (!query || name.includes(query)) {
+            group.style.display = '';
+        } else {
+            group.style.display = 'none';
+        }
+    });
+};
+
+window.filterProductsTable = function () {
+    const searchVal = (document.getElementById('product-search-input')?.value || '').toLowerCase().trim();
+    const categoryVal = (document.getElementById('product-category-filter')?.value || '').toLowerCase();
+    const statusVal = (document.getElementById('product-status-filter')?.value || '').toLowerCase();
+
+    const rows = document.querySelectorAll('.product-row');
+    rows.forEach(row => {
+        const name = row.getAttribute('data-name') || '';
+        const sku = row.getAttribute('data-sku') || '';
+        const category = row.getAttribute('data-category') || '';
+        const status = row.getAttribute('data-status') || '';
+
+        const matchesSearch = !searchVal || name.includes(searchVal) || sku.includes(searchVal);
+        const matchesCategory = !categoryVal || category === categoryVal;
+        const matchesStatus = !statusVal || status === statusVal;
+
+        if (matchesSearch && matchesCategory && matchesStatus) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+};
+
+// 10. KELOLA KARYAWAN & SHIFT Script
+window.autoFillShiftHours = function (selectElem, targetInputId) {
+    const targetInput = document.getElementById(targetInputId);
+    if (!targetInput) return;
+    const val = selectElem.value;
+    if (val === 'Pagi') {
+        targetInput.value = '06:00 - 14:00';
+    } else if (val === 'Siang') {
+        targetInput.value = '14:00 - 22:00';
+    } else if (val === 'Malam') {
+        targetInput.value = '22:00 - 06:00';
+    } else if (val === '') {
+        targetInput.value = '';
+    }
+};
+
+window.filterUsersTable = function () {
+    const searchVal = (document.getElementById('user-search-input')?.value || '').toLowerCase().trim();
+    const roleVal = (document.getElementById('user-role-filter')?.value || '').toLowerCase().trim();
+    const shiftVal = (document.getElementById('user-shift-filter')?.value || '').toLowerCase().trim();
+    const statusVal = (document.getElementById('user-status-filter')?.value || '').toLowerCase().trim();
+
+    const rows = document.querySelectorAll('.user-row');
+    rows.forEach(row => {
+        const name = row.getAttribute('data-name') || '';
+        const email = row.getAttribute('data-email') || '';
+        const role = row.getAttribute('data-role') || '';
+        const shift = row.getAttribute('data-shift') || '';
+        const status = row.getAttribute('data-status') || '';
+
+        const matchesSearch = !searchVal || name.includes(searchVal) || email.includes(searchVal);
+        const matchesRole = !roleVal || role === roleVal;
+        const matchesShift = !shiftVal || shift.includes(shiftVal);
+        const matchesStatus = !statusVal || status === statusVal;
+
+        if (matchesSearch && matchesRole && matchesShift && matchesStatus) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+};
+
+window.openEditModal = function (user) {
+    const modal = document.getElementById('edit-user-modal');
+    if (!modal) return;
+    const form = document.getElementById('edit-user-form');
+    if (form) form.action = `/admin/users/${user.id}`;
+    if (document.getElementById('edit_user_id_field')) document.getElementById('edit_user_id_field').value = user.id;
+    if (document.getElementById('edit_name')) document.getElementById('edit_name').value = user.name || '';
+    if (document.getElementById('edit_email')) document.getElementById('edit_email').value = user.email || '';
+    if (document.getElementById('edit_role')) document.getElementById('edit_role').value = user.role || 'kasir';
+    if (document.getElementById('edit_shift')) document.getElementById('edit_shift').value = user.shift || '';
+
+    const placeholder = document.getElementById('edit-avatar-placeholder');
+    const preview = document.getElementById('edit-avatar-preview');
+    if (user.profile_picture) {
+        if (preview) {
+            preview.src = `/${user.profile_picture}`;
+            preview.classList.remove('hidden');
+        }
+        if (placeholder) placeholder.classList.add('hidden');
+    } else {
+        if (preview) preview.classList.add('hidden');
+        if (placeholder) {
+            placeholder.classList.remove('hidden');
+            placeholder.textContent = user.name ? user.name.substring(0, 2).toUpperCase() : '';
+        }
+    }
+
+    if (window.openModal) window.openModal('edit-user-modal');
+};
+
+window.openEditShiftModal = function (shift) {
+    if (window.closeModal) window.closeModal('manage-shifts-modal');
+    const modal = document.getElementById('edit-shift-modal');
+    if (!modal) return;
+    const form = document.getElementById('edit-shift-form');
+    if (form) form.action = `/admin/shifts/${shift.id}`;
+    if (document.getElementById('edit_shift_name')) document.getElementById('edit_shift_name').value = shift.name || '';
+    if (document.getElementById('edit_shift_start_time')) document.getElementById('edit_shift_start_time').value = shift.start_time || '';
+    if (document.getElementById('edit_shift_end_time')) document.getElementById('edit_shift_end_time').value = shift.end_time || '';
+    if (window.openModal) window.openModal('edit-shift-modal');
+};
 
 

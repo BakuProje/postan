@@ -65,6 +65,28 @@ class TransactionController extends Controller
                     ];
                 }
 
+                $discountAmount = 0;
+                if ($request->filled('voucher_code')) {
+                    $voucher = \App\Models\Voucher::where('code', strtoupper($request->voucher_code))
+                        ->where('is_active', true)
+                        ->where('end_date', '>=', today()->toDateString())
+                        ->first();
+                    
+                    if (!$voucher) {
+                        throw new \Exception("Voucher tidak valid atau sudah kedaluwarsa.");
+                    }
+                    
+                    if ($voucher->type === 'discount_percent') {
+                        $discountAmount = floor($totalPrice * ($voucher->value / 100));
+                    } else {
+                        $discountAmount = $voucher->value;
+                    }
+                    
+                    $discountAmount = min($discountAmount, $totalPrice);
+                    $voucher->increment('used_count');
+                    $totalPrice -= $discountAmount;
+                }
+
                 $paymentMethod = $request->payment_method;
                 $totalPaid = $paymentMethod === 'qris' ? $totalPrice : $request->total_paid;
 
@@ -91,7 +113,7 @@ class TransactionController extends Controller
                         'subtitle' => "Kode: {$transactionCode} | Total: Rp " . number_format($totalPrice, 0, ',', '.'),
                     ]);
                 } catch (\Exception $e) {
-                    // Ignore
+                   
                 }
 
                 foreach ($itemsToCreate as $itemData) {

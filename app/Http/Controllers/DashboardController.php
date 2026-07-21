@@ -100,4 +100,112 @@ class DashboardController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Pengeluaran berhasil dicatat.');
     }
+
+    private function getTerlarisData()
+    {
+        $dbProducts = Product::with('category')->get();
+        $products = [];
+        $totalItemsSoldAll = 0;
+        $totalRevenueAll = 0;
+
+        foreach ($dbProducts as $product) {
+            $qty = \App\Models\TransactionItem::where('product_id', $product->id)->sum('quantity');
+            $revenue = \App\Models\TransactionItem::where('product_id', $product->id)->sum('subtotal');
+            if ($revenue == 0 && $qty > 0) {
+                $revenue = $qty * $product->price;
+            }
+
+            $totalItemsSoldAll += $qty;
+            $totalRevenueAll += $revenue;
+
+            $products[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'barcode' => $product->barcode ?? null,
+                'category' => $product->category ? $product->category->name : 'Umum',
+                'photo' => $product->photo ?? null,
+                'price' => $product->price,
+                'stock' => $product->stock,
+                'sold_qty' => (int) $qty,
+                'total_revenue' => (int) $revenue,
+            ];
+        }
+
+        usort($products, fn($a, $b) => $b['sold_qty'] <=> $a['sold_qty']);
+
+        foreach ($products as &$item) {
+            $item['percentage'] = $totalItemsSoldAll > 0 ? round(($item['sold_qty'] / $totalItemsSoldAll) * 100, 2) : 0;
+        }
+        unset($item);
+
+        return [$products, $totalItemsSoldAll, $totalRevenueAll];
+    }
+
+    public function terlaris()
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.transactions');
+        }
+
+        $categories = \App\Models\Category::all();
+        [$products, $totalItemsSoldAll, $totalRevenueAll] = $this->getTerlarisData();
+
+        $top5Products = array_slice($products, 0, 5);
+        $top5SumPercent = array_sum(array_column($top5Products, 'percentage'));
+        $othersPercentage = max(0, round(100 - $top5SumPercent, 2));
+
+        $totalTerlarisCount = count($products);
+        $avgPrice = $totalItemsSoldAll > 0 ? round($totalRevenueAll / $totalItemsSoldAll) : 0;
+
+        return view('admin.terlaris', compact(
+            'categories',
+            'products',
+            'top5Products',
+            'othersPercentage',
+            'totalTerlarisCount',
+            'totalItemsSoldAll',
+            'totalRevenueAll',
+            'avgPrice'
+        ));
+    }
+
+    public function exportTerlarisExcel()
+    {
+        [$products] = $this->getTerlarisData();
+        $filename = 'laporan-produk-terlaris-' . date('Y-m-d') . '.csv';
+
+        $headers = [
+            "Content-type" => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function () use ($products) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF"); 
+            fputcsv($file, ['No', 'Nama Produk', 'Kategori', 'Terjual (Item)', 'Total Pendapatan (Rp)', 'Persentase (%)']);
+
+            foreach ($products as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    $row['name'],
+                    $row['category'],
+                    $row['sold_qty'],
+                    $row['total_revenue'],
+                    $row['percentage'] . '%'
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportTerlarisPdf()
+    {
+        [$products, $totalItemsSoldAll, $totalRevenueAll] = $this->getTerlarisData();
+        return view('admin.reports.terlaris-pdf', compact('products', 'totalItemsSoldAll', 'totalRevenueAll'));
+    }
 }

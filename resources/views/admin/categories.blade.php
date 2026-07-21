@@ -44,7 +44,6 @@
                 </div>
             </div>
 
-            <!-- TOTAL PRODUK -->
             <div
                 class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
                 <div
@@ -62,7 +61,6 @@
                 </div>
             </div>
 
-            <!-- TOTAL STOK -->
             <div
                 class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
                 <div
@@ -80,7 +78,6 @@
                 </div>
             </div>
 
-            <!-- KATEGORI AKTIF -->
             <div
                 class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
                 <div
@@ -100,7 +97,6 @@
             </div>
         </div>
 
-        <!-- Daftar Kategori Tree View Container -->
         <div
             class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-6 shadow-2xs relative z-10 space-y-5">
             <div class="flex items-center justify-between">
@@ -108,7 +104,6 @@
                 <span class="text-xs font-bold text-neutral-400">{{ $categories->count() }} Kategori Terdaftar</span>
             </div>
 
-            <!-- Search input -->
             <div class="relative w-full">
                 <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none"
                     fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -120,9 +115,7 @@
                     class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-sky-500 transition-colors">
             </div>
 
-            <!-- Tree Items List -->
             <div class="space-y-3">
-                <!-- Root: Semua Kategori -->
                 <div
                     class="flex items-center justify-between p-3.5 rounded-xl border border-neutral-200/70 bg-neutral-50/80 shadow-2xs">
                     <div class="flex items-center gap-3">
@@ -144,7 +137,6 @@
                     </span>
                 </div>
 
-                <!-- Dynamic Categories List -->
                 <div id="category-tree-container" class="space-y-3">
                     @forelse($categories as $category)
                         <div class="category-item-group space-y-2.5" data-name="{{ strtolower($category->name) }}">
@@ -210,7 +202,6 @@
                                 </div>
                             </div>
 
-                            <!-- Products Sub-tree Cards Container -->
                             <div
                                 class="sub-category-list pl-6 space-y-2 border-l-2 border-dashed border-neutral-200 ml-6 pt-1">
                                 @forelse($category->products as $product)
@@ -296,7 +287,6 @@
         </div>
     </div>
 
-    <!-- UBAH KATEGORI MODAL -->
     <div id="edit-category-modal"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
         <div
@@ -337,7 +327,6 @@
         </div>
     </div>
 
-    <!-- DELETE CONFIRMATION -->
     <div id="delete-modal"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
         <div id="delete-modal-card"
@@ -374,27 +363,4 @@
         data-categories-json="{{ json_encode($categories) }}" class="hidden">
     </div>
 
-    <script>
-        function toggleSubCategories(btn) {
-            const group = btn.closest('.category-item-group');
-            if (!group) return;
-            const subList = group.querySelector('.sub-category-list');
-            const svg = btn.querySelector('svg');
-            if (subList) subList.classList.toggle('hidden');
-            if (svg) svg.classList.toggle('-rotate-90');
-        }
-
-        function filterCategoriesTree() {
-            const query = (document.getElementById('category-search-input')?.value || '').toLowerCase().trim();
-            const groups = document.querySelectorAll('.category-item-group');
-            groups.forEach(group => {
-                const name = group.getAttribute('data-name') || '';
-                if (!query || name.includes(query)) {
-                    group.style.display = '';
-                } else {
-                    group.style.display = 'none';
-                }
-            });
-        }
-    </script>
 @endsection

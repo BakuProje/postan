@@ -13,6 +13,7 @@ use App\Http\Controllers\OutletController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', function () {
     return view('beranda');
@@ -21,55 +22,24 @@ Route::get('/', function () {
 Route::view('/info', 'beranda')->name('info.index');
 Route::view('/contact', 'beranda')->name('contact.index');
 
-Route::get('/login', function () {
-    if (Auth::check()) {
-        if (Auth::user()->role === 'admin') {
-            return redirect()->route('dashboard');
-        }
-        return redirect()->route('admin.transactions');
-    }
-    return view('auth.login');
-})->name('login');
-
-Route::post('/login', function () {
-    $credentials = request()->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
-
-    if (Auth::attempt($credentials, request()->boolean('remember'))) {
-        request()->session()->regenerate();
-
-        $user = Auth::user();
-        try {
-            \App\Models\Notification::create([
-                'type' => $user->role === 'admin' ? 'system' : 'login',
-                'title' => ($user->role === 'admin' ? 'Admin ' : 'Kasir ') . $user->name . " login",
-                'subtitle' => $user->role === 'admin' ? 'Sesi Admin dimulai' : "Shift " . ($user->shift ?? 'Harian') . " dimulai",
-            ]);
-        } catch (\Exception $e) {
-        }
-
-        if (Auth::user()->role === 'admin') {
-            return redirect()->route('dashboard');
-        }
-        return redirect()->route('admin.transactions');
-    }
-
-    return back()->withInput()->withErrors([
-        'email' => 'Email atau kata sandi yang Anda masukkan belum sesuai.',
-    ]);
-})->name('login.store');
-
-Route::post('/logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/');
-})->name('logout');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.store');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard')
+    ->middleware('auth');
+
+Route::get('/dashboard/terlaris', [DashboardController::class, 'terlaris'])
+    ->name('admin.dashboard.terlaris')
+    ->middleware('auth');
+
+Route::get('/dashboard/terlaris/export-excel', [DashboardController::class, 'exportTerlarisExcel'])
+    ->name('admin.dashboard.terlaris.export.excel')
+    ->middleware('auth');
+
+Route::get('/dashboard/terlaris/export-pdf', [DashboardController::class, 'exportTerlarisPdf'])
+    ->name('admin.dashboard.terlaris.export.pdf')
     ->middleware('auth');
 
 Route::post('/dashboard/expenses', [DashboardController::class, 'storeExpense'])
@@ -186,12 +156,40 @@ Route::get('/dashboard/vouchers', [VoucherController::class, 'vouchers'])
     ->name('admin.vouchers')
     ->middleware('auth');
 
+Route::post('/dashboard/vouchers', [VoucherController::class, 'store'])
+    ->name('admin.vouchers.store')
+    ->middleware('auth');
+
+Route::put('/dashboard/vouchers/{id}', [VoucherController::class, 'update'])
+    ->name('admin.vouchers.update')
+    ->middleware('auth');
+
+Route::patch('/dashboard/vouchers/{id}/toggle', [VoucherController::class, 'toggleStatus'])
+    ->name('admin.vouchers.toggle')
+    ->middleware('auth');
+
+Route::delete('/dashboard/vouchers/{id}', [VoucherController::class, 'destroy'])
+    ->name('admin.vouchers.destroy')
+    ->middleware('auth');
+
+Route::post('/dashboard/vouchers/check', [VoucherController::class, 'checkVoucher'])
+    ->name('admin.vouchers.check')
+    ->middleware('auth');
+
 Route::get('/dashboard/members', [MemberController::class, 'members'])
     ->name('admin.members')
     ->middleware('auth');
 
 Route::get('/dashboard/reports', [ReportController::class, 'reports'])
     ->name('admin.reports')
+    ->middleware('auth');
+
+Route::get('/dashboard/reports/export/excel', [ReportController::class, 'exportExcel'])
+    ->name('admin.reports.export.excel')
+    ->middleware('auth');
+
+Route::get('/dashboard/reports/export/pdf', [ReportController::class, 'exportPdf'])
+    ->name('admin.reports.export.pdf')
     ->middleware('auth');
 
 Route::get('/dashboard/history', [TransactionController::class, 'history'])

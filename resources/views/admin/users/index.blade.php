@@ -3,140 +3,132 @@
 @section('konten')
     <div class="space-y-6 relative">
         <div
-            class="absolute -top-10 -right-6 -z-10 h-28 w-28 rounded-full bg-gradient-to-br from-white/70 via-sky-50/20 to-sky-200/10 border border-white/50 shadow-[inset_4px_4px_12px_rgba(255,255,255,0.9),inset_-4px_-4px_12px_rgba(14,165,233,0.06)] pointer-events-none">
-        </div>
-        <div
-            class="absolute -bottom-8 -left-10 -z-10 h-32 w-32 rounded-full bg-gradient-to-br from-white/70 via-sky-50/20 to-sky-100/10 border border-white/40 shadow-[inset_5px_5px_14px_rgba(255,255,255,0.8),inset_-5px_-5px_14px_rgba(14,165,233,0.08)] pointer-events-none">
-        </div>
+            class="relative bg-gradient-to-br from-sky-50/60 via-white/80 to-blue-50/50 rounded-2xl border border-sky-100/60 p-6 md:p-8 overflow-hidden">
+            <div class="hidden lg:block absolute left-[45%] xl:left-[48%] top-[-35px] w-[340px] xl:w-[400px] h-[170px] xl:h-[190px] pointer-events-none bg-no-repeat bg-contain bg-center"
+                style="background-image: url('{{ asset('images/kelola.png') }}');"></div>
 
-        <!-- Header Page & Action Buttons (Gambar 1) -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
-            <div>
-                <h2 class="text-2xl font-black text-neutral-900 tracking-tight">Kelola Kasir</h2>
-                <p class="text-xs text-neutral-500 mt-1">Kelola akun kasir/admin, atur shift kerja, dan kelola hak akses
-                    sistem.</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <!-- Kelola Shift Button -->
-                <button type="button" onclick="openModal('manage-shifts-modal');"
-                    class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-xs font-bold text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300 transition shadow-2xs active:scale-98 cursor-pointer">
-                    <svg class="h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm0 5.25h.007v.008H3.75V12Zm0 5.25h.007v.008H3.75v-.008Z" />
-                    </svg>
-                    Kelola Shift
-                </button>
-                <!-- Tambah Shift Button -->
-                <button type="button" onclick="openModal('create-shift-modal');"
-                    class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-200 bg-sky-50 px-3.5 py-2.5 text-xs font-bold text-sky-700 hover:bg-sky-100 hover:border-sky-300 transition shadow-2xs active:scale-98 cursor-pointer">
-                    <svg class="h-4 w-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                    Tambah Shift
-                </button>
-                <!-- Tambah Karyawan Button -->
-                <button type="button" onclick="openModal('create-user-modal');"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-sky-600 shadow-sm active:scale-98 cursor-pointer">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Tambah Karyawan
-                </button>
-            </div>
-        </div>
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+                <div class="max-w-xl">
+                    <h2 class="text-2xl font-black text-neutral-900 tracking-tight">Kelola Kasir</h2>
+                    <p class="text-xs text-neutral-500 mt-1.5 leading-relaxed">Kelola akun kasir/admin, atur shift kerja, dan
+                        kelola hak akses sistem.</p>
+                </div>
 
-        <!-- 4 Metric Cards (Gambar 1) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
-            <!-- Total Karyawan -->
-            <div
-                class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
+                <div class="relative z-10 flex flex-wrap items-center gap-2">
+                    <button type="button" onclick="openModal('manage-shifts-modal');"
+                        class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-xs font-bold text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300 transition active:scale-98 cursor-pointer select-none">
+                        <svg class="h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm0 5.25h.007v.008H3.75V12Zm0 5.25h.007v.008H3.75v-.008Z" />
+                        </svg>
+                        Kelola Shift
+                    </button>
+                    <button type="button" onclick="openModal('create-shift-modal');"
+                        class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-200 bg-sky-50 px-3.5 py-2.5 text-xs font-bold text-sky-700 hover:bg-sky-100 hover:border-sky-300 transition active:scale-98 cursor-pointer select-none">
+                        <svg class="h-4 w-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        Tambah Shift
+                    </button>
+                    <button type="button" onclick="openModal('create-user-modal');"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-sky-600 active:scale-98 cursor-pointer select-none">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Tambah Karyawan
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
                 <div
-                    class="h-12 w-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 border border-blue-100/50">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-                    </svg>
+                    class="bg-white/95 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 flex items-center gap-4">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 border border-blue-100/50">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-neutral-400 capitalize tracking-wide block">Total
+                            Karyawan</span>
+                        <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                            {{ $users->count() }}
+                            <span class="text-xs font-bold text-neutral-500">Orang</span>
+                        </h3>
+                        <span class="text-[11px] font-bold text-neutral-400 block mt-1.5">Semua akun terdaftar</span>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">TOTAL
-                        KARYAWAN</span>
-                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">{{ $users->count() }}
-                        <span class="text-xs font-bold text-neutral-500">Orang</span>
-                    </h3>
-                    <span class="text-[11px] font-bold text-neutral-400 block mt-1.5">Semua akun terdaftar</span>
-                </div>
-            </div>
 
-            <!-- Kasir Aktif -->
-            <div
-                class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
                 <div
-                    class="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 border border-emerald-100/50">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                    </svg>
+                    class="bg-white/95 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 flex items-center gap-4">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 border border-emerald-100/50">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-neutral-400 capitalize tracking-wide block">Kasir
+                            Aktif</span>
+                        <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                            {{ $users->where('role', 'kasir')->count() }} <span
+                                class="text-xs font-bold text-neutral-500">Orang</span></h3>
+                        <span class="text-[11px] font-bold text-emerald-600 block mt-1.5 flex items-center gap-1.5">
+                            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Sedang online
+                        </span>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">KASIR AKTIF</span>
-                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
-                        {{ $users->where('role', 'kasir')->count() }} <span
-                            class="text-xs font-bold text-neutral-500">Orang</span></h3>
-                    <span class="text-[11px] font-bold text-emerald-600 block mt-1.5 flex items-center gap-1.5">
-                        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Sedang online
-                    </span>
-                </div>
-            </div>
 
-            <!-- Shift Berjalan -->
-            <div
-                class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
                 <div
-                    class="h-12 w-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 border border-amber-100/50">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                    </svg>
+                    class="bg-white/95 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 flex items-center gap-4">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 border border-amber-100/50">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-neutral-400 capitalize tracking-wide block">Shift
+                            Berjalan</span>
+                        <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                            {{ $users->whereNotNull('shift')->count() }} <span
+                                class="text-xs font-bold text-neutral-500">Shift</span></h3>
+                        <span class="text-[11px] font-bold text-amber-600 block mt-1.5 flex items-center gap-1.5">
+                            <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                            Saat ini berlangsung
+                        </span>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">SHIFT
-                        BERJALAN</span>
-                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
-                        {{ $users->whereNotNull('shift')->count() }} <span
-                            class="text-xs font-bold text-neutral-500">Shift</span></h3>
-                    <span class="text-[11px] font-bold text-amber-600 block mt-1.5 flex items-center gap-1.5">
-                        <span class="h-2 w-2 rounded-full bg-amber-500"></span>
-                        Saat ini berlangsung
-                    </span>
-                </div>
-            </div>
 
-            <!-- Administrator -->
-            <div
-                class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 shadow-2xs flex items-center gap-4">
                 <div
-                    class="h-12 w-12 rounded-2xl bg-purple-50 text-purple-500 flex items-center justify-center shrink-0 border border-purple-100/50">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0 1 12 2.714Z" />
-                    </svg>
-                </div>
-                <div>
-                    <span
-                        class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">ADMINISTRATOR</span>
-                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
-                        {{ $users->where('role', 'admin')->count() }} <span
-                            class="text-xs font-bold text-neutral-500">Orang</span></h3>
-                    <span class="text-[11px] font-bold text-purple-600 block mt-1.5">Memiliki akses penuh</span>
+                    class="bg-white/95 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 flex items-center gap-4">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-purple-50 text-purple-500 flex items-center justify-center shrink-0 border border-purple-100/50">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0 1 12 2.714Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span
+                            class="text-[10px] font-bold text-neutral-400 capitalize tracking-wide block">Administrator</span>
+                        <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                            {{ $users->where('role', 'admin')->count() }} <span
+                                class="text-xs font-bold text-neutral-500">Orang</span></h3>
+                        <span class="text-[11px] font-bold text-purple-600 block mt-1.5">Memiliki akses penuh</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Filter & Search Bar (Gambar 1) -->
         <div
             class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-4 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3 relative z-10">
             <div class="relative w-full md:w-80">
@@ -182,7 +174,6 @@
             </div>
         </div>
 
-        <!-- Karyawan Table View (Gambar 1 & Gambar 2) -->
         <div
             class="hidden md:block bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 shadow-2xs overflow-hidden relative z-10">
             <div class="overflow-x-auto">
@@ -216,7 +207,6 @@
                                     }
                                 }
 
-                                // Mock status & last login for demonstration matching screenshots
                                 $statusVal = 'online';
                                 $statusLabel = 'Online';
                                 $statusClass = 'bg-emerald-50 text-emerald-600 border-emerald-100';
@@ -234,15 +224,14 @@
                                     $statusDot = 'bg-rose-500';
                                 }
 
-                                $lastLoginText =
-                                    $index == 0
-                                        ? '10 menit lalu'
-                                        : ($index == 1
-                                            ? '5 menit lalu'
-                                            : ($index == 2
-                                                ? '2 jam lalu'
-                                                : '1 hari lalu'));
-                                $lastLoginDate = '20 Jul 2026, ' . (11 - $index) . ':16';
+                                if ($user->last_login_at) {
+                                    \Carbon\Carbon::setLocale('id');
+                                    $lastLoginText = $user->last_login_at->diffForHumans();
+                                    $lastLoginDate = $user->last_login_at->format('d M Y, H:i');
+                                } else {
+                                    $lastLoginText = 'Belum pernah login';
+                                    $lastLoginDate = '-';
+                                }
                             @endphp
                             <tr class="user-row hover:bg-neutral-50/50 transition-colors"
                                 data-name="{{ strtolower($user->name) }}" data-email="{{ strtolower($user->email) }}"
@@ -1074,85 +1063,4 @@
         </div>
     </div>
 
-    <script>
-        function autoFillShiftHours(selectElem, targetInputId) {
-            const targetInput = document.getElementById(targetInputId);
-            if (!targetInput) return;
-            const val = selectElem.value;
-            if (val === 'Pagi') {
-                targetInput.value = '06:00 - 14:00';
-            } else if (val === 'Siang') {
-                targetInput.value = '14:00 - 22:00';
-            } else if (val === 'Malam') {
-                targetInput.value = '22:00 - 06:00';
-            } else if (val === '') {
-                targetInput.value = '';
-            }
-        }
-
-        function filterUsersTable() {
-            const searchVal = (document.getElementById('user-search-input')?.value || '').toLowerCase().trim();
-            const roleVal = (document.getElementById('user-role-filter')?.value || '').toLowerCase().trim();
-            const shiftVal = (document.getElementById('user-shift-filter')?.value || '').toLowerCase().trim();
-            const statusVal = (document.getElementById('user-status-filter')?.value || '').toLowerCase().trim();
-
-            const rows = document.querySelectorAll('.user-row');
-            rows.forEach(row => {
-                const name = row.getAttribute('data-name') || '';
-                const email = row.getAttribute('data-email') || '';
-                const role = row.getAttribute('data-role') || '';
-                const shift = row.getAttribute('data-shift') || '';
-                const status = row.getAttribute('data-status') || '';
-
-                const matchesSearch = !searchVal || name.includes(searchVal) || email.includes(searchVal);
-                const matchesRole = !roleVal || role === roleVal;
-                const matchesShift = !shiftVal || shift.includes(shiftVal);
-                const matchesStatus = !statusVal || status === statusVal;
-
-                if (matchesSearch && matchesRole && matchesShift && matchesStatus) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        function openEditModal(user) {
-            const modal = document.getElementById('edit-user-modal');
-            if (!modal) return;
-            const form = document.getElementById('edit-user-form');
-            form.action = `/admin/users/${user.id}`;
-            document.getElementById('edit_user_id_field').value = user.id;
-            document.getElementById('edit_name').value = user.name || '';
-            document.getElementById('edit_email').value = user.email || '';
-            document.getElementById('edit_role').value = user.role || 'kasir';
-            document.getElementById('edit_shift').value = user.shift || '';
-
-            const placeholder = document.getElementById('edit-avatar-placeholder');
-            const preview = document.getElementById('edit-avatar-preview');
-            if (user.profile_picture) {
-                preview.src = `/${user.profile_picture}`;
-                preview.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            } else {
-                preview.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-                placeholder.textContent = user.name ? user.name.substring(0, 2).toUpperCase() : '';
-            }
-
-            openModal('edit-user-modal');
-        }
-
-        function openEditShiftModal(shift) {
-            closeModal('manage-shifts-modal');
-            const modal = document.getElementById('edit-shift-modal');
-            if (!modal) return;
-            const form = document.getElementById('edit-shift-form');
-            form.action = `/admin/shifts/${shift.id}`;
-            document.getElementById('edit_shift_name').value = shift.name || '';
-            document.getElementById('edit_shift_start_time').value = shift.start_time || '';
-            document.getElementById('edit_shift_end_time').value = shift.end_time || '';
-            openModal('edit-shift-modal');
-        }
-    </script>
 @endsection

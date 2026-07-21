@@ -144,10 +144,48 @@
                 </div>
 
                 <div class="p-5 border-t border-neutral-100 bg-neutral-50/40 space-y-5 shrink-0 relative z-10">
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-bold text-neutral-400 uppercase tracking-wide">Voucher Belanja
+                            <span class="text-sky-600 font-normal lowercase"></span></label>
+                        <div class="flex items-center gap-2" id="pos-voucher-input-group">
+                            <input type="text" id="pos-voucher-code" placeholder="MASUKKAN KODE VOUCHER..."
+                                onkeydown="if(event.key==='Enter'){event.preventDefault(); applyVoucher();}"
+                                class="flex-1 bg-white border border-neutral-200 text-xs font-bold text-neutral-800 rounded-xl px-3.5 py-2.5 outline-hidden focus:border-sky-500 transition-all uppercase">
+                            <button type="button" onclick="applyVoucher()"
+                                class="px-4 py-2.5 rounded-xl bg-sky-50 border border-sky-100 text-xs font-bold text-sky-600 hover:bg-sky-100 active:scale-98 transition cursor-pointer select-none shrink-0">
+                                Gunakan
+                            </button>
+                        </div>
+                        <div id="pos-applied-voucher"
+                            class="hidden flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
+                            <div class="flex items-center gap-1.5 overflow-hidden">
+                                <svg class="h-4 w-4 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <span id="pos-applied-voucher-label"
+                                    class="text-xs font-bold text-emerald-700 truncate"></span>
+                            </div>
+                            <button type="button" onclick="removeVoucher()"
+                                class="text-emerald-500 hover:text-emerald-700 shrink-0 ml-1">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="space-y-2.5 text-sm">
                         <div class="flex items-center justify-between text-neutral-500">
                             <span>Total Barang</span>
                             <span id="total-qty-label" class="font-bold">0 Item</span>
+                        </div>
+                        <div id="pos-voucher-discount-row"
+                            class="hidden flex items-center justify-between text-rose-600 border-t border-neutral-100 pt-2.5 text-xs font-bold">
+                            <span>Diskon Voucher (<span id="pos-voucher-discount-desc"></span>)</span>
+                            <span id="pos-voucher-discount-label">- Rp 0</span>
                         </div>
                         <div
                             class="flex items-center justify-between text-neutral-900 border-t border-neutral-100 pt-3 text-base">
@@ -189,26 +227,29 @@
                 <div class="grid grid-cols-2 gap-3.5">
                     <button type="button" id="pay-select-cash-btn" onclick="selectPaymentMethod('cash')"
                         class="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-sky-500 bg-sky-50/50 text-sky-600 font-extrabold transition cursor-pointer">
-                        <img src="{{ asset('cash.png') }}" class="h-10 w-auto mb-1.5" alt="Cash Logo">
+                        <img src="{{ asset('images/cash.png') }}" class="h-10 w-auto mb-1.5" alt="Cash Logo">
                         <span class="text-xs font-bold text-neutral-700">Cash</span>
                     </button>
 
                     <button type="button" id="pay-select-qris-btn" onclick="selectPaymentMethod('qris')"
                         class="flex flex-col items-center justify-center p-4 rounded-xl border border-neutral-200 hover:border-sky-400 hover:bg-neutral-50/40 text-neutral-500 font-extrabold transition cursor-pointer">
-                        <img src="{{ asset('qris.png') }}" class="h-10 w-auto mb-1.5" alt="QRIS Logo">
+                        <img src="{{ asset('images/qris.png') }}" class="h-10 w-auto mb-1.5" alt="QRIS Logo">
                         <span class="text-xs font-bold text-neutral-700">QRIS</span>
                     </button>
                 </div>
 
-                <!-- Input Nama Customer -->
                 <div class="space-y-2">
-                    <label for="pos-customer-input" class="block text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Nama Customer</label>
+                    <label for="pos-customer-input"
+                        class="block text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Nama Customer <span
+                            class="text-rose-500 font-bold lowercase"></span></label>
                     <div class="relative">
-                        <input type="text" id="pos-customer-input" placeholder="Masukkan nama customer..."
+                        <input type="text" id="pos-customer-input" required placeholder="Masukkan nama customer..."
                             class="block w-full rounded-xl border border-neutral-250 bg-white pl-10 pr-4 py-3.5 text-sm font-bold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100/50">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                             </svg>
                         </span>
                     </div>

@@ -16,7 +16,7 @@
         <nav class="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Navigasi utama">
             <a href="{{ route('beranda.index') }}#home"
                 class="flex items-center gap-2.5 text-base font-bold tracking-wider text-neutral-900 transition-transform duration-250 hover:scale-[1.01]">
-                <img src="{{ asset('logo.png') }}" alt="Postan Logo" class="h-10 w-auto">
+                <img src="{{ asset('images/logo.png') }}" alt="Postan Logo" class="h-10 w-auto">
                 <span class="font-extrabold tracking-widest text-sm">POSTAN</span>
             </a>
 
@@ -119,7 +119,7 @@
                     <div class="lg:col-span-5 relative">
                         <div
                             class="w-full lg:w-[630px] xl:w-[670px] transition-transform duration-300 hover:scale-[1.01]">
-                            <img src="{{ asset('beranda.png') }}" alt="Dashboard Preview"
+                            <img src="{{ asset('images/beranda.png') }}" alt="Dashboard Preview"
                                 class="w-full h-auto select-none pointer-events-none" />
                         </div>
                     </div>
@@ -540,7 +540,7 @@
             <div>
                 <div class="flex items-center justify-between pb-6 border-b border-neutral-100">
                     <div class="flex items-center gap-2">
-                        <img src="{{ asset('logo.png') }}" alt="Postan Logo" class="h-8 w-auto">
+                        <img src="{{ asset('images/logo.png') }}" alt="Postan Logo" class="h-8 w-auto">
                         <span class="font-extrabold tracking-widest text-xs">POSTAN</span>
                     </div>
                     <button id="menu-close"
