@@ -4,8 +4,6 @@
     <div class="space-y-6 relative">
         <div
             class="relative bg-gradient-to-br from-sky-50/60 via-white/80 to-blue-50/50 rounded-2xl border border-sky-100/60 p-6 md:p-8 overflow-hidden">
-            <div class="hidden lg:block absolute left-[45%] xl:left-[48%] top-[-35px] w-[340px] xl:w-[400px] h-[170px] xl:h-[190px] pointer-events-none bg-no-repeat bg-contain bg-center"
-                style="background-image: url('{{ asset('images/kelola.png') }}');"></div>
 
             <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
                 <div class="max-w-xl">

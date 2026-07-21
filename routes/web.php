@@ -20,6 +20,7 @@ Route::get('/', function () {
 })->name('beranda.index');
 
 Route::view('/info', 'beranda')->name('info.index');
+Route::view('/showcase', 'beranda')->name('showcase.index');
 Route::view('/contact', 'beranda')->name('contact.index');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

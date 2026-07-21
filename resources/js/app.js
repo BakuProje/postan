@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
             sidebarPanel.classList.remove('translate-x-full');
             sidebarPanel.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSidebar() {
@@ -90,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
             sidebarPanel.classList.add('translate-x-full');
             sidebarPanel.classList.remove('translate-x-0');
+            document.body.style.overflow = '';
         }
 
         if (menuToggle) {
@@ -97,6 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (menuClose) {
             menuClose.addEventListener('click', closeSidebar);
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
         }
         ['mob-nav-home', 'mob-nav-info', 'mob-nav-contact'].forEach(id => {
             const link = document.getElementById(id);
@@ -169,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
             sidebarPanel.classList.remove('-translate-x-full');
             sidebarPanel.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSidebar() {
@@ -178,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
             sidebarPanel.classList.add('-translate-x-full');
             sidebarPanel.classList.remove('translate-x-0');
+            document.body.style.overflow = '';
         }
 
         const dashboardHeaderBurger = document.querySelector('header #menu-toggle');
@@ -186,6 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (menuClose) {
             menuClose.addEventListener('click', closeSidebar);
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
         }
     }
 });
@@ -1682,15 +1692,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         drawBorder: false
                     },
                     ticks: {
-                        padding: 10,
-                        font: {
-                            size: 9,
-                            family: "'Inter', sans-serif"
+                        padding: function (context) {
+                            return (context.chart.width < 500 || window.innerWidth < 640) ? 3 : 8;
                         },
-                        color: '#737373',
+                        font: function (context) {
+                            const isMobile = (context.chart.width < 500) || (window.innerWidth < 640);
+                            return {
+                                size: isMobile ? 8 : 9,
+                                family: "'Inter', sans-serif"
+                            };
+                        },
+                        color: '#a3a3a3',
                         callback: function (value) {
-                            return 'Rp ' + (value >= 1000000 ? (value / 1000000) + 'jt' : (
-                                value >= 1000 ? (value / 1000) + 'rb' : value));
+                            const isMobile = window.innerWidth < 640 || (this.chart && this.chart.width < 480);
+                            const formatted = value >= 1000000 ? (value / 1000000) + 'jt' : (
+                                value >= 1000 ? (value / 1000) + 'rb' : value);
+                            return isMobile ? formatted : 'Rp ' + formatted;
                         }
                     }
                 },
@@ -1700,13 +1717,37 @@ document.addEventListener('DOMContentLoaded', () => {
                         display: false
                     },
                     ticks: {
-                        align: 'inner',
-                        font: {
-                            size: 10,
-                            family: "'Inter', sans-serif",
-                            weight: 'bold'
+                        autoSkip: false,
+                        align: 'center',
+                        maxRotation: 0,
+                        minRotation: 0,
+                        padding: 6,
+                        font: function (context) {
+                            const isMobile = (context.chart.width < 500) || (window.innerWidth < 640);
+                            return {
+                                size: isMobile ? 8.5 : 9,
+                                family: "'Inter', sans-serif",
+                                weight: 'bold'
+                            };
                         },
-                        color: '#171717'
+                        color: '#404040',
+                        callback: function (val, index) {
+                            const rawLabel = this.getLabelForValue(val);
+                            if (typeof rawLabel === 'string' && rawLabel.includes('(')) {
+                                const dayName = rawLabel.split(' ')[0].substring(0, 3);
+                                const match = rawLabel.match(/\((.*?)\)/);
+                                if (match && match[1]) {
+                                    const datePart = match[1]; // e.g. "15/07"
+                                    if (window.innerWidth < 480 || this.chart.width < 420) {
+                                        return datePart; // "15/07" or day number
+                                    } else if (window.innerWidth < 640 || this.chart.width < 520) {
+                                        return datePart; // "15/07"
+                                    }
+                                    return `${dayName} (${datePart})`; // "Rab (15/07)"
+                                }
+                            }
+                            return rawLabel;
+                        }
                     }
                 }
             }
@@ -1850,6 +1891,15 @@ window.toggleLaporanTree = function (button) {
     const chevron = group.querySelector('.laporan-tree-chevron');
     if (submenu) submenu.classList.toggle('hidden');
     if (chevron) chevron.classList.toggle('rotate-180');
+};
+
+window.toggleSubmenu = function (id) {
+    const submenu = document.getElementById(id);
+    if (!submenu) return;
+    submenu.classList.toggle('hidden');
+    const arrowId = id.replace('-submenu', '-arrow');
+    const arrow = document.getElementById(arrowId);
+    if (arrow) arrow.classList.toggle('rotate-180');
 };
 
 window.toggleExportMenu = function (event) {

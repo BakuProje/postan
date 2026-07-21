@@ -8,24 +8,24 @@
             class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-gradient-to-tr from-sky-400/10 via-sky-300/5 to-transparent blur-md pointer-events-none">
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 relative z-10">
             <div
-                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)] hover:-translate-y-1 group flex flex-col justify-between h-[155px]">
+                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)] hover:-translate-y-1 group flex flex-col justify-between min-h-[140px]">
                 <div
                     class="absolute -bottom-8 -right-8 h-20 w-20 rounded-full bg-emerald-500/10 blur-xl pointer-events-none transition-all duration-500 group-hover:bg-emerald-500/15 group-hover:scale-125">
                 </div>
                 <div class="relative z-10 flex items-start justify-between">
                     <span class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Total Pendapatan</span>
                     <div
-                        class="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center border border-emerald-100/40 shadow-sm transition-transform duration-350 group-hover:scale-110">
+                        class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center border border-emerald-100/40 shadow-sm transition-transform duration-350 group-hover:scale-110 shrink-0">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                     </div>
                 </div>
-                <div class="relative z-10 mt-1">
-                    <h3 class="text-[26px] font-black text-neutral-900 tracking-tight leading-none">Rp
+                <div class="relative z-10 mt-2">
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none">Rp
                         {{ number_format($omset, 0, ',', '.') }}</h3>
                 </div>
                 <div class="relative z-10 mt-3 flex items-center justify-between">
@@ -55,22 +55,22 @@
             </div>
 
             <div
-                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)] hover:-translate-y-1 group flex flex-col justify-between h-[155px]">
+                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)] hover:-translate-y-1 group flex flex-col justify-between min-h-[140px]">
                 <div
                     class="absolute -bottom-8 -right-8 h-20 w-20 rounded-full bg-sky-500/10 blur-xl pointer-events-none transition-all duration-500 group-hover:bg-sky-500/15 group-hover:scale-125">
                 </div>
                 <div class="relative z-10 flex items-start justify-between">
                     <span class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Total Transaksi</span>
                     <div
-                        class="h-10 w-10 rounded-xl bg-sky-50 text-sky-500 flex items-center justify-center border border-sky-100/40 shadow-sm transition-transform duration-350 group-hover:scale-110">
+                        class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-sky-50 text-sky-500 flex items-center justify-center border border-sky-100/40 shadow-sm transition-transform duration-350 group-hover:scale-110 shrink-0">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                         </svg>
                     </div>
                 </div>
-                <div class="relative z-10 mt-1">
-                    <h3 class="text-[26px] font-black text-neutral-900 tracking-tight leading-none">
+                <div class="relative z-10 mt-2">
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none">
                         {{ number_format($penjualan, 0, ',', '.') }}</h3>
                 </div>
                 <div class="relative z-10 mt-3 flex items-center justify-between">
@@ -100,22 +100,22 @@
             </div>
 
             <div
-                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)] hover:-translate-y-1 group flex flex-col justify-between h-[155px]">
+                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)] hover:-translate-y-1 group flex flex-col justify-between min-h-[140px]">
                 <div
                     class="absolute -bottom-8 -right-8 h-20 w-20 rounded-full bg-orange-500/10 blur-xl pointer-events-none transition-all duration-500 group-hover:bg-orange-500/15 group-hover:scale-125">
                 </div>
                 <div class="relative z-10 flex items-start justify-between">
                     <span class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Produk Terjual</span>
                     <div
-                        class="h-10 w-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center border border-orange-100/40 shadow-sm transition-transform duration-350 group-hover:scale-110">
+                        class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center border border-orange-100/40 shadow-sm transition-transform duration-350 group-hover:scale-110 shrink-0">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25M9 7.5v9" />
                         </svg>
                     </div>
                 </div>
-                <div class="relative z-10 mt-1">
-                    <h3 class="text-[26px] font-black text-neutral-900 tracking-tight leading-none">
+                <div class="relative z-10 mt-2">
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none">
                         {{ number_format($produkTerjual, 0, ',', '.') }}</h3>
                 </div>
                 <div class="relative z-10 mt-3 flex items-center justify-between">
@@ -145,22 +145,22 @@
             </div>
 
             <div
-                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)] hover:-translate-y-1 group flex flex-col justify-between h-[155px]">
+                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)] hover:-translate-y-1 group flex flex-col justify-between min-h-[140px]">
                 <div
                     class="absolute -bottom-8 -right-8 h-20 w-20 rounded-full bg-violet-500/10 blur-xl pointer-events-none transition-all duration-500 group-hover:bg-violet-500/15 group-hover:scale-125">
                 </div>
                 <div class="relative z-10 flex items-start justify-between">
                     <span class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Kasir Aktif</span>
                     <div
-                        class="h-10 w-10 rounded-xl bg-violet-50 text-violet-500 flex items-center justify-center border border-violet-100/40 shadow-sm transition-transform duration-350 group-hover:scale-110">
+                        class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-violet-50 text-violet-500 flex items-center justify-center border border-violet-100/40 shadow-sm transition-transform duration-350 group-hover:scale-110 shrink-0">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                         </svg>
                     </div>
                 </div>
-                <div class="relative z-10 mt-1">
-                    <h3 class="text-[26px] font-black text-neutral-900 tracking-tight leading-none">
+                <div class="relative z-10 mt-2">
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none">
                         {{ number_format($kasirAktif, 0, ',', '.') }}</h3>
                 </div>
                 <div class="relative z-10 mt-3 flex items-center justify-between">
@@ -176,17 +176,17 @@
         </div>
 
         <!-- STATISTIK GRAFIK & KASIR -->
-        <div class="grid gap-6 lg:grid-cols-3 relative z-10">
+        <div class="grid gap-6 2xl:grid-cols-3 relative z-10 mb-6">
             <div
-                class="lg:col-span-2 bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1">
+                class="2xl:col-span-2 bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-4 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1">
                 <div
                     class="absolute inset-0 bg-[linear-gradient(to_right,#80808003_1px,transparent_1px),linear-gradient(to_bottom,#80808003_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none">
                 </div>
-                <div class="relative z-10 flex items-center justify-between mb-6">
+                <div class="relative z-10 flex items-center justify-between mb-4 sm:mb-6">
                     <span class="text-xs font-black text-neutral-900 uppercase tracking-widest">Tren Pemasukan 7 Hari
                         Terakhir</span>
                 </div>
-                <div class="relative z-10 w-full" style="height: 250px;">
+                <div class="relative z-10 w-full h-[220px] sm:h-[250px]">
                     <canvas id="salesChart"></canvas>
                 </div>
             </div>
@@ -222,27 +222,27 @@
                         @endphp
                         @forelse($performaKasir as $user)
                             <div
-                                class="flex items-center justify-between border-b border-neutral-100/60 pb-3.5 last:border-0 last:pb-0">
-                                <div class="flex items-center gap-3">
+                                class="flex items-center justify-between gap-3 border-b border-neutral-100/60 pb-3.5 last:border-0 last:pb-0">
+                                <div class="flex items-center gap-2.5 min-w-0 flex-1">
                                     @if ($loop->iteration == 1)
                                         <div
-                                            class="flex items-center justify-center rounded-full size-6 bg-amber-400 text-white font-extrabold text-[10px] shadow-sm shrink-0">
+                                            class="flex items-center justify-center rounded-full size-6 bg-amber-400 text-white font-black text-[10px] shadow-2xs shrink-0">
                                             1</div>
                                     @elseif ($loop->iteration == 2)
                                         <div
-                                            class="flex items-center justify-center rounded-full size-6 bg-slate-300 text-white font-extrabold text-[10px] shadow-sm shrink-0">
+                                            class="flex items-center justify-center rounded-full size-6 bg-slate-300 text-white font-black text-[10px] shadow-2xs shrink-0">
                                             2</div>
                                     @elseif ($loop->iteration == 3)
                                         <div
-                                            class="flex items-center justify-center rounded-full size-6 bg-orange-350 text-white font-extrabold text-[10px] shadow-sm shrink-0">
+                                            class="flex items-center justify-center rounded-full size-6 bg-orange-350 text-white font-black text-[10px] shadow-2xs shrink-0">
                                             3</div>
                                     @else
                                         <div
-                                            class="flex items-center justify-center rounded-full size-6 bg-neutral-100 text-neutral-500 font-extrabold text-[10px] shrink-0">
+                                            class="flex items-center justify-center rounded-full size-6 bg-neutral-100 text-neutral-500 font-black text-[10px] shrink-0">
                                             4</div>
                                     @endif
                                     <div
-                                        class="h-10 w-10 rounded-full overflow-hidden border border-neutral-200 shrink-0 shadow-2xs">
+                                        class="h-9 w-9 rounded-full overflow-hidden border border-neutral-200 shrink-0 shadow-2xs">
                                         @if ($user->profile_picture)
                                             <img src="{{ asset($user->profile_picture) }}" alt="{{ $user->name }}"
                                                 class="h-full w-full object-cover">
@@ -253,18 +253,18 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <div class="space-y-0.5">
-                                        <p class="text-xs font-bold text-neutral-800 leading-none">{{ $user->name }}</p>
-                                        <div class="w-24 sm:w-32 bg-neutral-100 h-1.5 rounded-full overflow-hidden mt-1.5">
+                                    <div class="min-w-0 flex-1 pr-1">
+                                        <p class="text-xs font-bold text-neutral-900 leading-none truncate">{{ $user->name }}</p>
+                                        <div class="w-full max-w-[80px] sm:max-w-[120px] bg-neutral-100 h-1.5 rounded-full overflow-hidden mt-1.5">
                                             <div class="bg-sky-500 h-full rounded-full transition-all duration-500"
                                                 style="width: {{ ($user->total_sales / $maxSales) * 100 }}%"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="text-right">
-                                    <p class="text-xs font-black text-neutral-800">Rp
+                                <div class="text-right shrink-0">
+                                    <p class="text-xs font-black text-neutral-900 leading-none whitespace-nowrap">Rp
                                         {{ number_format($user->total_sales, 0, ',', '.') }}</p>
-                                    <p class="text-[9px] text-neutral-400 font-medium mt-0.5">
+                                    <p class="text-[10px] text-neutral-400 font-semibold mt-1 whitespace-nowrap">
                                         {{ $user->transactions_count }} transaksi</p>
                                 </div>
                             </div>
@@ -283,9 +283,9 @@
             $notifications = \App\Models\Notification::latest()->take(4)->get();
         @endphp
 
-        <div class="grid gap-6 lg:grid-cols-3 relative z-10">
+        <div class="grid gap-6 md:grid-cols-2 2xl:grid-cols-3 relative z-10">
             <div
-                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1 h-[385px] flex flex-col">
+                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1 min-h-[340px] flex flex-col">
                 <div
                     class="absolute inset-0 bg-[linear-gradient(to_right,#80808003_1px,transparent_1px),linear-gradient(to_bottom,#80808003_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none">
                 </div>
@@ -352,7 +352,7 @@
 
             <!-- Transaksi Terbaru -->
             <div
-                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1 h-[385px] flex flex-col">
+                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1 min-h-[340px] flex flex-col">
                 <div
                     class="absolute inset-0 bg-[linear-gradient(to_right,#80808003_1px,transparent_1px),linear-gradient(to_bottom,#80808003_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none">
                 </div>
@@ -361,41 +361,39 @@
                     <a href="{{ route('admin.history') }}"
                         class="text-xs text-sky-600 hover:text-sky-700 font-semibold transition">Lihat Semua</a>
                 </div>
-                <div class="relative z-10 overflow-y-auto no-scrollbar flex-1">
+                <div class="relative z-10 overflow-x-auto overflow-y-auto no-scrollbar flex-1 w-full">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr
                                 class="border-b border-neutral-100 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-                                <th class="pb-3 text-center">NO</th>
-                                <th class="pb-3 pl-2">KASIR</th>
-                                <th class="pb-3">WAKTU</th>
-                                <th class="pb-3">METODE</th>
-                                <th class="pb-3 text-right">TOTAL</th>
+                                <th class="pb-3 pl-1">KASIR</th>
+                                <th class="pb-3 px-1 text-center">WAKTU</th>
+                                <th class="pb-3 px-1 text-center">METODE</th>
+                                <th class="pb-3 pr-1 text-right">TOTAL</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-neutral-100 text-xs">
-                            @forelse($recentTransactions->take(4) as $index => $tx)
+                            @forelse($recentTransactions->take(4) as $tx)
                                 <tr class="group/row">
-                                    <td class="py-3 text-center text-neutral-400 font-medium">{{ $index + 1 }}</td>
-                                    <td class="py-3 pl-2 font-semibold text-neutral-800 flex items-center gap-2">
+                                    <td class="py-2.5 pl-1 font-semibold text-neutral-800 flex items-center gap-1.5 whitespace-nowrap">
                                         <div
-                                            class="h-6 w-6 rounded-full overflow-hidden border border-neutral-200 shrink-0">
-                                            @if ($tx->user->profile_picture)
+                                            class="h-5.5 w-5.5 rounded-full overflow-hidden border border-neutral-200 shrink-0">
+                                            @if ($tx->user && $tx->user->profile_picture)
                                                 <img src="{{ asset($tx->user->profile_picture) }}"
                                                     alt="{{ $tx->user->name }}" class="h-full w-full object-cover">
                                             @else
                                                 <div
-                                                    class="h-full w-full bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-[9px] uppercase">
-                                                    {{ substr($tx->user->name, 0, 2) }}
+                                                    class="h-full w-full bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-[8px] uppercase">
+                                                    {{ substr($tx->user ? $tx->user->name : 'KS', 0, 2) }}
                                                 </div>
                                             @endif
                                         </div>
-                                        <span class="truncate max-w-[60px] font-semibold">{{ $tx->user->name }}</span>
+                                        <span class="truncate max-w-[55px] font-semibold text-[11px]">{{ $tx->user ? $tx->user->name : ($tx->customer_name ?? 'Kasir') }}</span>
                                     </td>
-                                    <td class="py-3 text-neutral-500 font-medium whitespace-nowrap">
-                                        {{ $tx->created_at->format('d M Y H:i') }}</td>
-                                    <td class="py-3">
-                                        @if ($tx->payment_method === 'qris')
+                                    <td class="py-2.5 px-1 text-neutral-400 text-[10px] font-medium text-center whitespace-nowrap">
+                                        {{ $tx->created_at ? $tx->created_at->format('H:i') : '-' }}</td>
+                                    <td class="py-2.5 px-1 text-center whitespace-nowrap">
+                                        @if (strtolower($tx->payment_method) === 'qris')
                                             <span
                                                 class="inline-flex items-center rounded bg-violet-50 border border-violet-100 px-1.5 py-0.5 text-[9px] font-bold text-violet-600 uppercase tracking-wider">
                                                 QRIS
@@ -403,16 +401,16 @@
                                         @else
                                             <span
                                                 class="inline-flex items-center rounded bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-600 uppercase tracking-wider">
-                                                Cash
+                                                CASH
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="py-3 text-right font-black text-emerald-600 whitespace-nowrap">Rp
+                                    <td class="py-2.5 pr-1 text-right font-black text-neutral-900 text-[11px] whitespace-nowrap">Rp
                                         {{ number_format($tx->total_price, 0, ',', '.') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="py-12 text-center text-xs text-neutral-400 italic">Belum ada
+                                    <td colspan="4" class="py-12 text-center text-xs text-neutral-400 italic">Belum ada
                                         transaksi.</td>
                                 </tr>
                             @endforelse
@@ -423,7 +421,7 @@
 
             <!-- Notifikasi -->
             <div
-                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1 h-[385px] flex flex-col">
+                class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden transition-all duration-350 hover:shadow-[0_30px_70px_rgba(0,0,0,0.05)] hover:-translate-y-1 min-h-[340px] flex flex-col">
                 <div
                     class="absolute inset-0 bg-[linear-gradient(to_right,#80808003_1px,transparent_1px),linear-gradient(to_bottom,#80808003_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none">
                 </div>

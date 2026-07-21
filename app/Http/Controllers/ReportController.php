@@ -12,18 +12,16 @@ class ReportController extends Controller
 {
     public function reports(Request $request)
     {
-        $period = $request->input('period', 'custom');
+        $period = $request->input('period', '7days');
         
         if ($period === 'today') {
             $startDate = Carbon::today()->toDateString();
-            $endDate = Carbon::today()->toDateString();
-        } elseif ($period === '7days') {
-            $startDate = Carbon::today()->subDays(6)->toDateString();
             $endDate = Carbon::today()->toDateString();
         } elseif ($period === '30days') {
             $startDate = Carbon::today()->subDays(29)->toDateString();
             $endDate = Carbon::today()->toDateString();
         } else {
+            // Default 7days
             $startDate = $request->input('start_date', Carbon::today()->subDays(6)->toDateString());
             $endDate = $request->input('end_date', Carbon::today()->toDateString());
         }

@@ -25,7 +25,7 @@
     </div>
 
     <aside id="desktop-sidebar"
-        class="hidden lg:flex lg:flex-col lg:w-64 bg-white/80 backdrop-blur-lg border-r border-neutral-200/50 shrink-0 sticky top-0 h-screen p-6 justify-between z-20 relative overflow-hidden transition-all duration-300">
+        class="hidden lg:flex lg:flex-col lg:w-64 bg-white/80 backdrop-blur-lg border-r border-neutral-200/50 shrink-0 sticky top-0 h-screen p-6 z-20 relative overflow-hidden transition-all duration-300">
         <div
             class="absolute inset-0 bg-[linear-gradient(to_right,#80808006_1px,transparent_1px),linear-gradient(to_bottom,#80808006_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none">
         </div>
@@ -33,7 +33,7 @@
             class="absolute -top-12 -left-12 h-36 w-36 rounded-full bg-gradient-to-br from-white/70 via-sky-50/30 to-sky-100/10 border border-white/50 shadow-[inset_4px_4px_12px_rgba(255,255,255,0.9),inset_-4px_-4px_12px_rgba(14,165,233,0.06)] pointer-events-none">
         </div>
 
-        <div class="space-y-8 relative z-10 overflow-y-auto max-h-[calc(100vh-100px)] pr-1 sidebar-scrollbar">
+        <div class="space-y-6 relative z-10 flex-1 overflow-y-auto pr-1 sidebar-scrollbar">
             <div class="flex items-center justify-between gap-2.5 sidebar-brand-wrapper">
                 <a href="{{ route('dashboard') }}"
                     class="flex items-center gap-2.5 text-base font-bold tracking-wider text-neutral-900 transition-transform duration-200 hover:scale-[1.01] sidebar-text">
@@ -170,7 +170,7 @@
                         <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75 3.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h2.25A2.25 2.25 0 0 0 22.5 18.75V8.184c0-.528-.186-1.04-.526-1.442l-5.184-6.13A2.25 2.25 0 0 0 15.084 0H4.916c-.722 0-1.4.345-1.826.924l-2.072 2.812A2.247 2.247 0 0 0 .5 5.184v13.566A2.25 2.25 0 0 0 2.75 21H18Z" />
+                                d="M2.25 12L12 3.75 21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V9.75M9.75 21v-6h4.5v6" />
                         </svg>
                         <span class="sidebar-text">Pengaturan Outlet</span>
                     </a>
@@ -225,53 +225,31 @@
                     </svg>
                     <span class="sidebar-text">Sembunyikan Menu</span>
                 </button>
+
+                <form method="POST" action="{{ route('logout') }}" class="pt-2">
+                    @csrf
+                    <button type="submit"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-rose-500 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer sidebar-nav-link">
+                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                        </svg>
+                        <span class="sidebar-text">Logout</span>
+                    </button>
+                </form>
             </nav>
-        </div>
-
-        <div class="border-t border-neutral-100 pt-5 space-y-4 relative z-10">
-            <a href="{{ route('admin.profile') }}"
-                class="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-neutral-50 transition group sidebar-profile-card">
-                <div class="h-9 w-9 rounded-full overflow-hidden border border-neutral-200/80 shrink-0 aspect-square">
-                    @if (Auth::user()->profile_picture)
-                        <img src="{{ asset(Auth::user()->profile_picture) }}" alt="Profil {{ Auth::user()->name }}"
-                            class="h-full w-full object-cover">
-                    @else
-                        <div
-                            class="h-full w-full bg-sky-50 text-sky-600 flex items-center justify-center font-extrabold text-xs uppercase">
-                            {{ substr(Auth::user()->name, 0, 2) }}
-                        </div>
-                    @endif
-                </div>
-                <div class="overflow-hidden sidebar-text">
-                    <p class="text-xs font-bold text-neutral-900 truncate group-hover:text-sky-600 transition">
-                        {{ Auth::user()->name }}</p>
-                    <p class="text-[10px] text-neutral-400 truncate">{{ Auth::user()->email }}</p>
-                </div>
-            </a>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit"
-                    class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-rose-500 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer sidebar-nav-link">
-                    <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-                    </svg>
-                    <span class="sidebar-text">Logout</span>
-                </button>
-            </form>
         </div>
     </aside>
 
 
-    <div id="mobile-sidebar" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300 lg:hidden">
+    <div id="mobile-sidebar" class="fixed inset-0 z-[999] pointer-events-none transition-all duration-300 lg:hidden">
 
         <div id="sidebar-overlay"
-            class="absolute inset-0 bg-neutral-950/20 backdrop-blur-xs opacity-0 transition-opacity duration-300 pointer-events-none">
+            class="fixed inset-0 bg-neutral-950/50 backdrop-blur-xs opacity-0 transition-opacity duration-300 pointer-events-none z-[999]">
         </div>
         <div id="sidebar-panel"
-            class="absolute top-0 bottom-0 left-0 w-64 bg-white/80 backdrop-blur-lg p-6 border-r border-neutral-200/50 -translate-x-full transition-transform duration-300 pointer-events-auto flex flex-col justify-between overflow-hidden">
+            class="fixed top-0 bottom-0 left-0 h-full w-72 max-w-[80vw] bg-white p-6 border-r border-neutral-200 shadow-2xl -translate-x-full transition-transform duration-300 pointer-events-auto z-[1000] flex flex-col justify-between overflow-hidden">
             <div
                 class="absolute inset-0 bg-[linear-gradient(to_right,#80808006_1px,transparent_1px),linear-gradient(to_bottom,#80808006_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none">
             </div>
@@ -279,22 +257,21 @@
                 class="absolute -top-12 -left-12 h-36 w-36 rounded-full bg-gradient-to-br from-white/70 via-sky-50/30 to-sky-100/10 border border-white/50 shadow-[inset_4px_4px_12px_rgba(255,255,255,0.9),inset_-4px_-4px_12px_rgba(14,165,233,0.06)] pointer-events-none">
             </div>
 
-            <div class="space-y-8 relative z-10 overflow-y-auto max-h-[calc(100vh-80px)] pr-1 sidebar-scrollbar">
-                <div class="flex items-center justify-between pb-4 border-b border-neutral-100">
-                    <div class="flex items-center gap-2">
-                        <img src="{{ asset('images/logo.png') }}" alt="Postan Logo" class="h-8 w-auto">
-                        <span class="font-extrabold tracking-widest text-xs">POSTAN</span>
-                    </div>
-                    <button id="menu-close"
-                        class="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800 transition cursor-pointer">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+            <div class="flex items-center justify-between pb-4 border-b border-neutral-100 shrink-0 relative z-10">
+                <div class="flex items-center gap-2">
+                    <img src="{{ asset('images/logo.png') }}" alt="Postan Logo" class="h-8 w-auto">
+                    <span class="font-extrabold tracking-widest text-xs">POSTAN</span>
                 </div>
+                <button id="menu-close"
+                    class="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800 transition cursor-pointer">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
 
-
+            <div class="flex-1 overflow-y-auto my-3 pr-1 relative z-10 sidebar-scrollbar">
                 <nav class="space-y-1.5">
                     @if (Auth::user()->role === 'admin')
                         <p class="text-[10px] font-bold text-neutral-400 px-3 mb-2">Utama</p>
@@ -338,6 +315,7 @@
                         </a>
 
                         <p class="text-[10px] font-bold text-neutral-400 px-3 mt-6 mb-2">Manajemen</p>
+
                         <a href="{{ route('admin.users') }}"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold {{ request()->routeIs('admin.users*') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
                             <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -347,9 +325,10 @@
                             </svg>
                             Kelola Kasir
                         </a>
-                        <div class="inventaris-group space-y-1">
-                            <button type="button" onclick="toggleInventaris(this)"
-                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all duration-150 {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
+
+                        <div>
+                            <button type="button" onclick="toggleSubmenu('mob-inventory-submenu')"
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                         stroke="currentColor">
@@ -358,54 +337,46 @@
                                     </svg>
                                     <span>Inventory</span>
                                 </div>
-                                <svg class="size-3.5 transition-transform duration-200 inventaris-chevron {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? 'rotate-180' : '' }}"
-                                    fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                <svg id="mob-inventory-arrow"
+                                    class="size-3.5 transition-transform duration-200 {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? 'rotate-180' : '' }}"
+                                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                 </svg>
                             </button>
-                            <div
-                                class="inventaris-submenu pl-9 space-y-1 {{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? '' : 'hidden' }}">
+                            <div id="mob-inventory-submenu"
+                                class="{{ request()->routeIs('admin.products*') || request()->routeIs('admin.categories*') ? '' : 'hidden' }} pl-9 pr-2 py-1 space-y-1">
                                 <a href="{{ route('admin.products') }}"
-                                    class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.products*') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
-                                    Produk
-                                </a>
+                                    class="block py-1.5 text-xs font-semibold {{ request()->routeIs('admin.products*') ? 'text-sky-600 font-bold' : 'text-neutral-500 hover:text-neutral-900' }}">Produk</a>
                                 <a href="{{ route('admin.categories') }}"
-                                    class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.categories*') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
-                                    Kategori
-                                </a>
+                                    class="block py-1.5 text-xs font-semibold {{ request()->routeIs('admin.categories*') ? 'text-sky-600 font-bold' : 'text-neutral-500 hover:text-neutral-900' }}">Kategori</a>
                             </div>
                         </div>
-                        <div class="laporan-tree-group space-y-1">
-                            <button type="button" onclick="toggleLaporanTree(this)"
-                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all duration-150 {{ request()->routeIs('admin.reports*') || request()->routeIs('admin.dashboard.terlaris') || request()->routeIs('admin.history') ? 'bg-sky-50 text-sky-600' : 'text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900' }}">
+
+                        <div>
+                            <button type="button" onclick="toggleSubmenu('mob-reports-submenu')"
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold text-neutral-500 hover:bg-neutral-50/50 hover:text-neutral-900 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v5.25c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 0 1 3 18.375v-5.25ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125v-9.75ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v14.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                                            d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
                                     </svg>
                                     <span>Laporan</span>
                                 </div>
-                                <svg class="size-3.5 transition-transform duration-200 laporan-tree-chevron"
-                                    fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                <svg id="mob-reports-arrow"
+                                    class="size-3.5 transition-transform duration-200 {{ request()->routeIs('admin.reports*') || request()->routeIs('admin.dashboard.terlaris*') || request()->routeIs('admin.history*') ? 'rotate-180' : '' }}"
+                                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                 </svg>
                             </button>
-                            <div class="laporan-tree-submenu pl-9 space-y-1 hidden">
+                            <div id="mob-reports-submenu"
+                                class="{{ request()->routeIs('admin.reports*') || request()->routeIs('admin.dashboard.terlaris*') || request()->routeIs('admin.history*') ? '' : 'hidden' }} pl-9 pr-2 py-1 space-y-1">
                                 <a href="{{ route('admin.reports') }}"
-                                    class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.reports') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
-                                    Keuangan
-                                </a>
+                                    class="block py-1.5 text-xs font-semibold {{ request()->routeIs('admin.reports*') ? 'text-sky-600 font-bold' : 'text-neutral-500 hover:text-neutral-900' }}">Keuangan</a>
                                 <a href="{{ route('admin.dashboard.terlaris') }}"
-                                    class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.dashboard.terlaris') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
-                                    Terlaris
-                                </a>
+                                    class="block py-1.5 text-xs font-semibold {{ request()->routeIs('admin.dashboard.terlaris*') ? 'text-sky-600 font-bold' : 'text-neutral-500 hover:text-neutral-900' }}">Terlaris</a>
                                 <a href="{{ route('admin.history') }}"
-                                    class="block px-3 py-2 rounded-lg text-xs font-bold transition-colors {{ request()->routeIs('admin.history') ? 'text-sky-600 font-extrabold' : 'text-neutral-500 hover:text-neutral-900' }}">
-                                    Transaksi
-                                </a>
+                                    class="block py-1.5 text-xs font-semibold {{ request()->routeIs('admin.history*') ? 'text-sky-600 font-bold' : 'text-neutral-500 hover:text-neutral-900' }}">Transaksi</a>
                             </div>
                         </div>
 
@@ -415,7 +386,7 @@
                             <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75 3.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h2.25A2.25 2.25 0 0 0 22.5 18.75V8.184c0-.528-.186-1.04-.526-1.442l-5.184-6.13A2.25 2.25 0 0 0 15.084 0H4.916c-.722 0-1.4.345-1.826.924l-2.072 2.812A2.247 2.247 0 0 0 .5 5.184v13.566A2.25 2.25 0 0 0 2.75 21H18Z" />
+                                    d="M2.25 12L12 3.75 21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V9.75M9.75 21v-6h4.5v6" />
                             </svg>
                             Pengaturan Outlet
                         </a>
@@ -426,7 +397,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
-                            Pengaturan Profile
+                            Profil
                         </a>
                     @else
                         <p class="text-[10px] font-bold text-neutral-400 px-3 mb-2">Utama</p>
@@ -458,43 +429,20 @@
                             Profil
                         </a>
                     @endif
+
+                    <form method="POST" action="{{ route('logout') }}" class="pt-4 mt-2 border-t border-neutral-100">
+                        @csrf
+                        <button type="submit"
+                            class="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-rose-500 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer">
+                            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                            </svg>
+                            Logout
+                        </button>
+                    </form>
                 </nav>
-            </div>
-
-            <div class="border-t border-neutral-100 pt-5 space-y-4 relative z-10">
-                <a href="{{ route('admin.profile') }}"
-                    class="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-neutral-50 transition group">
-                    <div
-                        class="h-9 w-9 rounded-full overflow-hidden border border-neutral-200/80 shrink-0 aspect-square">
-                        @if (Auth::user()->profile_picture)
-                            <img src="{{ asset(Auth::user()->profile_picture) }}"
-                                alt="Profil {{ Auth::user()->name }}" class="h-full w-full object-cover">
-                        @else
-                            <div
-                                class="h-full w-full bg-sky-50 text-sky-600 flex items-center justify-center font-extrabold text-xs uppercase">
-                                {{ substr(Auth::user()->name, 0, 2) }}
-                            </div>
-                        @endif
-                    </div>
-                    <div class="overflow-hidden">
-                        <p class="text-xs font-bold text-neutral-900 truncate group-hover:text-sky-600 transition">
-                            {{ Auth::user()->name }}</p>
-                        <p class="text-[10px] text-neutral-400 truncate">{{ Auth::user()->email }}</p>
-                    </div>
-                </a>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit"
-                        class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-rose-500 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer">
-                        <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-                        </svg>
-                        Logout
-                    </button>
-                </form>
             </div>
         </div>
     </div>

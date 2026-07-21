@@ -29,17 +29,9 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide">Total Penjualan</span>
-                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">Rp
+                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">Total Penjualan</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">Rp
                         {{ number_format($totalSales, 0, ',', '.') }}</h3>
-                    <div class="flex items-center gap-1 mt-2 text-[11px] font-bold text-emerald-600">
-                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-                        </svg>
-                        <span>{{ $salesGrowth }}% <strong class="font-medium text-neutral-400">dari periode
-                                lalu</strong></span>
-                    </div>
                 </div>
             </div>
 
@@ -53,17 +45,9 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide">Total Transaksi</span>
-                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">Total Transaksi</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">
                         {{ number_format($totalTransactions, 0, ',', '.') }}</h3>
-                    <div class="flex items-center gap-1 mt-2 text-[11px] font-bold text-emerald-600">
-                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-                        </svg>
-                        <span>{{ $transGrowth }}% <strong class="font-medium text-neutral-400">dari periode
-                                lalu</strong></span>
-                    </div>
                 </div>
             </div>
 
@@ -77,17 +61,9 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide">Rata-rata Transaksi</span>
-                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">Rp
+                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">Rata-rata Transaksi</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">Rp
                         {{ number_format($avgTransaction, 0, ',', '.') }}</h3>
-                    <div class="flex items-center gap-1 mt-2 text-[11px] font-bold text-emerald-600">
-                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-                        </svg>
-                        <span>{{ $avgGrowth }}% <strong class="font-medium text-neutral-400">dari periode
-                                lalu</strong></span>
-                    </div>
                 </div>
             </div>
 
@@ -101,17 +77,9 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide">Total Item Terjual</span>
-                    <h3 class="text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1">
+                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">Total Item Terjual</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">
                         {{ number_format($totalItemsSold, 0, ',', '.') }}</h3>
-                    <div class="flex items-center gap-1 mt-2 text-[11px] font-bold text-emerald-600">
-                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-                        </svg>
-                        <span>{{ $itemsGrowth }}% <strong class="font-medium text-neutral-400">dari periode
-                                lalu</strong></span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -123,9 +91,8 @@
                     <label class="block text-[10px] font-extrabold text-neutral-400 mb-1 capitalize">Periode</label>
                     <select name="period" onchange="this.form.submit()"
                         class="w-full bg-neutral-50 border border-neutral-200 text-xs font-bold text-neutral-700 rounded-xl px-3 py-2 outline-hidden focus:border-sky-500 focus:bg-white transition-all cursor-pointer">
-                        <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>Custom</option>
-                        <option value="today" {{ $period === 'today' ? 'selected' : '' }}>Hari Ini</option>
                         <option value="7days" {{ $period === '7days' ? 'selected' : '' }}>7 Hari Terakhir</option>
+                        <option value="today" {{ $period === 'today' ? 'selected' : '' }}>Hari Ini</option>
                         <option value="30days" {{ $period === '30days' ? 'selected' : '' }}>30 Hari Terakhir</option>
                     </select>
                 </div>
@@ -188,10 +155,6 @@
                             <p class="text-[11px] text-neutral-400 font-medium mt-0.5">Arahkan kursor ke titik grafik untuk
                                 melihat rincian detail</p>
                         </div>
-                        <select
-                            class="bg-neutral-50 border border-neutral-200 text-xs font-bold text-neutral-700 rounded-xl px-3 py-1.5 outline-hidden cursor-pointer">
-                            <option>Per Hari</option>
-                        </select>
                     </div>
 
                     @php

@@ -4,8 +4,6 @@
     <div class="space-y-6 relative">
         <div
             class="relative bg-gradient-to-br from-sky-50/60 via-white/80 to-blue-50/50 rounded-2xl border border-sky-100/60 p-6 md:p-8">
-            <div class="hidden lg:block absolute left-[45%] xl:left-[48%] top-[-25px] w-[340px] xl:w-[400px] h-[170px] xl:h-[190px] pointer-events-none bg-no-repeat bg-contain bg-center"
-                style="background-image: url('{{ asset('images/voucher.png') }}');"></div>
 
             <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
                 <div class="max-w-xl">
@@ -157,7 +155,7 @@
                     kata kunci pencarian Anda.</p>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                 @foreach ($vouchers as $voucher)
                     @php
                         $today = \Carbon\Carbon::today();
@@ -207,7 +205,7 @@
                                 : 'bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600';
                     @endphp
                     <div
-                        class="relative bg-white rounded-2xl border border-neutral-200/80 shadow-xs flex h-44 overflow-visible transition hover:border-sky-300 hover:shadow-md group">
+                        class="relative bg-white rounded-2xl border border-neutral-200/80 shadow-xs flex min-h-[175px] h-auto overflow-visible transition hover:border-sky-300 hover:shadow-md group">
                         <div
                             class="w-20 {{ $stripBg }} rounded-l-2xl flex flex-col items-center justify-center shrink-0 relative overflow-hidden text-white">
                             <div
@@ -255,9 +253,9 @@
                             </div>
 
                             <div
-                                class="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] font-bold">
-                                <div class="flex items-center gap-2.5 text-neutral-400">
-                                    <span class="flex items-center gap-1 text-[10px]">
+                                class="pt-2 border-t border-neutral-100 flex items-center justify-between gap-2 text-[11px] font-bold">
+                                <div class="flex items-center gap-2.5 text-neutral-400 whitespace-nowrap">
+                                    <span class="flex items-center gap-1 text-[10px] whitespace-nowrap">
                                         <svg class="h-3.5 w-3.5 text-neutral-400 shrink-0" fill="none"
                                             viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -266,7 +264,7 @@
                                         {{ $endDate->format('d M Y') }}
                                     </span>
                                     <span>•</span>
-                                    <span class="text-neutral-600 font-extrabold flex items-center gap-1 text-[10px]">
+                                    <span class="text-neutral-600 font-extrabold flex items-center gap-1 text-[10px] whitespace-nowrap">
                                         <svg class="h-3.5 w-3.5 text-neutral-400 shrink-0" fill="none"
                                             viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round"
