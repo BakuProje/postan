@@ -17,7 +17,7 @@ class UserController extends Controller
         
         $users = User::latest()->get();
         $shifts = Shift::latest()->get();
-        return view('admin.users.index', compact('users', 'shifts'));
+        return view('admin.KelolaKasir.index', compact('users', 'shifts'));
     }
 
     public function storeShift(Request $request)
@@ -78,7 +78,7 @@ class UserController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('admin.transactions');
         }
-        return view('admin.users.create');
+        return view('admin.KelolaKasir.create');
     }
 
     public function storeUser(Request $request)
@@ -138,7 +138,7 @@ class UserController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('admin.transactions');
         }
-        return view('admin.users.edit', compact('user'));
+        return view('admin.KelolaKasir.edit', compact('user'));
     }
 
     public function updateUser(Request $request, User $user)
