@@ -2245,7 +2245,7 @@ window.openEditModal = function (user) {
     const modal = document.getElementById('edit-user-modal');
     if (!modal) return;
     const form = document.getElementById('edit-user-form');
-    if (form) form.action = `/admin/users/${user.id}`;
+    if (form) form.action = `/dashboard/users/${user.id}`;
     if (document.getElementById('edit_user_id_field')) document.getElementById('edit_user_id_field').value = user.id;
     if (document.getElementById('edit_name')) document.getElementById('edit_name').value = user.name || '';
     if (document.getElementById('edit_email')) document.getElementById('edit_email').value = user.email || '';
@@ -2276,7 +2276,7 @@ window.openEditShiftModal = function (shift) {
     const modal = document.getElementById('edit-shift-modal');
     if (!modal) return;
     const form = document.getElementById('edit-shift-form');
-    if (form) form.action = `/admin/shifts/${shift.id}`;
+    if (form) form.action = `/dashboard/shifts/${shift.id}`;
     if (document.getElementById('edit_shift_name')) document.getElementById('edit_shift_name').value = shift.name || '';
     if (document.getElementById('edit_shift_start_time')) document.getElementById('edit_shift_start_time').value = shift.start_time || '';
     if (document.getElementById('edit_shift_end_time')) document.getElementById('edit_shift_end_time').value = shift.end_time || '';

@@ -206,8 +206,8 @@
     <div id="payment-method-modal"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
         <div
-            class="bg-white rounded-2xl max-w-md w-full border border-neutral-250/80 shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col">
-            <div class="px-6 py-4.5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
+            class="bg-white rounded-2xl max-w-md w-full max-h-[calc(100vh-2rem)] border border-neutral-250/80 shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col">
+            <div class="px-6 py-4.5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50 shrink-0">
                 <h3 class="text-sm font-extrabold text-neutral-900">Metode Pembayaran</h3>
                 <button type="button" onclick="closeModal('payment-method-modal')"
                     class="text-neutral-400 hover:text-neutral-600 transition cursor-pointer">
@@ -217,7 +217,7 @@
                 </button>
             </div>
 
-            <div class="p-6 space-y-6">
+            <div class="p-6 space-y-6 overflow-y-auto flex-1">
                 <div class="text-center bg-sky-50/30 rounded-xl p-4.5 border border-sky-100/50">
                     <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">Total
                         Tagihan</span>
