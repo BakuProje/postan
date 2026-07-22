@@ -183,6 +183,7 @@
                             <th class="p-4 font-bold">ROLE</th>
                             <th class="p-4 font-bold">STATUS</th>
                             <th class="p-4 font-bold">SHIFT KERJA</th>
+                            <th class="p-4 font-bold">SHIFT MASUK</th>
                             <th class="p-4 font-bold">EMAIL</th>
                             <th class="p-4 font-bold">TERAKHIR LOGIN</th>
                             <th class="p-4 pr-6 font-bold text-center">AKSI</th>
@@ -262,12 +263,15 @@
                                             <span
                                                 class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full {{ $statusDot }} ring-2 ring-white"></span>
                                         </div>
-                                        <div>
-                                            <p class="font-bold text-neutral-900 text-xs leading-tight">
-                                                {{ $user->name }}</p>
-                                            <p class="text-[10px] text-neutral-400 font-semibold mt-0.5">
-                                                {{ $user->role === 'admin' ? 'Administrator' : 'Kasir' }}</p>
-                                        </div>
+                                         <div>
+                                             <p class="font-bold text-neutral-900 text-xs leading-tight">
+                                                 {{ $user->name }}</p>
+                                             <div class="flex items-center gap-1.5 mt-0.5">
+                                                 <span class="text-[10px] text-neutral-400 font-semibold">
+                                                     {{ $user->role === 'admin' ? 'Administrator' : 'Kasir' }}
+                                                 </span>
+                                             </div>
+                                         </div>
                                     </div>
                                 </td>
                                 <td class="p-4 whitespace-nowrap">
@@ -289,39 +293,59 @@
                                         {{ $statusLabel }}
                                     </span>
                                 </td>
-                                <td class="p-4 whitespace-nowrap">
-                                    @if ($user->shift)
-                                        <div class="flex items-center gap-1.5">
-                                            @if ($user->shift === 'Malam')
-                                                <svg class="h-3.5 w-3.5 text-blue-500 shrink-0" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-                                                </svg>
-                                            @else
-                                                <svg class="h-3.5 w-3.5 text-amber-500 shrink-0" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-                                                </svg>
-                                            @endif
-                                            <div>
-                                                <span
-                                                    class="font-extrabold text-neutral-800 text-xs block leading-tight">{{ $user->shift }}</span>
-                                                @if ($shiftHoursDisplay)
-                                                    <span
-                                                        class="text-[10px] text-neutral-400 font-semibold block mt-0.5">{{ $shiftHoursDisplay }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div>
-                                            <span class="text-xs font-bold text-neutral-400 block leading-tight">-</span>
-                                            <span class="text-[10px] text-neutral-400 font-semibold block mt-0.5">Tanpa
-                                                Shift</span>
-                                        </div>
-                                    @endif
-                                </td>
+                                 <td class="p-4 whitespace-nowrap">
+                                     @if ($user->shift)
+                                         <div class="flex flex-col gap-1">
+                                             @php
+                                                 $shiftClass = 'bg-neutral-50 text-neutral-700 border-neutral-200';
+                                                 $lowerShift = strtolower($user->shift);
+                                                 if (str_contains($lowerShift, 'pagi')) {
+                                                     $shiftClass = 'bg-sky-50 text-sky-700 border-sky-100';
+                                                 } elseif (str_contains($lowerShift, 'siang') || str_contains($lowerShift, 'sore')) {
+                                                     $shiftClass = 'bg-orange-50 text-orange-700 border-orange-100';
+                                                 } elseif (str_contains($lowerShift, 'malam')) {
+                                                     $shiftClass = 'bg-indigo-50 text-indigo-700 border-indigo-100';
+                                                 }
+                                             @endphp
+                                             <div class="inline-flex items-center justify-center px-2 py-0.5 rounded-lg border text-[10px] font-extrabold uppercase tracking-wide self-start {{ $shiftClass }}">
+                                                 {{ $user->shift }}
+                                             </div>
+                                             @if ($shiftHoursDisplay)
+                                                 <span class="text-[10px] text-neutral-400 font-bold block ml-0.5">{{ $shiftHoursDisplay }}</span>
+                                             @endif
+                                         </div>
+                                     @else
+                                         <div class="flex flex-col gap-0.5">
+                                             <span class="text-xs font-bold text-neutral-400 block leading-tight">-</span>
+                                             <span class="text-[10px] text-neutral-400 font-semibold block">Tanpa Shift</span>
+                                         </div>
+                                     @endif
+                                 </td>
+                                 <td class="p-4 whitespace-nowrap">
+                                     @if ($user->shift)
+                                         @php
+                                             $latestLog = $user->shiftLogs->first();
+                                         @endphp
+                                         @if ($latestLog)
+                                             <div class="flex flex-col gap-1">
+                                                 @if ($latestLog->is_active)
+                                                     <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-wider self-start">
+                                                         <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                         Shift Mulai
+                                                     </span>
+                                                     <span class="text-[9px] text-neutral-400 font-bold block mt-0.5">Mulai: {{ \Carbon\Carbon::parse($latestLog->start_time)->format('H:i') }}</span>
+                                                 @else
+                                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-neutral-50 text-neutral-500 border border-neutral-200 uppercase tracking-wider self-start">Shift Selesai</span>
+                                                     <span class="text-[9px] text-neutral-400 font-bold block mt-0.5">Mulai: {{ \Carbon\Carbon::parse($latestLog->start_time)->format('H:i') }} | Selesai: {{ $latestLog->end_time ? \Carbon\Carbon::parse($latestLog->end_time)->format('H:i') : '-' }}</span>
+                                                 @endif
+                                             </div>
+                                         @else
+                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-50 text-amber-600 border border-amber-100 uppercase tracking-wider self-start">Belum Shift</span>
+                                         @endif
+                                     @else
+                                         <span class="text-xs font-bold text-neutral-400 block leading-tight">-</span>
+                                     @endif
+                                 </td>
                                 <td class="p-4 whitespace-nowrap text-xs font-semibold text-neutral-700">
                                     {{ $user->email }}
                                 </td>
@@ -332,32 +356,61 @@
                                         class="text-[10px] text-neutral-400 font-semibold block mt-0.5">{{ $lastLoginDate }}</span>
                                 </td>
                                 <td class="p-4 pr-6 whitespace-nowrap text-center">
-                                    <div class="flex items-center justify-center gap-1.5">
-                                        <button type="button" onclick="openEditModal({{ json_encode($user) }})"
-                                            class="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-neutral-200 bg-white text-sky-600 hover:bg-sky-50 shadow-2xs transition cursor-pointer">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                            </svg>
-                                        </button>
-                                        @if (auth()->id() !== $user->id)
-                                            <form id="delete-form-{{ $user->id }}" method="POST"
-                                                action="{{ route('admin.users.delete', $user->id) }}" class="hidden">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                            <button type="button"
-                                                onclick="confirmDelete(event, '{{ $user->name }}', 'delete-form-{{ $user->id }}')"
-                                                class="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-neutral-200 bg-white text-rose-500 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 shadow-2xs transition cursor-pointer">
-                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                </svg>
-                                            </button>
-                                        @endif
-                                    </div>
+                                     <div class="flex items-center justify-center gap-1.5">
+                                         @if ($user->role === 'kasir')
+                                             <form id="toggle-pin-form-{{ $user->id }}" action="{{ route('admin.users.toggle-pin', $user->id) }}" method="POST" class="inline">
+                                                 @csrf
+                                                 @method('PATCH')
+                                                 <button type="button" 
+                                                     onclick="confirmTogglePin(event, '{{ $user->name }}', {{ $user->is_pin_unlocked ? 'true' : 'false' }}, 'toggle-pin-form-{{ $user->id }}')"
+                                                     title="{{ $user->is_pin_unlocked ? 'Kunci PIN (Kasir tidak bisa ubah PIN)' : 'Buka Kunci PIN (Kasir bisa ubah PIN)' }}"
+                                                     class="h-8 w-8 inline-flex items-center justify-center rounded-lg border shadow-2xs transition cursor-pointer 
+                                                         {{ $user->is_pin_unlocked 
+                                                             ? 'border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700' 
+                                                             : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-600' }}">
+                                                     @if ($user->is_pin_unlocked)
+                                                         <!-- Padlock Open SVG -->
+                                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                                         </svg>
+                                                     @else
+                                                         <!-- Padlock Closed SVG -->
+                                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                                         </svg>
+                                                     @endif
+                                                 </button>
+                                             </form>
+                                         @endif
+
+                                         <a href="{{ route('admin.users.edit', $user->id) }}"
+                                             class="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-neutral-200 bg-white text-sky-600 hover:bg-sky-50 shadow-2xs transition cursor-pointer"
+                                             title="Ubah Karyawan">
+                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                                 stroke="currentColor">
+                                                 <path stroke-linecap="round" stroke-linejoin="round"
+                                                     d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                             </svg>
+                                         </a>
+                                         
+                                         @if (auth()->id() !== $user->id)
+                                             <form id="delete-form-{{ $user->id }}" method="POST"
+                                                 action="{{ route('admin.users.delete', $user->id) }}" class="hidden">
+                                                 @csrf
+                                                 @method('DELETE')
+                                             </form>
+                                             <button type="button"
+                                                 onclick="confirmDelete(event, '{{ $user->name }}', 'delete-form-{{ $user->id }}')"
+                                                 title="Hapus Karyawan"
+                                                 class="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-neutral-200 bg-white text-rose-500 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 shadow-2xs transition cursor-pointer">
+                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                                     stroke="currentColor">
+                                                     <path stroke-linecap="round" stroke-linejoin="round"
+                                                         d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                 </svg>
+                                             </button>
+                                         @endif
+                                     </div>
                                 </td>
                             </tr>
                         @empty
@@ -424,9 +477,33 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-end gap-3 border-t border-neutral-100 pt-3.5">
+                    <div class="flex items-center justify-end gap-2 border-t border-neutral-100 pt-3.5">
+                        @if ($user->role === 'kasir')
+                            <form id="toggle-pin-mobile-form-{{ $user->id }}" action="{{ route('admin.users.toggle-pin', $user->id) }}" method="POST" class="flex-1 inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="button"
+                                    onclick="confirmTogglePin(event, '{{ $user->name }}', {{ $user->is_pin_unlocked ? 'true' : 'false' }}, 'toggle-pin-mobile-form-{{ $user->id }}')"
+                                    class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-bold transition active:scale-98 cursor-pointer 
+                                        {{ $user->is_pin_unlocked 
+                                            ? 'border-emerald-100 bg-emerald-50 text-emerald-600 hover:bg-emerald-100' 
+                                            : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:bg-neutral-100' }}">
+                                    @if ($user->is_pin_unlocked)
+                                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                        </svg>
+                                        Buka PIN
+                                    @else
+                                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                        </svg>
+                                        Kunci PIN
+                                    @endif
+                                </button>
+                            </form>
+                        @endif
                         <a href="{{ route('admin.users.edit', $user->id) }}"
-                            class="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-50 text-xs font-bold text-amber-600 border border-amber-100 hover:bg-amber-100 transition active:scale-98 cursor-pointer text-center">
+                            class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-amber-50 text-xs font-bold text-amber-600 border border-amber-100 hover:bg-amber-100 transition active:scale-98 cursor-pointer text-center">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -442,7 +519,7 @@
                             </form>
                             <button type="button"
                                 onclick="confirmDelete(event, '{{ $user->name }}', 'delete-form-{{ $user->id }}')"
-                                class="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-50 text-xs font-bold text-rose-600 border border-rose-100 hover:bg-rose-100 transition active:scale-98 cursor-pointer">
+                                class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-rose-50 text-xs font-bold text-rose-600 border border-rose-100 hover:bg-rose-100 transition active:scale-98 cursor-pointer">
                                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -488,11 +565,43 @@
             <div class="p-6 overflow-y-auto max-h-[60vh] space-y-3">
                 @forelse($shifts as $s)
                     <div
-                        class="flex items-center justify-between p-3.5 rounded-xl border border-neutral-200/80 bg-neutral-50/50 hover:bg-white hover:border-neutral-300 transition duration-200 shadow-2xs">
+                        class="flex items-center justify-between p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50 hover:bg-white hover:border-neutral-300 transition duration-200 shadow-2xs">
                         <div class="flex items-center gap-3">
-                            <div
-                                class="h-9 w-9 rounded-lg bg-sky-100/70 text-sky-600 flex items-center justify-center font-bold text-xs">
-                                ☀️
+                            @php
+                                $lowerName = strtolower($s->name);
+                                if (str_contains($lowerName, 'pagi')) {
+                                    $iconBg = 'bg-amber-50 border border-amber-200/60 text-amber-600';
+                                    $iconSvg = '
+                                        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                                        </svg>
+                                    ';
+                                } elseif (str_contains($lowerName, 'siang') || str_contains($lowerName, 'sore')) {
+                                    $iconBg = 'bg-orange-50 border border-orange-200/60 text-orange-600';
+                                    $iconSvg = '
+                                        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a6 6 0 100-12 6 6 0 000 12z" />
+                                        </svg>
+                                    ';
+                                } elseif (str_contains($lowerName, 'malam')) {
+                                    $iconBg = 'bg-indigo-50 border border-indigo-200/60 text-indigo-600';
+                                    $iconSvg = '
+                                        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                                        </svg>
+                                    ';
+                                } else {
+                                    $iconBg = 'bg-sky-50 border border-sky-200/60 text-sky-600';
+                                    $iconSvg = '
+                                        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    ';
+                                }
+                            @endphp
+                            <div class="h-9 w-9 rounded-xl flex items-center justify-center font-bold select-none {{ $iconBg }}">
+                                {!! $iconSvg !!}
                             </div>
                             <div>
                                 <h4 class="text-xs font-bold text-neutral-800">Shift {{ $s->name }}</h4>
@@ -505,20 +614,25 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-1.5">
                             <button type="button" onclick='openEditShiftModal(@json($s))'
-                                class="rounded-lg border border-neutral-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-sky-600 hover:bg-sky-50 transition cursor-pointer">
-                                Ubah
+                                title="Ubah Shift"
+                                class="rounded-xl border border-neutral-200 bg-white p-2 text-neutral-500 hover:text-sky-600 hover:bg-sky-50 hover:border-sky-100 transition cursor-pointer">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                </svg>
                             </button>
-                            <form method="POST" action="{{ route('admin.shifts.delete', $s->id) }}"
-                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus shift ini?')">
+                            <form id="delete-shift-form-{{ $s->id }}" method="POST" action="{{ route('admin.shifts.delete', $s->id) }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
-                                    class="rounded-lg border border-rose-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer">
-                                    Hapus
-                                </button>
                             </form>
+                            <button type="button" onclick="confirmDelete(event, 'Shift {{ $s->name }}', 'delete-shift-form-{{ $s->id }}', 'shift')"
+                                title="Hapus Shift"
+                                class="rounded-xl border border-neutral-200 bg-white p-2 text-neutral-500 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-100 transition cursor-pointer">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 @empty
@@ -1057,8 +1171,8 @@
             </div>
 
             <div class="space-y-1.5">
-                <h3 class="text-sm font-extrabold text-neutral-900 tracking-tight">Hapus Akun Karyawan?</h3>
-                <p class="text-[11px] text-neutral-500 leading-relaxed px-1">Apakah Anda yakin ingin menghapus akun
+                <h3 id="delete-modal-title" class="text-sm font-extrabold text-neutral-900 tracking-tight">Hapus Akun Karyawan?</h3>
+                <p id="delete-modal-desc" class="text-[11px] text-neutral-500 leading-relaxed px-1">Apakah Anda yakin ingin menghapus akun
                     karyawan <strong id="delete-modal-name" class="text-neutral-800 font-bold"></strong>? Tindakan ini
                     tidak dapat dibatalkan.</p>
             </div>
@@ -1068,6 +1182,32 @@
                     class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800 transition active:scale-98 cursor-pointer">Batal</button>
                 <button type="button" id="delete-modal-confirm"
                     class="flex-1 px-4 py-2.5 rounded-xl bg-rose-500 text-xs font-bold text-white hover:bg-rose-600 transition active:scale-98 cursor-pointer">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOGGLE PIN MODAL -->
+    <div id="toggle-pin-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+        <div id="toggle-pin-modal-card"
+            class="bg-white rounded-2xl p-6 max-w-sm w-full border border-neutral-100 scale-95 opacity-0 transition-all duration-200 flex flex-col items-center text-center space-y-4">
+            <div id="toggle-pin-modal-icon"
+                class="h-12 w-12 rounded-full flex items-center justify-center border shadow-sm shrink-0">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            </div>
+
+            <div class="space-y-1.5">
+                <h3 id="toggle-pin-modal-title" class="text-sm font-extrabold text-neutral-900 tracking-tight">Kunci PIN Karyawan</h3>
+                <p id="toggle-pin-modal-desc" class="text-[11px] text-neutral-500 leading-relaxed px-1">Konfirmasi perubahan hak akses PIN masuk kasir.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full pt-2">
+                <button type="button" id="toggle-pin-modal-cancel"
+                    class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800 transition active:scale-98 cursor-pointer">Batal</button>
+                <button type="button" id="toggle-pin-modal-confirm"
+                    class="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold text-white transition active:scale-98 cursor-pointer">Ya, Ubah</button>
             </div>
         </div>
     </div>

@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
             <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 flex items-center gap-4">
                 <div
                     class="h-12 w-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 border border-blue-100/50">
@@ -80,37 +80,6 @@
                     <h3 class="text-xl font-black text-neutral-900 mt-0.5">
                         {{ number_format($totalItemsSoldAll, 0, ',', '.') }} <span
                             class="text-xs font-semibold text-neutral-500">Item</span></h3>
-                </div>
-            </div>
-
-            <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 flex items-center gap-4">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 border border-amber-100/50">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33" />
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-[11px] font-bold text-neutral-500 capitalize tracking-wide">Total Pendapatan</p>
-                    <h3 class="text-xl font-black text-neutral-900 mt-0.5">Rp
-                        {{ number_format($totalRevenueAll, 0, ',', '.') }}</h3>
-                </div>
-            </div>
-
-            <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-neutral-200/80 p-5 flex items-center gap-4">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-purple-50 text-purple-500 flex items-center justify-center shrink-0 border border-purple-100/50">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-[11px] font-bold text-neutral-500 capitalize tracking-wide">Rata-rata Harga</p>
-                    <h3 class="text-xl font-black text-neutral-900 mt-0.5">Rp {{ number_format($avgPrice, 0, ',', '.') }}
-                    </h3>
                 </div>
             </div>
         </div>

@@ -390,15 +390,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let formToSubmit = null;
 
-function confirmDelete(event, name, formId) {
+function confirmDelete(event, name, formId, type = 'karyawan') {
     event.preventDefault();
     formToSubmit = document.getElementById(formId);
 
     const deleteModal = document.getElementById('delete-modal');
     const card = document.getElementById('delete-modal-card');
     const nameSpan = document.getElementById('delete-modal-name');
+    const titleEl = document.getElementById('delete-modal-title');
+    const descEl = document.getElementById('delete-modal-desc');
 
     if (nameSpan) nameSpan.textContent = name;
+    
+    if (titleEl) {
+        titleEl.textContent = type === 'shift' ? 'Hapus Shift Kerja?' : 'Hapus Akun Karyawan?';
+    }
+    if (descEl) {
+        descEl.innerHTML = type === 'shift' 
+            ? `Apakah Anda yakin ingin menghapus shift kerja <strong class="text-neutral-800 font-bold">${name}</strong>? Tindakan ini tidak dapat dibatalkan.`
+            : `Apakah Anda yakin ingin menghapus akun karyawan <strong class="text-neutral-800 font-bold">${name}</strong>? Tindakan ini tidak dapat dibatalkan.`;
+    }
 
     if (deleteModal && card) {
         deleteModal.classList.remove('opacity-0', 'pointer-events-none');
@@ -409,6 +420,61 @@ function confirmDelete(event, name, formId) {
 }
 
 window.confirmDelete = confirmDelete;
+
+let togglePinFormToSubmit = null;
+
+function confirmTogglePin(event, name, isUnlocked, formId) {
+    event.preventDefault();
+    togglePinFormToSubmit = document.getElementById(formId);
+
+    const modal = document.getElementById('toggle-pin-modal');
+    const card = document.getElementById('toggle-pin-modal-card');
+    const titleEl = document.getElementById('toggle-pin-modal-title');
+    const descEl = document.getElementById('toggle-pin-modal-desc');
+    const confirmBtn = document.getElementById('toggle-pin-modal-confirm');
+    const iconDiv = document.getElementById('toggle-pin-modal-icon');
+
+    if (isUnlocked) {
+        if (titleEl) titleEl.textContent = 'Kunci PIN Keamanan?';
+        if (descEl) descEl.innerHTML = `Apakah Anda yakin ingin mengunci PIN kasir <strong class="text-neutral-800 font-bold">${name}</strong>? Kasir tidak akan bisa mengganti PIN dari menu profil.`;
+        if (confirmBtn) {
+            confirmBtn.textContent = 'Ya, Kunci PIN';
+            confirmBtn.className = 'flex-1 px-4 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-xs font-bold text-white transition active:scale-98 cursor-pointer';
+        }
+        if (iconDiv) {
+            iconDiv.className = 'h-12 w-12 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center border border-rose-100 shrink-0';
+            iconDiv.innerHTML = `
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            `;
+        }
+    } else {
+        if (titleEl) titleEl.textContent = 'Buka Kunci PIN Keamanan?';
+        if (descEl) descEl.innerHTML = `Apakah Anda yakin ingin membuka kunci PIN kasir <strong class="text-neutral-800 font-bold">${name}</strong>? Kasir akan diizinkan mengubah PIN di profil mereka.`;
+        if (confirmBtn) {
+            confirmBtn.textContent = 'Ya, Buka Kunci';
+            confirmBtn.className = 'flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-xs font-bold text-white transition active:scale-98 cursor-pointer';
+        }
+        if (iconDiv) {
+            iconDiv.className = 'h-12 w-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shrink-0';
+            iconDiv.innerHTML = `
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            `;
+        }
+    }
+
+    if (modal && card) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100', 'pointer-events-auto');
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+    }
+}
+
+window.confirmTogglePin = confirmTogglePin;
 
 document.addEventListener('DOMContentLoaded', () => {
     const cancelBtn = document.getElementById('delete-modal-cancel');
@@ -433,6 +499,31 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmBtn.addEventListener('click', () => {
             if (formToSubmit) {
                 formToSubmit.submit();
+            }
+        });
+    }
+
+    const toggleCancelBtn = document.getElementById('toggle-pin-modal-cancel');
+    const toggleConfirmBtn = document.getElementById('toggle-pin-modal-confirm');
+
+    if (toggleCancelBtn) {
+        toggleCancelBtn.addEventListener('click', () => {
+            const modal = document.getElementById('toggle-pin-modal');
+            const card = document.getElementById('toggle-pin-modal-card');
+            if (modal && card) {
+                modal.classList.remove('opacity-100', 'pointer-events-auto');
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-95', 'opacity-0');
+            }
+            togglePinFormToSubmit = null;
+        });
+    }
+
+    if (toggleConfirmBtn) {
+        toggleConfirmBtn.addEventListener('click', () => {
+            if (togglePinFormToSubmit) {
+                togglePinFormToSubmit.submit();
             }
         });
     }
@@ -538,7 +629,7 @@ function showToastNotification(message, type = 'success') {
 
     const toast = document.createElement('div');
     toast.id = 'toast-notification-dynamic';
-    toast.className = 'fixed top-6 left-1/2 z-50 transform -translate-x-1/2 -translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto';
+    toast.className = 'fixed top-6 left-1/2 z-50 transform -translate-x-1/2 opacity-0 transition-all duration-300 pointer-events-auto';
 
     const isSuccess = type === 'success';
     const borderClass = isSuccess ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-800';
@@ -566,13 +657,13 @@ function showToastNotification(message, type = 'success') {
     document.body.appendChild(toast);
 
     setTimeout(() => {
-        toast.classList.remove('-translate-y-4', 'opacity-0');
-        toast.classList.add('translate-y-0', 'opacity-100');
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
     }, 100);
 
     setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('-translate-y-4', 'opacity-0');
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
@@ -675,13 +766,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const toast = document.getElementById('toast-notification');
     if (toast) {
         setTimeout(() => {
-            toast.classList.remove('-translate-y-4', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
         }, 100);
 
         setTimeout(() => {
-            toast.classList.remove('translate-y-0', 'opacity-100');
-            toast.classList.add('-translate-y-4', 'opacity-0');
+            toast.classList.remove('opacity-100');
+            toast.classList.add('opacity-0');
             setTimeout(() => {
                 toast.remove();
             }, 300);
@@ -1139,21 +1230,63 @@ function openPaymentModal() {
 
 function selectPaymentMethod(method) {
     activePaymentMethod = method;
-    const cashBtn = document.getElementById('pay-select-cash-btn');
-    const qrisBtn = document.getElementById('pay-select-qris-btn');
+    
+    // Update select element value if not already matching
+    const selectEl = document.getElementById('pos-payment-method-select');
+    if (selectEl && selectEl.value !== method) {
+        selectEl.value = method;
+    }
+
+    // Update payment method logo preview
+    const logoPreview = document.getElementById('payment-logo-preview');
+    const logoInside = document.getElementById('pos-payment-method-logo-inside');
+    const selectedText = document.getElementById('custom-payment-selected-text');
+    
+    let logoName = 'cash';
+    let displayName = 'Cash (Tunai)';
+    if (method === 'qris') {
+        logoName = 'qris';
+        displayName = 'QRIS';
+    } else if (method === 'bri') {
+        logoName = 'bri';
+        displayName = 'Bank BRI';
+    } else if (method === 'mandiri') {
+        logoName = 'mandiri';
+        displayName = 'Bank Mandiri';
+    }
+    
+    if (logoPreview) {
+        logoPreview.src = '/images/' + logoName + '.png';
+    }
+    if (logoInside) {
+        logoInside.src = '/images/' + logoName + '.png';
+    }
+    if (selectedText) {
+        selectedText.textContent = displayName;
+    }
+
     const cashPanel = document.getElementById('payment-cash-panel');
     const qrisPanel = document.getElementById('payment-qris-panel');
 
     if (method === 'cash') {
-        if (cashBtn) cashBtn.className = 'flex flex-col items-center justify-center p-4 rounded-xl border-2 border-sky-500 bg-sky-50/50 text-sky-600 font-extrabold transition cursor-pointer';
-        if (qrisBtn) qrisBtn.className = 'flex flex-col items-center justify-center p-4 rounded-xl border border-neutral-200 hover:border-sky-400 hover:bg-neutral-50/40 text-neutral-500 font-extrabold transition cursor-pointer';
         if (cashPanel) cashPanel.classList.remove('hidden');
         if (qrisPanel) qrisPanel.classList.add('hidden');
         calculateChange();
     } else {
-        if (qrisBtn) qrisBtn.className = 'flex flex-col items-center justify-center p-4 rounded-xl border-2 border-sky-500 bg-sky-50/50 text-sky-600 font-extrabold transition cursor-pointer';
-        if (cashBtn) cashBtn.className = 'flex flex-col items-center justify-center p-4 rounded-xl border border-neutral-200 hover:border-sky-400 hover:bg-neutral-50/40 text-neutral-500 font-extrabold transition cursor-pointer';
-        if (qrisPanel) qrisPanel.classList.remove('hidden');
+        if (qrisPanel) {
+            // Customize panel description and title for the selected non-cash method
+            const titleSpan = qrisPanel.querySelector('span');
+            const descPara = qrisPanel.querySelector('p');
+            
+            const methodTitle = method === 'qris' ? 'QRIS' : method === 'bri' ? 'BANK BRI' : 'BANK MANDIRI';
+            const methodDescName = method === 'qris' ? 'QRIS' : method === 'bri' ? 'Transfer Bank BRI' : 'Transfer Bank Mandiri';
+
+            if (titleSpan) titleSpan.textContent = methodTitle + ' Terdeteksi';
+            if (descPara) {
+                descPara.innerHTML = `Pembayaran non-tunai via <strong class="font-bold text-neutral-800">${methodDescName}</strong> diproses otomatis menggunakan nominal tagihan pas sebesar <span id="qris-auto-price-label" class="text-sky-600 font-extrabold"></span> tanpa perlu menginput uang diterima.`;
+            }
+            qrisPanel.classList.remove('hidden');
+        }
         if (cashPanel) cashPanel.classList.add('hidden');
 
         const originalPrice = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -1324,6 +1457,8 @@ function checkoutTransaction() {
 
     const customerInput = document.getElementById('pos-customer-input');
     const customerVal = customerInput ? customerInput.value.trim() : '';
+    const whatsappInput = document.getElementById('pos-customer-whatsapp');
+    const whatsappVal = whatsappInput ? whatsappInput.value.trim() : '';
 
     if (!customerVal) {
         showToastNotification('Nama customer wajib diisi sebelum melanjutkan checkout.', 'error');
@@ -1376,6 +1511,7 @@ function checkoutTransaction() {
             payment_method: activePaymentMethod,
             total_paid: activePaymentMethod === 'qris' ? finalPrice : paidVal,
             customer_name: customerVal,
+            customer_whatsapp: whatsappVal,
             voucher_code: activeVoucher ? activeVoucher.code : null
         })
     })
@@ -1391,6 +1527,11 @@ function checkoutTransaction() {
             showToastNotification(data.message || 'Transaksi berhasil disimpan!');
             posCart = [];
             activeVoucher = null;
+            if (customerInput) customerInput.value = '';
+            if (whatsappInput) whatsappInput.value = '';
+            const paidInputFormatted = document.getElementById('pos-paid-input-formatted');
+            if (paidInputFormatted) paidInputFormatted.value = '';
+            if (rawInput) rawInput.value = '0';
             try {
                 localStorage.removeItem('pos_cart');
                 localStorage.removeItem('pos_active_voucher');
@@ -1415,7 +1556,44 @@ function openReceiptModal(txData) {
     if (customerEl) {
         customerEl.textContent = txData.customer_name || '-';
     }
-    document.getElementById('receipt-payment-method').textContent = txData.payment_method === 'qris' ? 'QRIS' : 'CASH';
+    const whatsappEl = document.getElementById('receipt-whatsapp');
+    const whatsappRow = document.getElementById('receipt-whatsapp-row');
+    if (whatsappEl && whatsappRow) {
+        if (txData.customer_whatsapp) {
+            whatsappEl.textContent = txData.customer_whatsapp;
+            whatsappRow.classList.remove('hidden');
+        } else {
+            whatsappRow.classList.add('hidden');
+        }
+    }
+    const paymentMethodNames = {
+        'cash': 'CASH',
+        'qris': 'QRIS',
+        'bri': 'BANK BRI',
+        'mandiri': 'BANK MANDIRI'
+    };
+    document.getElementById('receipt-payment-method').textContent = paymentMethodNames[txData.payment_method] || txData.payment_method.toUpperCase();
+    
+    // Set subtotal & discount
+    const subtotalVal = txData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotalEl = document.getElementById('receipt-subtotal');
+    if (subtotalEl) {
+        subtotalEl.textContent = formatRupiah(subtotalVal);
+    }
+    
+    const discountRow = document.getElementById('receipt-discount-row');
+    const discountEl = document.getElementById('receipt-discount');
+    const voucherBadge = document.getElementById('receipt-voucher-badge');
+    if (discountRow && discountEl && voucherBadge) {
+        if (txData.discount_amount && txData.discount_amount > 0) {
+            discountEl.textContent = `-${formatRupiah(txData.discount_amount)}`;
+            voucherBadge.textContent = txData.voucher_code || 'PROMO';
+            discountRow.classList.remove('hidden');
+        } else {
+            discountRow.classList.add('hidden');
+        }
+    }
+
     document.getElementById('receipt-total').textContent = formatRupiah(txData.total_price);
     document.getElementById('receipt-paid').textContent = formatRupiah(txData.total_paid);
     document.getElementById('receipt-change').textContent = formatRupiah(txData.total_change);
@@ -1797,7 +1975,11 @@ function showTxDetail(btn) {
     const date = btn.getAttribute('data-date');
     const cashier = btn.getAttribute('data-cashier');
     const customer = btn.getAttribute('data-customer');
+    const whatsapp = btn.getAttribute('data-whatsapp') || '-';
     const method = btn.getAttribute('data-method');
+    const subtotal = btn.getAttribute('data-subtotal');
+    const discount = btn.getAttribute('data-discount');
+    const voucher = btn.getAttribute('data-voucher') || '-';
     const total = btn.getAttribute('data-total');
     const paid = btn.getAttribute('data-paid');
     const change = btn.getAttribute('data-change');
@@ -1807,19 +1989,87 @@ function showTxDetail(btn) {
     document.getElementById('modal-invoice-cashier').textContent = cashier;
     document.getElementById('modal-invoice-customer').textContent = customer;
     document.getElementById('modal-invoice-date').textContent = date;
-    document.getElementById('modal-invoice-method').textContent = method;
+    const displayMethods = {
+        'CASH': 'CASH',
+        'QRIS': 'QRIS',
+        'BRI': 'BANK BRI',
+        'MANDIRI': 'BANK MANDIRI'
+    };
+    const displayMethod = displayMethods[method] || method;
+    document.getElementById('modal-invoice-method').textContent = displayMethod;
     document.getElementById('modal-invoice-total').textContent = total;
     document.getElementById('modal-invoice-paid').textContent = paid;
     document.getElementById('modal-invoice-change').textContent = change;
 
+    // Set WhatsApp in detail modal
+    const modalWhatsappEl = document.getElementById('modal-invoice-whatsapp');
+    const modalWhatsappContainer = document.getElementById('modal-invoice-whatsapp-container');
+    if (modalWhatsappEl) {
+        modalWhatsappEl.textContent = whatsapp;
+        if (modalWhatsappContainer) {
+            if (whatsapp && whatsapp !== '-') {
+                modalWhatsappContainer.classList.remove('hidden');
+            } else {
+                modalWhatsappContainer.classList.add('hidden');
+            }
+        }
+    }
+
+    // Set Subtotal & Discount in detail modal
+    const modalSubtotalEl = document.getElementById('modal-invoice-subtotal');
+    if (modalSubtotalEl) modalSubtotalEl.textContent = subtotal;
+
+    const modalDiscountRow = document.getElementById('modal-invoice-discount-row');
+    const modalDiscountEl = document.getElementById('modal-invoice-discount');
+    const modalVoucherBadge = document.getElementById('modal-invoice-voucher-badge');
+    if (modalDiscountRow && modalDiscountEl && modalVoucherBadge) {
+        if (discount && discount !== 'Rp 0') {
+            modalDiscountEl.textContent = `-${discount}`;
+            modalVoucherBadge.textContent = voucher;
+            modalDiscountRow.classList.remove('hidden');
+        } else {
+            modalDiscountRow.classList.add('hidden');
+        }
+    }
+
+    // Set Print Area Elements
     document.getElementById('print-receipt-code').textContent = code;
     document.getElementById('print-receipt-date').textContent = date;
     document.getElementById('print-receipt-cashier').textContent = cashier;
     document.getElementById('print-receipt-customer').textContent = customer;
-    document.getElementById('print-receipt-payment-method').textContent = method;
+    document.getElementById('print-receipt-payment-method').textContent = displayMethod;
     document.getElementById('print-receipt-total').textContent = total;
     document.getElementById('print-receipt-paid').textContent = paid;
     document.getElementById('print-receipt-change').textContent = change;
+
+    // Set WhatsApp in Print Area
+    const printWhatsappEl = document.getElementById('print-receipt-whatsapp');
+    const printWhatsappRow = document.getElementById('print-receipt-whatsapp-row');
+    if (printWhatsappEl && printWhatsappRow) {
+        if (whatsapp && whatsapp !== '-') {
+            printWhatsappEl.textContent = whatsapp;
+            printWhatsappRow.style.display = 'flex';
+        } else {
+            printWhatsappRow.style.display = 'none';
+        }
+    }
+
+    // Set Subtotal & Discount in Print Area
+    const printSubtotalEl = document.getElementById('print-receipt-subtotal');
+    if (printSubtotalEl) printSubtotalEl.textContent = subtotal;
+
+    const printDiscountRow = document.getElementById('print-receipt-discount-row');
+    const printDiscountEl = document.getElementById('print-receipt-discount');
+    const printVoucherBadge = document.getElementById('print-receipt-voucher-badge');
+    if (printDiscountRow && printDiscountEl && printVoucherBadge) {
+        if (discount && discount !== 'Rp 0') {
+            printDiscountEl.textContent = `-${discount}`;
+            printVoucherBadge.textContent = voucher;
+            printDiscountRow.style.display = 'flex';
+        } else {
+            printDiscountRow.style.display = 'none';
+        }
+    }
 
     const container = document.getElementById('modal-invoice-items');
     container.innerHTML = '';
@@ -1952,7 +2202,43 @@ document.addEventListener('click', function (e) {
 
 window.openExportReportModal = function () {
     const modal = document.getElementById('export-report-modal');
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        const form = document.getElementById('export-form');
+        if (form) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const kasirId = urlParams.get('kasir_id') || 'all';
+            const paymentMethod = urlParams.get('payment_method') || 'all';
+            const search = urlParams.get('search') || '';
+
+            let kasirInput = form.querySelector('input[name="kasir_id"]');
+            if (!kasirInput) {
+                kasirInput = document.createElement('input');
+                kasirInput.type = 'hidden';
+                kasirInput.name = 'kasir_id';
+                form.appendChild(kasirInput);
+            }
+            kasirInput.value = kasirId;
+
+            let pmInput = form.querySelector('input[name="payment_method"]');
+            if (!pmInput) {
+                pmInput = document.createElement('input');
+                pmInput.type = 'hidden';
+                pmInput.name = 'payment_method';
+                form.appendChild(pmInput);
+            }
+            pmInput.value = paymentMethod;
+
+            let searchInput = form.querySelector('input[name="search"]');
+            if (!searchInput) {
+                searchInput = document.createElement('input');
+                searchInput.type = 'hidden';
+                searchInput.name = 'search';
+                form.appendChild(searchInput);
+            }
+            searchInput.value = search;
+        }
+        modal.classList.remove('hidden');
+    }
 };
 
 window.closeExportReportModal = function () {
@@ -2314,5 +2600,108 @@ window.openEditShiftModal = function (shift) {
     if (document.getElementById('edit_shift_end_time')) document.getElementById('edit_shift_end_time').value = shift.end_time || '';
     if (window.openModal) window.openModal('edit-shift-modal');
 };
+
+window.handleStartShift = function () {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    fetch('/dashboard/kasir/start-shift', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+    .then(async response => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Gagal memulai shift.');
+        return data;
+    })
+    .then(data => {
+        showToastNotification(data.message || 'Shift kerja berhasil dimulai!');
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    })
+    .catch(err => {
+        console.error(err);
+        showToastNotification(err.message || 'Gagal memulai shift.', 'error');
+    });
+};
+
+window.handleStopShift = function () {
+    const modal = document.getElementById('shift-confirm-modal');
+    const card = document.getElementById('shift-confirm-modal-card');
+    if (modal && card) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100', 'pointer-events-auto');
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+    }
+};
+
+window.closeShiftConfirmModal = function () {
+    const modal = document.getElementById('shift-confirm-modal');
+    const card = document.getElementById('shift-confirm-modal-card');
+    if (modal && card) {
+        modal.classList.remove('opacity-100', 'pointer-events-auto');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-95', 'opacity-0');
+    }
+};
+
+window.submitStopShift = function () {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    fetch('/dashboard/kasir/stop-shift', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+    .then(async response => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Gagal mengakhiri shift.');
+        return data;
+    })
+    .then(data => {
+        showToastNotification(data.message || 'Shift kerja berhasil diakhiri!');
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    })
+    .catch(err => {
+        console.error(err);
+        showToastNotification(err.message || 'Gagal mengakhiri shift.', 'error');
+    });
+};
+
+window.toggleCustomPaymentDropdown = function () {
+    const options = document.getElementById('custom-payment-options');
+    if (options) {
+        options.classList.toggle('hidden');
+    }
+};
+
+window.selectCustomPayment = function (method) {
+    selectPaymentMethod(method);
+    const options = document.getElementById('custom-payment-options');
+    if (options) {
+        options.classList.add('hidden');
+    }
+};
+
+document.addEventListener('click', function (e) {
+    const container = document.getElementById('custom-payment-select-container');
+    const options = document.getElementById('custom-payment-options');
+    if (container && options && !container.contains(e.target)) {
+        options.classList.add('hidden');
+    }
+});
 
 

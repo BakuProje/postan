@@ -16,6 +16,8 @@
         </div>
         <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 min-h-0">
             <div id="sector-products" class="md:col-span-7 lg:col-span-8 flex flex-col min-h-0 space-y-4">
+
+
                 <div
                     class="bg-white/40 backdrop-blur-md rounded-2xl border border-white/30 p-4 sm:p-5 space-y-4 shrink-0 shadow-xs">
                     <div class="relative">
@@ -77,8 +79,10 @@
                                     <p class="text-sm font-bold text-neutral-800 truncate block">
                                         {{ $prod->name }}</p>
                                     <div class="flex items-center justify-between gap-2.5">
-                                        <span class="text-sm font-extrabold text-sky-600 whitespace-nowrap">Rp {{ number_format($prod->price, 0, ',', '.') }}</span>
-                                        <div class="h-8 w-8 rounded-lg border border-sky-200 bg-sky-50/50 hover:bg-sky-100 text-sky-600 flex items-center justify-center shrink-0 transition-all duration-200 shadow-3xs">
+                                        <span class="text-sm font-extrabold text-sky-600 whitespace-nowrap">Rp
+                                            {{ number_format($prod->price, 0, ',', '.') }}</span>
+                                        <div
+                                            class="h-8 w-8 rounded-lg border border-sky-200 bg-sky-50/50 hover:bg-sky-100 text-sky-600 flex items-center justify-center shrink-0 transition-all duration-200 shadow-3xs">
                                             <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -201,7 +205,8 @@
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
         <div
             class="bg-white rounded-2xl max-w-md w-full max-h-[calc(100vh-2rem)] border border-neutral-250/80 shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-200 flex flex-col">
-            <div class="px-6 py-4.5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50 shrink-0">
+            <div
+                class="px-6 py-4.5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50 shrink-0">
                 <h3 class="text-sm font-extrabold text-neutral-900">Metode Pembayaran</h3>
                 <button type="button" onclick="closeModal('payment-method-modal')"
                     class="text-neutral-400 hover:text-neutral-600 transition cursor-pointer">
@@ -218,34 +223,83 @@
                     <span id="payment-modal-total-label" class="text-2xl font-black text-sky-600 mt-1 block">Rp 0</span>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3.5">
-                    <button type="button" id="pay-select-cash-btn" onclick="selectPaymentMethod('cash')"
-                        class="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-sky-500 bg-sky-50/50 text-sky-600 font-extrabold transition cursor-pointer">
-                        <img src="{{ asset('images/cash.png') }}" class="h-10 w-auto mb-1.5" alt="Cash Logo">
-                        <span class="text-xs font-bold text-neutral-700">Cash</span>
-                    </button>
+                <div class="space-y-2">
+                    <label for="pos-payment-method-select" class="block text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Pilih Metode Pembayaran</label>
+                    <div class="flex items-center gap-3">
+                        <div class="relative flex-1" id="custom-payment-select-container">
+                            <!-- Custom Trigger Button -->
+                            <button type="button" id="custom-payment-select-trigger" onclick="toggleCustomPaymentDropdown()"
+                                class="flex items-center justify-between w-full rounded-xl border border-neutral-250 bg-white pl-3.5 pr-10 py-3 text-xs font-bold transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100/50 cursor-pointer text-left">
+                                <div class="flex items-center gap-3">
+                                    <img id="pos-payment-method-logo-inside" src="{{ asset('images/cash.png') }}" class="h-5 w-8 object-contain" alt="Payment Logo">
+                                    <span id="custom-payment-selected-text">Cash (Tunai)</span>
+                                </div>
+                                <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-neutral-400">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </span>
+                            </button>
 
-                    <button type="button" id="pay-select-qris-btn" onclick="selectPaymentMethod('qris')"
-                        class="flex flex-col items-center justify-center p-4 rounded-xl border border-neutral-200 hover:border-sky-400 hover:bg-neutral-50/40 text-neutral-500 font-extrabold transition cursor-pointer">
-                        <img src="{{ asset('images/qris.png') }}" class="h-10 w-auto mb-1.5" alt="QRIS Logo">
-                        <span class="text-xs font-bold text-neutral-700">QRIS</span>
-                    </button>
+                            <!-- Hidden select for compatibility with backend & existing script state -->
+                            <select id="pos-payment-method-select" onchange="selectPaymentMethod(this.value)" class="hidden" style="display: none !important;">
+                                <option value="cash">Cash (Tunai)</option>
+                                <option value="qris">QRIS</option>
+                                <option value="bri">Bank BRI</option>
+                                <option value="mandiri">Bank Mandiri</option>
+                            </select>
+
+                            <!-- Custom Options Dropdown List -->
+                            <div id="custom-payment-options" class="hidden absolute left-0 right-0 mt-1 bg-white border border-neutral-250 rounded-xl py-1.5 z-[9999] shadow-lg max-h-60 overflow-y-auto">
+                                <button type="button" onclick="selectCustomPayment('cash')" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-neutral-50 transition text-xs font-bold text-neutral-700 text-left">
+                                    <img src="{{ asset('images/cash.png') }}" class="h-5 w-8 object-contain" alt="Cash Logo">
+                                    <span>Cash (Tunai)</span>
+                                </button>
+                                <button type="button" onclick="selectCustomPayment('qris')" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-neutral-50 transition text-xs font-bold text-neutral-700 text-left">
+                                    <img src="{{ asset('images/qris.png') }}" class="h-5 w-8 object-contain" alt="QRIS Logo">
+                                    <span>QRIS</span>
+                                </button>
+                                <button type="button" onclick="selectCustomPayment('bri')" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-neutral-50 transition text-xs font-bold text-neutral-700 text-left">
+                                    <img src="{{ asset('images/bri.png') }}" class="h-5 w-8 object-contain" alt="BRI Logo">
+                                    <span>Bank BRI</span>
+                                </button>
+                                <button type="button" onclick="selectCustomPayment('mandiri')" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-neutral-50 transition text-xs font-bold text-neutral-700 text-left">
+                                    <img src="{{ asset('images/mandiri.png') }}" class="h-5 w-8 object-contain" alt="Mandiri Logo">
+                                    <span>Bank Mandiri</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label for="pos-customer-input"
-                        class="block text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Nama Customer <span
-                            class="text-rose-500 font-bold lowercase"></span></label>
-                    <div class="relative">
-                        <input type="text" id="pos-customer-input" required placeholder="Masukkan nama customer..."
-                            class="block w-full rounded-xl border border-neutral-250 bg-white pl-10 pr-4 py-3.5 text-sm font-bold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100/50">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                            </svg>
-                        </span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label for="pos-customer-input"
+                            class="block text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Nama Customer</label>
+                        <div class="relative">
+                            <input type="text" id="pos-customer-input" required placeholder="Nama customer..."
+                                class="block w-full rounded-xl border border-neutral-250 bg-white pl-10 pr-4 py-3 text-xs font-bold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100/50">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="pos-customer-whatsapp"
+                            class="block text-[10px] font-bold text-neutral-500 uppercase tracking-widest">WhatsApp <span class="text-neutral-400 font-medium normal-case">(Opsional)</span></label>
+                        <div class="relative">
+                            <input type="text" id="pos-customer-whatsapp" placeholder="Contoh: 08123456789"
+                                class="block w-full rounded-xl border border-neutral-250 bg-white pl-10 pr-4 py-3 text-xs font-bold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100/50">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.47-5.116-3.762-6.586-6.586l1.292-.97c.362-.272.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+                                </svg>
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -337,6 +391,10 @@
                         <span>Customer:</span>
                         <span id="receipt-customer">--</span>
                     </div>
+                    <div class="flex justify-between hidden" id="receipt-whatsapp-row">
+                        <span>WhatsApp:</span>
+                        <span id="receipt-whatsapp">--</span>
+                    </div>
                     <div class="flex justify-between">
                         <span>Metode:</span>
                         <span id="receipt-payment-method" class="font-bold uppercase">--</span>
@@ -351,8 +409,16 @@
                 <div class="border-b border-dashed border-neutral-300 my-2"></div>
 
                 <div class="text-[10px] text-neutral-700 space-y-1.5 font-medium">
+                    <div class="flex justify-between" id="receipt-subtotal-row">
+                        <span>Subtotal:</span>
+                        <span id="receipt-subtotal">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between hidden" id="receipt-discount-row">
+                        <span>Diskon (<span id="receipt-voucher-badge" class="font-bold text-sky-600 uppercase"></span>):</span>
+                        <span id="receipt-discount" class="text-rose-600 font-bold">-Rp 0</span>
+                    </div>
                     <div class="flex justify-between text-neutral-900 font-bold">
-                        <span>Total Belanja:</span>
+                        <span>Total Akhir:</span>
                         <span id="receipt-total">Rp 0</span>
                     </div>
                     <div class="flex justify-between">
@@ -384,4 +450,35 @@
             </div>
         </div>
     </div>
+
+    @if (auth()->user()->role === 'kasir' && !$activeShift)
+        <div id="start-shift-modal"
+            class="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-neutral-900/80 backdrop-blur-md transition-all duration-300">
+            <div
+                class="bg-white rounded-3xl p-8 max-w-sm w-full border border-neutral-100 shadow-2xl flex flex-col items-center text-center space-y-6 transform scale-100 transition-all duration-300">
+                <div
+                    class="h-16 w-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-sm shrink-0">
+                    <svg class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="text-base font-black text-neutral-900 tracking-tight">Mulai Shift Kerja Anda</h3>
+                    <p class="text-xs text-neutral-500 leading-relaxed px-4">
+                        Anda terdaftar pada <strong class="text-neutral-800">Shift
+                            {{ auth()->user()->shift ?: 'Kantor' }}</strong>. Silakan tekan tombol di bawah untuk membuka
+                        akses kasir dan mulai mencatat transaksi.
+                    </p>
+                </div>
+
+                <button type="button" onclick="handleStartShift()"
+                    class="w-full rounded-2xl bg-sky-500 py-4 text-xs font-black text-white hover:bg-sky-600 active:scale-98 transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+                    Mulai Shift Kerja
+                </button>
+            </div>
+        </div>
+    @endif
 @endsection

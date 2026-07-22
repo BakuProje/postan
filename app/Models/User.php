@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'shift', 'shift_hours', 'profile_picture', 'last_login_at'])]
+#[Fillable(['name', 'email', 'password', 'role', 'shift', 'shift_hours', 'profile_picture', 'last_login_at', 'pin', 'is_pin_unlocked'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -28,11 +28,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
             'password' => 'hashed',
+            'is_pin_unlocked' => 'boolean',
         ];
     }
 
     public function transactions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function shiftLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ShiftLog::class);
+    }
+
+    public function activeShiftLog()
+    {
+        return $this->shiftLogs()->where('is_active', true)->latest()->first();
     }
 }

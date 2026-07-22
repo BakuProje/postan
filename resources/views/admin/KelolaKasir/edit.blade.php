@@ -137,6 +137,42 @@
                 </div>
             </div>
 
+            <!-- PIN Keamanan Section -->
+            <div class="grid gap-6 sm:grid-cols-2 border-t border-neutral-100 pt-6">
+                <div class="space-y-2">
+                    <label for="pin" class="block text-xs font-bold text-neutral-700 font-extrabold">PIN Masuk Kasir</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v5.25M12 9v1.5M12 3v1.5M18 12h5.25M10.5 12H9M3 12h1.5" />
+                            </svg>
+                        </span>
+                        <input id="pin" name="pin" type="text" pattern="[0-9]{4}" inputmode="numeric" maxlength="4" minlength="4" value="{{ old('pin') }}" placeholder="Kosongkan jika tidak ingin mengubah PIN" class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none transition duration-200 placeholder:text-neutral-400/80 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
+                    </div>
+                    @error('pin')<p class="text-xs text-rose-600 font-semibold">{{ $message }}</p>@enderror
+                </div>
+
+                <div id="is_pin_unlocked_container" class="space-y-2">
+                    <label for="is_pin_unlocked" class="block text-xs font-bold text-neutral-700 font-extrabold">Status Pengaturan PIN di Profil</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400 pointer-events-none">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                            </svg>
+                        </span>
+                        <select id="is_pin_unlocked" name="is_pin_unlocked" required class="block w-full rounded-xl border border-neutral-200 bg-neutral-50/30 pl-10 pr-4 py-3 text-xs outline-none appearance-none transition duration-200 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100/50">
+                            <option value="1" {{ old('is_pin_unlocked', $user->is_pin_unlocked ? '1' : '0') === '1' ? 'selected' : '' }}>Open PIN (Kasir bisa ubah PIN)</option>
+                            <option value="0" {{ old('is_pin_unlocked', $user->is_pin_unlocked ? '1' : '0') === '0' ? 'selected' : '' }}>Close PIN (Kasir tidak bisa ubah PIN)</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-neutral-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
             <div class="pt-6 border-t border-neutral-100 flex items-center justify-end gap-3.5">
                 <a href="{{ route('admin.users') }}" class="rounded-xl border border-neutral-200 bg-white px-5 py-3 text-xs font-bold text-neutral-500 transition hover:bg-neutral-50 hover:text-neutral-800">Batalkan</a>
                 <button type="submit" class="rounded-xl bg-sky-500 px-6 py-3 text-xs font-bold text-white transition hover:bg-sky-600 hover:shadow-lg hover:shadow-sky-100 active:scale-98 cursor-pointer">Simpan Perubahan</button>
@@ -144,4 +180,6 @@
         </form>
     </div>
 </div>
+
+@vite('resources/js/kelola-kasir.js')
 @endsection

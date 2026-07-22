@@ -54,6 +54,13 @@ Route::post('/dashboard/transactions', [TransactionController::class, 'storeTran
     ->name('admin.transactions.store')
     ->middleware('auth');
 
+Route::post('/dashboard/kasir/start-shift', [UserController::class, 'startShift'])
+    ->name('admin.kasir.startShift')
+    ->middleware('auth');
+Route::post('/dashboard/kasir/stop-shift', [UserController::class, 'stopShift'])
+    ->name('admin.kasir.stopShift')
+    ->middleware('auth');
+
 Route::get('/dashboard/products', [ProductController::class, 'products'])
     ->name('admin.products')
     ->middleware('auth');
@@ -137,12 +144,24 @@ Route::delete('/dashboard/users/{user}', [UserController::class, 'deleteUser'])
     ->name('admin.users.delete')
     ->middleware('auth');
 
+Route::patch('/dashboard/users/{user}/toggle-pin', [UserController::class, 'togglePinStatus'])
+    ->name('admin.users.toggle-pin')
+    ->middleware('auth');
+
 Route::get('/dashboard/profile', [ProfileController::class, 'profile'])
     ->name('admin.profile')
     ->middleware('auth');
 
 Route::put('/dashboard/profile', [ProfileController::class, 'updateProfile'])
     ->name('admin.profile.update')
+    ->middleware('auth');
+
+Route::put('/dashboard/profile/pin', [ProfileController::class, 'updatePin'])
+    ->name('admin.profile.update-pin')
+    ->middleware('auth');
+
+Route::post('/dashboard/profile/verify-pin', [ProfileController::class, 'verifyPin'])
+    ->name('admin.profile.verify-pin')
     ->middleware('auth');
 
 Route::get('/dashboard/outlet', [OutletController::class, 'outlet'])

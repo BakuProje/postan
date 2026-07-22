@@ -214,6 +214,7 @@
                         </svg>
                         <span class="sidebar-text">Profil</span>
                     </a>
+
                 @endif
 
                 <button type="button" id="sidebar-collapse-btn"
@@ -226,18 +227,15 @@
                     <span class="sidebar-text">Sembunyikan Menu</span>
                 </button>
 
-                <form method="POST" action="{{ route('logout') }}" class="pt-2">
-                    @csrf
-                    <button type="submit"
-                        class="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-rose-500 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer sidebar-nav-link">
-                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-                        </svg>
-                        <span class="sidebar-text">Logout</span>
-                    </button>
-                </form>
+                <button type="button" onclick="openLogoutConfirmModal()"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-rose-500 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer sidebar-nav-link">
+                    <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                    </svg>
+                    <span class="sidebar-text">Logout</span>
+                </button>
             </nav>
         </div>
     </aside>
@@ -430,18 +428,15 @@
                         </a>
                     @endif
 
-                    <form method="POST" action="{{ route('logout') }}" class="pt-4 mt-2 border-t border-neutral-100">
-                        @csrf
-                        <button type="submit"
-                            class="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-rose-500 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer">
-                            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-                            </svg>
-                            Logout
-                        </button>
-                    </form>
+                    <button type="button" onclick="openLogoutConfirmModal()"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-rose-500 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer pt-4 mt-2 border-t border-neutral-100">
+                        <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                        </svg>
+                        Logout
+                    </button>
                 </nav>
             </div>
         </div>
@@ -609,7 +604,7 @@
 
     @if (session('success') || session('error') || $errors->any())
         <div id="toast-notification"
-            class="fixed top-6 left-1/2 z-50 transform -translate-x-1/2 -translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto">
+            class="fixed top-6 left-1/2 z-50 transform -translate-x-1/2 opacity-0 transition-all duration-300 pointer-events-auto">
             <div
                 class="flex items-center gap-3 rounded-xl border {{ session('success') ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-800' }} px-4 py-3 max-w-sm bg-white/95 backdrop-blur-md">
                 @if (session('success'))
@@ -637,6 +632,259 @@
         </div>
     @endif
 
+    @if (Auth::check() && Auth::user()->role === 'kasir')
+        @php
+            $activeShift = Auth::user()->activeShiftLog();
+        @endphp
+
+        <!-- SHIFT END CONFIRM MODAL -->
+        <div id="shift-confirm-modal"
+            class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+            <div id="shift-confirm-modal-card"
+                class="bg-white rounded-3xl p-6 max-w-sm w-full border border-neutral-100 scale-95 opacity-0 transition-all duration-200 flex flex-col items-center text-center space-y-4">
+                <div class="h-12 w-12 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center border border-rose-100 shadow-sm shrink-0">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" />
+                    </svg>
+                </div>
+
+                <div class="space-y-1.5">
+                    <h3 class="text-sm font-extrabold text-neutral-900 tracking-tight">Akhiri Shift Kerja?</h3>
+                    <p class="text-[11px] text-neutral-500 leading-relaxed px-1">Apakah Anda yakin ingin mengakhiri shift kerja Anda? Setelah diakhiri, Anda tidak dapat mencatat transaksi POS lagi sampai shift baru dimulai.</p>
+                </div>
+
+                <div class="flex items-center gap-3 w-full pt-2">
+                    <button type="button" onclick="closeShiftConfirmModal()"
+                        class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800 transition active:scale-98 cursor-pointer">Batal</button>
+                    <button type="button" onclick="submitStopShift()"
+                        class="flex-1 px-4 py-2.5 rounded-xl bg-rose-500 text-xs font-bold text-white hover:bg-rose-600 transition active:scale-98 cursor-pointer">Akhiri Shift</button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if (Auth::check() && Auth::user()->role === 'kasir' && !session('pin_verified'))
+        <!-- PIN LOCK MODAL OVERLAY (FULL SCREEN & RESPONSIVE) -->
+        <div id="pin-lock-modal" class="fixed inset-0 z-[200] flex bg-cover bg-center transition-all duration-350 w-screen h-screen overflow-hidden" style="background-image: url('{{ asset('images/pin.png') }}');">
+            <div class="w-full h-full grid grid-cols-1 md:grid-cols-12 overflow-y-auto md:overflow-hidden">
+                <!-- LEFT COLUMN: Profile Info -->
+                <div class="col-span-12 md:col-span-6 bg-gradient-to-br from-sky-600 via-sky-700 to-indigo-800 md:bg-none md:bg-transparent p-10 flex flex-col items-center justify-center text-center min-h-[340px] md:min-h-screen relative overflow-hidden">
+                    <!-- Glassmorphic ambient light circles for mobile touch -->
+                    <div class="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-sky-400/10 blur-2xl pointer-events-none md:hidden"></div>
+                    <div class="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none md:hidden"></div>
+
+                    <!-- User Profile Picture -->
+                    <div class="relative mb-6 z-10">
+                        <div class="h-36 w-36 md:h-44 md:w-44 rounded-full bg-white/10 p-1.5 shadow-2xl flex items-center justify-center border border-white/20 backdrop-blur-md">
+                            <div class="h-full w-full rounded-full overflow-hidden border border-white/30 relative">
+                                @if (Auth::user()->profile_picture)
+                                    <img src="{{ asset(Auth::user()->profile_picture) }}" alt="Profile" class="h-full w-full object-cover">
+                                @else
+                                    <div class="h-full w-full bg-gradient-to-tr from-sky-400 to-indigo-500 text-white flex items-center justify-center font-black text-3xl uppercase">
+                                        {{ substr(Auth::user()->name, 0, 2) }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl md:text-2xl font-black text-white tracking-tight z-10">{{ Auth::user()->name }}</h3>
+                    <p class="text-xs text-sky-200 font-extrabold mt-1.5 uppercase tracking-widest z-10">KASIR</p>
+                    <p class="text-xs md:text-sm text-sky-100/90 font-bold mt-10 z-10">
+                        @if (empty(Auth::user()->pin))
+                            Buat PIN Baru Kasir
+                        @else
+                            Masukkan PIN Untuk Melanjutkan
+                        @endif
+                    </p>
+
+                    <!-- PIN Input Boxes (4 Square Boxes) -->
+                    <div id="pin-boxes-container" class="flex items-center justify-center gap-3 md:gap-4 mt-5 z-10">
+                        <div class="h-14 w-14 md:h-16 md:w-16 rounded-2xl border border-white/15 bg-white/5 flex items-center justify-center text-2xl font-black text-white shadow-inner transition-all duration-200"></div>
+                        <div class="h-14 w-14 md:h-16 md:w-16 rounded-2xl border border-white/15 bg-white/5 flex items-center justify-center text-2xl font-black text-white shadow-inner transition-all duration-200"></div>
+                        <div class="h-14 w-14 md:h-16 md:w-16 rounded-2xl border border-white/15 bg-white/5 flex items-center justify-center text-2xl font-black text-white shadow-inner transition-all duration-200"></div>
+                        <div class="h-14 w-14 md:h-16 md:w-16 rounded-2xl border border-white/15 bg-white/5 flex items-center justify-center text-2xl font-black text-white shadow-inner transition-all duration-200"></div>
+                    </div>
+                    
+                    <!-- Error Message -->
+                    <div id="pin-error-msg" class="text-xs font-bold text-rose-350 bg-rose-500/20 px-4 py-1.5 rounded-full uppercase tracking-wider mt-6 hidden animate-pulse border border-rose-500/30 z-10">
+                        PIN salah! Coba lagi.
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Keypad -->
+                <div class="col-span-12 md:col-span-6 p-10 flex flex-col items-center justify-center bg-slate-50 md:bg-transparent min-h-[400px] md:min-h-screen">
+                    <div class="grid grid-cols-3 gap-4 md:gap-5 w-full max-w-[320px] sm:max-w-[380px] md:max-w-[420px]">
+                        @foreach([1, 2, 3, 4, 5, 6, 7, 8, 9] as $num)
+                            <button type="button" onclick="pressPinNumber('{{ $num }}')" class="h-20 sm:h-24 w-full rounded-3xl bg-white hover:bg-sky-500 hover:text-white border border-neutral-200/70 hover:border-sky-500 active:scale-95 transition-all duration-200 text-2xl sm:text-3xl font-black text-neutral-800 flex items-center justify-center shadow-xs cursor-pointer select-none">
+                                {{ $num }}
+                            </button>
+                        @endforeach
+                        <button type="button" onclick="clearPinNumber()" class="h-20 sm:h-24 w-full rounded-3xl bg-rose-50 hover:bg-rose-500 hover:text-white border border-rose-100 hover:border-rose-500 active:scale-95 transition-all duration-200 text-sm sm:text-base font-black text-rose-600 flex items-center justify-center shadow-xs cursor-pointer select-none">
+                            Hapus
+                        </button>
+                        <button type="button" onclick="pressPinNumber('0')" class="h-20 sm:h-24 w-full rounded-3xl bg-white hover:bg-sky-500 hover:text-white border border-neutral-200/70 hover:border-sky-500 active:scale-95 transition-all duration-200 text-2xl sm:text-3xl font-black text-neutral-800 flex items-center justify-center shadow-xs cursor-pointer select-none">
+                            0
+                        </button>
+                        <div class="h-20 sm:h-24 w-full"></div> <!-- Empty cell for layout balance -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let enteredPin = '';
+            
+            function pressPinNumber(num) {
+                if (enteredPin.length < 4) {
+                    enteredPin += num;
+                    updatePinDots();
+                    document.getElementById('pin-error-msg').classList.add('hidden');
+                    
+                    if (enteredPin.length === 4) {
+                        setTimeout(submitPinVerify, 200);
+                    }
+                }
+            }
+
+            function clearPinNumber() {
+                if (enteredPin.length > 0) {
+                    enteredPin = enteredPin.slice(0, -1);
+                    updatePinDots();
+                    document.getElementById('pin-error-msg').classList.add('hidden');
+                }
+            }
+            function updatePinDots() {
+                const boxes = document.querySelectorAll('#pin-boxes-container > div');
+                boxes.forEach((box, index) => {
+                    if (index < enteredPin.length) {
+                        box.textContent = '•';
+                        box.classList.remove('border-white/15', 'bg-white/5');
+                        box.classList.add('border-white', 'bg-white/20', 'text-white', 'ring-4', 'ring-white/20');
+                    } else {
+                        box.textContent = '';
+                        box.classList.remove('border-white', 'bg-white/20', 'ring-4', 'ring-white/20');
+                        box.classList.add('border-white/15', 'bg-white/5', 'text-white');
+                    }
+                });
+            }
+            function submitPinVerify() {
+                if (enteredPin.length < 4) return;
+
+                fetch("{{ route('admin.profile.verify-pin') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ pin: enteredPin })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const modal = document.getElementById('pin-lock-modal');
+                        modal.classList.add('opacity-0', 'pointer-events-none');
+                        setTimeout(() => {
+                            modal.remove();
+                        }, 350);
+                        
+                        if (window.showToastNotification) {
+                            if (data.is_new_pin) {
+                                window.showToastNotification('PIN baru berhasil didaftarkan & disimpan.', 'success');
+                            } else {
+                                window.showToastNotification('Akses POS berhasil dibuka.', 'success');
+                            }
+                        }
+                    } else {
+                        const card = document.querySelector('#pin-lock-modal > div');
+                        card.classList.add('animate-shake');
+                        document.getElementById('pin-error-msg').classList.remove('hidden');
+                        enteredPin = '';
+                        updatePinDots();
+                        
+                        setTimeout(() => {
+                            card.classList.remove('animate-shake');
+                        }, 500);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+            }
+
+
+            // Keyboard support
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('pin-lock-modal')) {
+                    if (e.key >= '0' && e.key <= '9') {
+                        pressPinNumber(e.key);
+                    } else if (e.key === 'Backspace') {
+                        clearPinNumber();
+                    } else if (e.key === 'Enter') {
+                        submitPinVerify();
+                    }
+                }
+            });
+        </script>
+        
+        <style>
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+                20%, 40%, 60%, 80% { transform: translateX(6px); }
+            }
+            .animate-shake {
+                animation: shake 0.4s ease-in-out;
+            }
+        </style>
+    @endif
+
+    <!-- LOGOUT CONFIRM MODAL -->
+    <div id="logout-confirm-modal"
+        class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+        <div id="logout-confirm-modal-card"
+            class="bg-white rounded-3xl p-6 max-w-sm w-full border border-neutral-100 scale-95 opacity-0 transition-all duration-200 flex flex-col items-center text-center space-y-4">
+            <div class="h-12 w-12 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center border border-rose-100 shadow-sm shrink-0">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                </svg>
+            </div>
+
+            <div class="space-y-1.5">
+                <h3 class="text-sm font-extrabold text-neutral-900 tracking-tight">Keluar dari Akun?</h3>
+                <p class="text-[11px] text-neutral-500 leading-relaxed px-1">Apakah Anda yakin ingin keluar dari sistem? Anda harus masuk kembali untuk mengelola outlet atau transaksi.</p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full pt-2">
+                <button type="button" onclick="closeLogoutConfirmModal()"
+                    class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800 transition active:scale-98 cursor-pointer">Batal</button>
+                <form method="POST" action="{{ route('logout') }}" class="flex-1 m-0">
+                    @csrf
+                    <button type="submit"
+                        class="w-full px-4 py-2.5 rounded-xl bg-rose-500 text-xs font-bold text-white hover:bg-rose-600 transition active:scale-98 cursor-pointer">Ya, Keluar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openLogoutConfirmModal() {
+            const modal = document.getElementById('logout-confirm-modal');
+            const card = document.getElementById('logout-confirm-modal-card');
+            if (modal && card) {
+                modal.classList.remove('pointer-events-none', 'opacity-0');
+                card.classList.remove('scale-95', 'opacity-0');
+            }
+        }
+        function closeLogoutConfirmModal() {
+            const modal = document.getElementById('logout-confirm-modal');
+            const card = document.getElementById('logout-confirm-modal-card');
+            if (modal && card) {
+                modal.classList.add('pointer-events-none', 'opacity-0');
+                card.classList.add('scale-95', 'opacity-0');
+            }
+        }
+    </script>
 </body>
 
 </html>

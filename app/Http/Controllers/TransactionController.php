@@ -15,7 +15,13 @@ class TransactionController extends Controller
         $products = Product::with('category')->latest()->get();
         $categories = Category::latest()->get();
         $outlet = Outlet::first();
-        return view('kasir.index', compact('products', 'categories', 'outlet'));
+        
+        $activeShift = null;
+        if (auth()->check()) {
+            $activeShift = auth()->user()->activeShiftLog();
+        }
+        
+        return view('kasir.index', compact('products', 'categories', 'outlet', 'activeShift'));
     }
 
     public function storeTransaction(Request $request)
@@ -24,9 +30,10 @@ class TransactionController extends Controller
             'cart' => 'required|array|min:1',
             'cart.*.id' => 'required|exists:products,id',
             'cart.*.quantity' => 'required|integer|min:1',
-            'payment_method' => 'required|in:cash,qris',
+            'payment_method' => 'required|in:cash,qris,bri,mandiri',
             'total_paid' => 'required_if:payment_method,cash|numeric|min:0',
             'customer_name' => 'required|string|max:255',
+            'customer_whatsapp' => 'nullable|string|max:50',
         ], [
             'cart.required' => 'Keranjang belanja tidak boleh kosong.',
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
@@ -88,7 +95,7 @@ class TransactionController extends Controller
                 }
 
                 $paymentMethod = $request->payment_method;
-                $totalPaid = $paymentMethod === 'qris' ? $totalPrice : $request->total_paid;
+                $totalPaid = in_array($paymentMethod, ['qris', 'bri', 'mandiri']) ? $totalPrice : $request->total_paid;
 
                 if ($totalPaid < $totalPrice) {
                     throw new \Exception("Uang pembayaran tidak mencukupi.");
@@ -100,10 +107,13 @@ class TransactionController extends Controller
                     'user_id' => auth()->id(),
                     'transaction_code' => $transactionCode,
                     'total_price' => $totalPrice,
+                    'discount_amount' => $discountAmount,
+                    'voucher_code' => $request->filled('voucher_code') ? strtoupper($request->voucher_code) : null,
                     'total_paid' => $totalPaid,
                     'total_change' => $totalChange,
                     'payment_method' => $paymentMethod,
                     'customer_name' => $request->customer_name,
+                    'customer_whatsapp' => $request->customer_whatsapp,
                 ]);
 
                 try {
@@ -133,7 +143,10 @@ class TransactionController extends Controller
                         'created_at' => $transaction->created_at->format('d-m-Y H:i'),
                         'cashier_name' => auth()->user()->name,
                         'customer_name' => $transaction->customer_name,
+                        'customer_whatsapp' => $transaction->customer_whatsapp,
                         'total_price' => $transaction->total_price,
+                        'discount_amount' => $transaction->discount_amount,
+                        'voucher_code' => $transaction->voucher_code,
                         'total_paid' => $transaction->total_paid,
                         'total_change' => $transaction->total_change,
                         'payment_method' => $transaction->payment_method,

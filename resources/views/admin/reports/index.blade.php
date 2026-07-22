@@ -19,6 +19,7 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Card 1: Total Penjualan -->
             <div
                 class="bg-white rounded-2xl border border-neutral-200/80 p-5 shadow-xs transition hover:border-neutral-300 flex items-center gap-4">
                 <div
@@ -35,38 +36,7 @@
                 </div>
             </div>
 
-            <div
-                class="bg-white rounded-2xl border border-neutral-200/80 p-5 shadow-xs transition hover:border-neutral-300 flex items-center gap-4">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/60 shadow-2xs">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121 0 2.022-.853 2.083-1.972l.534-9.609H6.18" />
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">Total Transaksi</span>
-                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">
-                        {{ number_format($totalTransactions, 0, ',', '.') }}</h3>
-                </div>
-            </div>
-
-            <div
-                class="bg-white rounded-2xl border border-neutral-200/80 p-5 shadow-xs transition hover:border-neutral-300 flex items-center gap-4">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100/60 shadow-2xs">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.753 3h16.5a1.5 1.5 0 0 0 1.5-1.5V6.75a1.5 1.5 0 0 0-1.5-1.5H3.75a1.5 1.5 0 0 0-1.5 1.5v10.5a1.5 1.5 0 0 0 1.5 1.5Z" />
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">Rata-rata Transaksi</span>
-                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">Rp
-                        {{ number_format($avgTransaction, 0, ',', '.') }}</h3>
-                </div>
-            </div>
-
+            <!-- Card 2: Total Item Terjual -->
             <div
                 class="bg-white rounded-2xl border border-neutral-200/80 p-5 shadow-xs transition hover:border-neutral-300 flex items-center gap-4">
                 <div
@@ -79,7 +49,41 @@
                 <div class="flex-1 min-w-0">
                     <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">Total Item Terjual</span>
                     <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">
-                        {{ number_format($totalItemsSold, 0, ',', '.') }}</h3>
+                        {{ number_format($totalItemsSold, 0, ',', '.') }} <span class="text-xs text-neutral-400 font-bold">pcs</span></h3>
+                </div>
+            </div>
+
+            <!-- Card 3: TUNAI -->
+            <div
+                class="bg-white rounded-2xl border border-neutral-200/80 p-5 shadow-xs transition hover:border-neutral-300 flex items-center gap-4">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/60 shadow-2xs">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h16.5M3.75 20.25h16.5M3 6.75h18M3.75 9h16.5M3 11.25h18M3.75 13.5h16.5M3 15.75h18M3.75 18h16.5" />
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">TUNAI</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">Rp
+                        {{ number_format($cashAmount, 0, ',', '.') }}</h3>
+                </div>
+            </div>
+
+            <!-- Card 4: QRIS -->
+            <div
+                class="bg-white rounded-2xl border border-neutral-200/80 p-5 shadow-xs transition hover:border-neutral-300 flex items-center gap-4">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100/60 shadow-2xs">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <span class="text-[11px] font-bold text-neutral-400 block tracking-wide whitespace-nowrap">QRIS</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-1.5 whitespace-nowrap">Rp
+                        {{ number_format($qrisAmount, 0, ',', '.') }}</h3>
                 </div>
             </div>
         </div>

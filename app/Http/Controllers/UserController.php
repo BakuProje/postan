@@ -15,7 +15,9 @@ class UserController extends Controller
             return redirect()->route('admin.transactions');
         }
         
-        $users = User::latest()->get();
+        $users = User::with(['shiftLogs' => function($query) {
+            $query->orderBy('created_at', 'desc');
+        }])->latest()->get();
         $shifts = Shift::latest()->get();
         return view('admin.KelolaKasir.index', compact('users', 'shifts'));
     }
@@ -95,6 +97,8 @@ class UserController extends Controller
             'shift' => 'nullable|string',
             'shift_hours' => 'nullable|string|max:255',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'pin' => 'nullable|numeric|digits:4',
+            'is_pin_unlocked' => 'nullable|string',
         ], [
             'profile_picture.uploaded' => 'Ukuran foto profil terlalu besar (maksimal 2MB) atau file gagal diunggah.',
             'profile_picture.image' => 'File harus berupa gambar.',
@@ -116,6 +120,8 @@ class UserController extends Controller
             'role' => $request->role,
             'shift' => $request->shift,
             'shift_hours' => $shiftHours,
+            'pin' => $request->filled('pin') ? $request->pin : null,
+            'is_pin_unlocked' => $request->input('is_pin_unlocked', '0') === '1',
         ];
 
         if ($request->hasFile('profile_picture')) {
@@ -155,6 +161,8 @@ class UserController extends Controller
             'shift' => 'nullable|string',
             'shift_hours' => 'nullable|string|max:255',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'pin' => 'nullable|numeric|digits:4',
+            'is_pin_unlocked' => 'nullable|string',
         ], [
             'profile_picture.uploaded' => 'Ukuran foto profil terlalu besar (maksimal 2MB) atau file gagal diunggah.',
             'profile_picture.image' => 'File harus berupa gambar.',
@@ -174,6 +182,11 @@ class UserController extends Controller
         $user->role = $request->role;
         $user->shift = $request->shift;
         $user->shift_hours = $shiftHours;
+        
+        if ($request->filled('pin')) {
+            $user->pin = $request->pin;
+        }
+        $user->is_pin_unlocked = $request->input('is_pin_unlocked', '1') === '1';
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
@@ -215,5 +228,56 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users')->with('success', 'Akun berhasil dihapus.');
+    }
+
+    public function startShift(Request $request)
+    {
+        $user = auth()->user();
+        
+        \App\Models\ShiftLog::where('user_id', $user->id)
+            ->where('is_active', true)
+            ->update([
+                'is_active' => false,
+                'end_time' => now()
+            ]);
+
+        $shiftLog = \App\Models\ShiftLog::create([
+            'user_id' => $user->id,
+            'shift_name' => $user->shift ?: 'Pagi',
+            'start_time' => now(),
+            'is_active' => true
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Shift kerja berhasil dimulai!',
+            'data' => $shiftLog
+        ]);
+    }
+
+    public function stopShift(Request $request)
+    {
+        $user = auth()->user();
+
+        $updated = \App\Models\ShiftLog::where('user_id', $user->id)
+            ->where('is_active', true)
+            ->update([
+                'is_active' => false,
+                'end_time' => now()
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Shift kerja berhasil diakhiri!'
+        ]);
+    }
+
+    public function togglePinStatus(User $user)
+    {
+        $user->is_pin_unlocked = !$user->is_pin_unlocked;
+        $user->save();
+
+        $status = $user->is_pin_unlocked ? 'dibuka (Open PIN)' : 'dikunci (Close PIN)';
+        return back()->with('success', "PIN keamanan untuk kasir {$user->name} berhasil {$status}.");
     }
 }

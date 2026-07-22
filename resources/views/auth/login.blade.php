@@ -64,10 +64,42 @@
                     </p>
                 </div>
 
+                @if ($errors->any())
+                    <div class="mb-5 rounded-xl border border-rose-200 bg-rose-50/50 p-4 text-xs text-rose-800 space-y-1">
+                        <div class="flex items-center gap-1.5 font-bold text-rose-900 mb-1">
+                            <svg class="h-4 w-4 shrink-0 text-rose-600" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                            </svg>
+                            <span>Gagal Masuk</span>
+                        </div>
+                        <ul class="list-disc list-inside space-y-0.5 font-semibold text-rose-700">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="mb-5 rounded-xl border border-emerald-250 bg-emerald-50/50 p-4 text-xs text-emerald-800">
+                        <div class="flex items-center gap-1.5 font-bold text-emerald-900 mb-1">
+                            <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <span>Berhasil</span>
+                        </div>
+                        <p class="leading-relaxed font-semibold text-emerald-700">{{ session('success') }}</p>
+                    </div>
+                @endif
                 @if (session('status'))
-                    <div
-                        class="mb-5 rounded-lg border border-emerald-250 bg-emerald-50 px-4 py-3 text-xs text-emerald-700">
-                        {{ session('status') }}</div>
+                    <div class="mb-5 rounded-xl border border-emerald-250 bg-emerald-50/50 p-4 text-xs text-emerald-800">
+                        <div class="flex items-center gap-1.5 font-bold text-emerald-900 mb-1">
+                            <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <span>Status</span>
+                        </div>
+                        <p class="leading-relaxed font-semibold text-emerald-700">{{ session('status') }}</p>
+                    </div>
                 @endif
 
                 <form method="POST" action="{{ route('login.store') }}" class="space-y-5">

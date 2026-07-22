@@ -88,6 +88,16 @@
                                             class="inline-flex items-center gap-1 rounded-full bg-violet-50 border border-violet-100 px-2.5 py-0.5 text-[9px] font-bold text-violet-600 uppercase tracking-wider">
                                             QRIS
                                         </span>
+                                    @elseif ($tx->payment_method === 'bri')
+                                        <span
+                                            class="inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-100 px-2.5 py-0.5 text-[9px] font-bold text-blue-600 uppercase tracking-wider">
+                                            BRI
+                                        </span>
+                                    @elseif ($tx->payment_method === 'mandiri')
+                                        <span
+                                            class="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-100 px-2.5 py-0.5 text-[9px] font-bold text-amber-600 uppercase tracking-wider">
+                                            Mandiri
+                                        </span>
                                     @else
                                         <span
                                             class="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 text-[9px] font-bold text-emerald-600 uppercase tracking-wider">
@@ -103,7 +113,11 @@
                                         data-date="{{ $tx->created_at->format('d M Y H:i') }}"
                                         data-cashier="{{ $tx->user->name }}"
                                         data-customer="{{ $tx->customer_name ?: '-' }}"
+                                        data-whatsapp="{{ $tx->customer_whatsapp ?: '-' }}"
                                         data-method="{{ strtoupper($tx->payment_method) }}"
+                                        data-subtotal="Rp {{ number_format($tx->items->sum('subtotal'), 0, ',', '.') }}"
+                                        data-discount="Rp {{ number_format($tx->discount_amount, 0, ',', '.') }}"
+                                        data-voucher="{{ $tx->voucher_code ?: '-' }}"
                                         data-total="Rp {{ number_format($tx->total_price, 0, ',', '.') }}"
                                         data-paid="Rp {{ number_format($tx->total_paid, 0, ',', '.') }}"
                                         data-change="Rp {{ number_format($tx->total_change, 0, ',', '.') }}"
@@ -159,7 +173,7 @@
                 </div>
             </div>
             <div class="p-6 space-y-5 text-xs text-neutral-700">
-                <div class="grid grid-cols-3 gap-4 border-b border-neutral-100 pb-4">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 border-b border-neutral-100 pb-4">
                     <div>
                         <p class="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">Kasir</p>
                         <p class="font-bold text-neutral-800 mt-0.5" id="modal-invoice-cashier">-</p>
@@ -167,6 +181,10 @@
                     <div>
                         <p class="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">Customer</p>
                         <p class="font-bold text-neutral-850 mt-0.5" id="modal-invoice-customer">-</p>
+                    </div>
+                    <div id="modal-invoice-whatsapp-container">
+                        <p class="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">WhatsApp</p>
+                        <p class="font-bold text-neutral-850 mt-0.5" id="modal-invoice-whatsapp">-</p>
                     </div>
                     <div>
                         <p class="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">Waktu</p>
@@ -188,8 +206,16 @@
                         <span class="text-neutral-800 font-extrabold" id="modal-invoice-method">-</span>
                     </div>
                     <div class="border-t border-neutral-100/70 my-2"></div>
+                    <div class="flex justify-between items-center text-xs text-neutral-500">
+                        <span>Subtotal</span>
+                        <span class="font-semibold text-neutral-800" id="modal-invoice-subtotal">-</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-neutral-500 hidden" id="modal-invoice-discount-row">
+                        <span>Diskon (<span id="modal-invoice-voucher-badge" class="uppercase text-sky-600 font-bold"></span>)</span>
+                        <span class="font-semibold text-rose-600" id="modal-invoice-discount">-</span>
+                    </div>
                     <div class="flex justify-between items-center text-xs">
-                        <span>Subtotal / Total</span>
+                        <span>Total Akhir</span>
                         <span class="font-black text-neutral-900" id="modal-invoice-total">-</span>
                     </div>
                     <div class="flex justify-between items-center text-[11px] text-neutral-500">
@@ -251,6 +277,10 @@
                 <span>Customer:</span>
                 <span id="print-receipt-customer">--</span>
             </div>
+            <div class="flex justify-between" style="display: flex; justify-content: space-between; display: none;" id="print-receipt-whatsapp-row">
+                <span>WhatsApp:</span>
+                <span id="print-receipt-whatsapp">--</span>
+            </div>
             <div class="flex justify-between" style="display: flex; justify-content: space-between;">
                 <span>Metode:</span>
                 <span id="print-receipt-payment-method" style="font-weight: bold; text-transform: uppercase;">--</span>
@@ -267,9 +297,17 @@
             style="border-bottom: 1px dashed #000; margin: 8px 0;"></div>
 
         <div class="text-[10px] text-neutral-700 space-y-1.5 font-medium" style="font-size: 10px; color: #000;">
+            <div class="flex justify-between text-neutral-800" style="display: flex; justify-content: space-between;">
+                <span>Subtotal:</span>
+                <span id="print-receipt-subtotal">Rp 0</span>
+            </div>
+            <div class="flex justify-between text-neutral-800" style="display: flex; justify-content: space-between; display: none;" id="print-receipt-discount-row">
+                <span>Diskon (<span id="print-receipt-voucher-badge"></span>):</span>
+                <span id="print-receipt-discount">-Rp 0</span>
+            </div>
             <div class="flex justify-between text-neutral-900 font-bold"
                 style="display: flex; justify-content: space-between; font-weight: bold;">
-                <span>Total Belanja:</span>
+                <span>Total Akhir:</span>
                 <span id="print-receipt-total">Rp 0</span>
             </div>
             <div class="flex justify-between" style="display: flex; justify-content: space-between;">

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'transaction_code', 'total_price', 'total_paid', 'total_change', 'payment_method', 'customer_name'])]
+#[Fillable(['user_id', 'transaction_code', 'total_price', 'total_paid', 'total_change', 'payment_method', 'customer_name', 'customer_whatsapp', 'discount_amount', 'voucher_code'])]
 class Transaction extends Model
 {
     use HasFactory;
