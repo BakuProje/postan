@@ -191,17 +191,28 @@
                     <tbody id="users-table-body" class="divide-y divide-neutral-100/70 text-neutral-600">
                         @forelse($users as $index => $user)
                             @php
+                                $userShift = $shifts->firstWhere('name', $user->shift);
                                 $shiftName = $user->shift ?: 'Tanpa Shift';
-                                $shiftHoursDisplay = $user->shift_hours;
-                                if (empty($shiftHoursDisplay)) {
+                                $shiftHoursDisplay = '';
+                                if ($userShift) {
+                                    if ($s_start = $userShift->start_time ?: '') {
+                                        $s_start = strlen($s_start) > 5 ? substr($s_start, 0, 5) : $s_start;
+                                    }
+                                    if ($s_end = $userShift->end_time ?: '') {
+                                        $s_end = strlen($s_end) > 5 ? substr($s_end, 0, 5) : $s_end;
+                                    }
+                                    if ($s_start && $s_end) {
+                                        $shiftHoursDisplay = $s_start . ' - ' . $s_end;
+                                    } else {
+                                        $shiftHoursDisplay = 'Fleksibel';
+                                    }
+                                } else {
                                     if ($user->shift === 'Pagi') {
                                         $shiftHoursDisplay = '06:00 - 14:00';
                                     } elseif ($user->shift === 'Siang') {
                                         $shiftHoursDisplay = '14:00 - 22:00';
                                     } elseif ($user->shift === 'Malam') {
                                         $shiftHoursDisplay = '22:00 - 06:00';
-                                    } else {
-                                        $shiftHoursDisplay = '';
                                     }
                                 }
 

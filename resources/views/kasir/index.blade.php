@@ -42,10 +42,10 @@
                     </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto p-2">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="pos-products-grid">
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5" id="pos-products-grid">
                         @foreach ($products as $prod)
-                            <div class="pos-product-card bg-white rounded-2xl border border-neutral-200/80 overflow-hidden flex flex-col justify-between hover:border-sky-400 shadow-[0_4px_20px_rgba(0,0,0,0.015)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+                            <div class="pos-product-card bg-white rounded-2xl border border-neutral-200/80 overflow-hidden flex flex-col justify-between hover:border-sky-400 shadow-[0_4px_20px_rgba(0,0,0,0.012)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:scale-[1.02] transition-all duration-300 cursor-pointer"
                                 data-id="{{ $prod->id }}" data-name="{{ $prod->name }}"
                                 data-price="{{ $prod->price }}" data-stock="{{ $prod->stock }}"
                                 data-category-id="{{ $prod->category_id }}"
@@ -73,19 +73,13 @@
                                             {{ $prod->stock }}</span>
                                     @endif
                                 </div>
-                                <div class="p-4 flex-1 flex flex-col justify-between">
-                                    <div>
-                                        <span
-                                            class="text-[10px] font-bold text-neutral-400 block uppercase tracking-wider">{{ $prod->category->name }}</span>
-                                        <p class="text-sm font-black text-neutral-900 line-clamp-2 mt-1 leading-snug">
-                                            {{ $prod->name }}</p>
-                                    </div>
-                                    <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between">
-                                        <span class="text-sm font-black text-sky-600">Rp
-                                            {{ number_format($prod->price, 0, ',', '.') }}</span>
-                                        <div
-                                            class="h-6 w-6 bg-sky-50 hover:bg-sky-100 text-sky-600 border border-sky-100 rounded flex items-center justify-center transition">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                                <div class="p-4 space-y-2.5">
+                                    <p class="text-sm font-bold text-neutral-800 truncate block">
+                                        {{ $prod->name }}</p>
+                                    <div class="flex items-center justify-between gap-2.5">
+                                        <span class="text-sm font-extrabold text-sky-600 whitespace-nowrap">Rp {{ number_format($prod->price, 0, ',', '.') }}</span>
+                                        <div class="h-8 w-8 rounded-lg border border-sky-200 bg-sky-50/50 hover:bg-sky-100 text-sky-600 flex items-center justify-center shrink-0 transition-all duration-200 shadow-3xs">
+                                            <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M12 4.5v15m7.5-7.5h-15" />

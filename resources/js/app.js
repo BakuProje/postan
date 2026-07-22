@@ -912,6 +912,19 @@ let posCart = [];
 let activeVoucher = null;
 let activePaymentMethod = 'cash'; // 'cash' or 'qris'
 
+try {
+    const savedCart = localStorage.getItem('pos_cart');
+    if (savedCart) {
+        posCart = JSON.parse(savedCart);
+    }
+    const savedVoucher = localStorage.getItem('pos_active_voucher');
+    if (savedVoucher) {
+        activeVoucher = JSON.parse(savedVoucher);
+    }
+} catch (e) {
+    console.error('Failed to restore POS cart state:', e);
+}
+
 function addProductToCart(element) {
     if (!element) return;
     const id = parseInt(element.dataset.id || 0);
@@ -1014,7 +1027,7 @@ function renderPosCart() {
                         ${imgHtml}
                         <div class="min-w-0">
                             <p class="font-bold text-neutral-800 truncate text-xs sm:text-sm">${item.name}</p>
-                            <p class="text-xs text-neutral-400 mt-0.5">${formatRupiah(item.price)}</p>
+                            <p class="text-xs text-neutral-400 mt-0.5 whitespace-nowrap">${formatRupiah(item.price)}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
@@ -1023,7 +1036,7 @@ function renderPosCart() {
                         <button type="button" onclick="updateCartQty(${item.id}, 1)" class="h-7 w-7 rounded bg-white border border-neutral-200 hover:border-sky-400 hover:text-sky-600 flex items-center justify-center font-bold text-sm select-none cursor-pointer">+</button>
                     </div>
                     <div class="text-right min-w-[70px] shrink-0">
-                        <span class="font-extrabold text-neutral-800 block text-xs sm:text-sm">${formatRupiah(item.price * item.quantity)}</span>
+                        <span class="font-extrabold text-neutral-800 block text-xs sm:text-sm whitespace-nowrap">${formatRupiah(item.price * item.quantity)}</span>
                     </div>
                     <button type="button" onclick="removeCartItem(${item.id})" class="text-neutral-400 hover:text-rose-500 transition shrink-0 cursor-pointer">
                         <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -1033,6 +1046,17 @@ function renderPosCart() {
                 `;
                 container.appendChild(itemRow);
             });
+        }
+
+        try {
+            localStorage.setItem('pos_cart', JSON.stringify(posCart));
+            if (activeVoucher) {
+                localStorage.setItem('pos_active_voucher', JSON.stringify(activeVoucher));
+            } else {
+                localStorage.removeItem('pos_active_voucher');
+            }
+        } catch (e) {
+            console.error('Failed to save POS cart state:', e);
         }
 
         const totalQty = posCart.reduce((sum, item) => sum + (item.quantity || 0), 0);
@@ -1365,6 +1389,12 @@ function checkoutTransaction() {
         .then(data => {
             closeModal('payment-method-modal');
             showToastNotification(data.message || 'Transaksi berhasil disimpan!');
+            posCart = [];
+            activeVoucher = null;
+            try {
+                localStorage.removeItem('pos_cart');
+                localStorage.removeItem('pos_active_voucher');
+            } catch (e) {}
             openReceiptModal(data.data);
         })
         .catch(error => {
@@ -1523,6 +1553,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.value = formatNumberWithDots(value);
         });
     });
+
+    renderPosCart();
 });
 
 document.addEventListener('DOMContentLoaded', () => {
